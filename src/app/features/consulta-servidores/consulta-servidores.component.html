@@ -28,13 +28,15 @@
       #dt
       [value]="dados"
       [paginator]="true"
+      [columns]="cols"
       [rows]="rows"
       [scrollable]="true"
       scrollHeight="70vh"
       [globalFilterFields]="['matricula', 'nome', 'cargo', 'secretaria']"
       class="min-w-full text-xs"
+      [exportHeader]="'header'"
     >
-      <ng-template pTemplate="caption">
+      <ng-template #caption>
         <div class="flex items-center justify-between p-3">
           <div class="flex items-center gap-2">
             <i class="pi pi-search text-slate-600"></i>
@@ -57,75 +59,23 @@
               class="p-button-sm"
               (click)="clearTableFilters(dt)"
             ></button>
+            <p-button
+              icon="pi pi-external-link"
+              label="Export"
+              (click)="exportToCSV()"
+            />
           </div>
         </div>
       </ng-template>
 
-      <ng-template pTemplate="header">
+      <ng-template #header let-columns>
         <tr>
-          <th pSortableColumn="matricula" class="p-2 whitespace-nowrap">
-            MATRICULA
-            <p-sortIcon field="matricula" />
-          </th>
-
-          <th pSortableColumn="apoio" class="p-2 whitespace-nowrap">
-            APOIO
-            <p-sortIcon field="apoio" />
-          </th>
-
-          <th pSortableColumn="grau" class="p-2 whitespace-nowrap">
-            GRAU
-            <p-sortIcon field="grau" />
-          </th>
-
-          <th pSortableColumn="nome" class="p-2 whitespace-nowrap">
-            NOME
-            <p-sortIcon field="nome" />
-          </th>
-
-          <th pSortableColumn="secretaria" class="p-2 whitespace-nowrap">
-            SECRETARIA
-            <p-sortIcon field="secretaria" />
-          </th>
-
-          <th pSortableColumn="unidade" class="p-2 whitespace-nowrap">
-            UNIDADE
-            <p-sortIcon field="unidade" />
-          </th>
-
-          <th pSortableColumn="setor" class="p-2 whitespace-nowrap">
-            SETOR
-            <p-sortIcon field="setor" />
-          </th>
-
-          <th pSortableColumn="centro" class="p-2 whitespace-nowrap">
-            CENTRO
-            <p-sortIcon field="centro" />
-          </th>
-
-          <th pSortableColumn="vinculo" class="p-2 whitespace-nowrap">
-            VÍNCULO
-            <p-sortIcon field="vinculo" />
-          </th>
-
-          <th pSortableColumn="cargo" class="p-2 whitespace-nowrap">
-            CARGO
-            <p-sortIcon field="cargo" />
-          </th>
-
-          <th pSortableColumn="padrao" class="p-2 whitespace-nowrap">
-            PADRÃO
-            <p-sortIcon field="padrao" />
-          </th>
-
-          <th pSortableColumn="funcao" class="p-2 whitespace-nowrap">
-            FUNÇÃO
-            <p-sortIcon field="funcao" />
-          </th>
-
-          <th pSortableColumn="padrao_funcao" class="p-2 whitespace-nowrap">
-            PADRÃO_FUNÇÃO
-            <p-sortIcon field="padrao_funcao" />
+          <th
+            *ngFor="let col of columns"
+            [pSortableColumn]="col.field"
+            class="text-sm p-2 whitespace-nowrap"
+          >
+            {{ col.header }} <p-sortIcon [field]="col.field" />
           </th>
         </tr>
         <tr>
@@ -348,21 +298,11 @@
         </tr>
       </ng-template>
 
-      <ng-template pTemplate="body" let-row>
+      <ng-template #body let-row let-columns="columns">
         <tr class="hover:bg-slate-50">
-          <td>{{ row.matricula }}</td>
-          <td>{{ row.apoio }}</td>
-          <td>{{ row.grau }}</td>
-          <td>{{ row.nome }}</td>
-          <td>{{ row.secretaria }}</td>
-          <td>{{ row.unidade }}</td>
-          <td>{{ row.setor }}</td>
-          <td>{{ row.centro }}</td>
-          <td>{{ row.vinculo }}</td>
-          <td>{{ row.cargo }}</td>
-          <td>{{ row.padrao }}</td>
-          <td>{{ row.funcao }}</td>
-          <td>{{ row.padrao_funcao }}</td>
+          <td *ngFor="let col of columns">
+            {{ row[col.field] }}
+          </td>
         </tr>
       </ng-template>
 
