@@ -1,4 +1,4 @@
-<div class="mx-auto px-8 py-4">
+<div class="mx-auto px-8 py-4 flex flex-col h-screen min-h-0">
   <h2 class="text-2xl font-semibold text-rose-800 mb-4">
     Consulta Servidores — ADMRH
   </h2>
@@ -21,20 +21,22 @@
     <p class="mt-3 font-semibold text-gray-800">Carregando dados...</p>
   </div>
 
+  <!-- WRAPPER DA TABELA (***IMPORTANTE***) -->
   <div
     *ngIf="!loading && dados.length > 0"
-    class="border border-gray-300 rounded-lg overflow-hidden bg-white"
+    class="border border-gray-300 rounded-lg bg-white flex flex-col grow min-h-0"
   >
     <p-table
       #dt
       [value]="dados"
       [paginator]="true"
+      [rowsPerPageOptions]="[10, 25, 50]"
       [columns]="cols"
       [rows]="rows"
       [scrollable]="true"
-      scrollHeight="70vh"
+      scrollHeight="flex"
       [globalFilterFields]="['matricula', 'nome', 'cargo', 'secretaria']"
-      class="min-w-full text-xs"
+      class="min-w-full text-xs flex flex-col"
       [exportHeader]="'header'"
       (sortFunction)="customSort($event)"
       [customSort]="true"
@@ -71,6 +73,7 @@
         </div>
       </ng-template>
 
+      <!-- CABEÇALHO -->
       <ng-template #header let-columns>
         <tr>
           <th
@@ -81,6 +84,8 @@
             {{ col.header }} <p-sortIcon [field]="col.field" />
           </th>
         </tr>
+
+        <!-- FILTROS -->
         <tr>
           <th>
             <p-columnFilter
@@ -88,16 +93,11 @@
               field="matricula"
               matchMode="contains"
               showMenu="false"
-              class="w-12"
             ></p-columnFilter>
           </th>
+
           <th>
-            <p-columnFilter
-              field="apoio"
-              matchMode="in"
-              showMenu="false"
-              class="w-12"
-            >
+            <p-columnFilter field="apoio" matchMode="in" showMenu="false">
               <ng-template
                 pTemplate="filter"
                 let-filterCallback="filterCallback"
@@ -110,13 +110,9 @@
               </ng-template>
             </p-columnFilter>
           </th>
+
           <th>
-            <p-columnFilter
-              field="grau"
-              matchMode="in"
-              showMenu="false"
-              class="w-12"
-            >
+            <p-columnFilter field="grau" matchMode="in" showMenu="false">
               <ng-template
                 pTemplate="filter"
                 let-filterCallback="filterCallback"
@@ -129,22 +125,17 @@
               </ng-template>
             </p-columnFilter>
           </th>
+
           <th>
             <p-columnFilter
               type="text"
               field="nome"
               matchMode="contains"
               showMenu="false"
-              class="w-12"
             ></p-columnFilter>
           </th>
           <th>
-            <p-columnFilter
-              field="secretaria"
-              matchMode="in"
-              showMenu="false"
-              class="w-12"
-            >
+            <p-columnFilter field="secretaria" matchMode="in" showMenu="false">
               <ng-template
                 pTemplate="filter"
                 let-filterCallback="filterCallback"
@@ -158,12 +149,7 @@
             </p-columnFilter>
           </th>
           <th>
-            <p-columnFilter
-              field="unidade"
-              matchMode="in"
-              showMenu="false"
-              class="w-12"
-            >
+            <p-columnFilter field="unidade" matchMode="in" showMenu="false">
               <ng-template
                 pTemplate="filter"
                 let-filterCallback="filterCallback"
@@ -177,12 +163,7 @@
             </p-columnFilter>
           </th>
           <th>
-            <p-columnFilter
-              field="setor"
-              matchMode="in"
-              showMenu="false"
-              class="w-12"
-            >
+            <p-columnFilter field="setor" matchMode="in" showMenu="false">
               <ng-template
                 pTemplate="filter"
                 let-filterCallback="filterCallback"
@@ -196,20 +177,21 @@
             </p-columnFilter>
           </th>
           <th>
-            <p-columnFilter
-              field="centro"
-              matchMode="in"
-              showMenu="false"
-              class="w-12"
-            ></p-columnFilter>
+            <p-columnFilter field="centro" matchMode="in" showMenu="false">
+              <ng-template
+                pTemplate="filter"
+                let-filterCallback="filterCallback"
+              >
+                <p-multiSelect
+                  [options]="getOptions('centro')"
+                  (onChange)="filterCallback($event.value)"
+                  appendTo="body"
+                />
+              </ng-template>
+            </p-columnFilter>
           </th>
           <th>
-            <p-columnFilter
-              field="vinculo"
-              matchMode="in"
-              showMenu="false"
-              class="w-12"
-            >
+            <p-columnFilter field="vinculo" matchMode="in" showMenu="false">
               <ng-template
                 pTemplate="filter"
                 let-filterCallback="filterCallback"
@@ -223,12 +205,7 @@
             </p-columnFilter>
           </th>
           <th>
-            <p-columnFilter
-              field="cargo"
-              matchMode="in"
-              showMenu="false"
-              class="w-12"
-            >
+            <p-columnFilter field="cargo" matchMode="in" showMenu="false">
               <ng-template
                 pTemplate="filter"
                 let-filterCallback="filterCallback"
@@ -242,12 +219,7 @@
             </p-columnFilter>
           </th>
           <th>
-            <p-columnFilter
-              field="padrao"
-              matchMode="in"
-              showMenu="false"
-              class="w-12"
-            >
+            <p-columnFilter field="padrao" matchMode="in" showMenu="false">
               <ng-template
                 pTemplate="filter"
                 let-filterCallback="filterCallback"
@@ -284,7 +256,6 @@
               field="padrao_funcao"
               matchMode="in"
               showMenu="false"
-              class="w-12"
             >
               <ng-template
                 pTemplate="filter"
@@ -301,6 +272,7 @@
         </tr>
       </ng-template>
 
+      <!-- CORPO -->
       <ng-template #body let-row let-columns="columns">
         <tr class="hover:bg-rose-50">
           <td *ngFor="let col of columns">
@@ -309,8 +281,14 @@
         </tr>
       </ng-template>
 
-      <ng-template pTemplate="paginatorleft">
-        <div class="text-sm text-gray-600">Mostrando {{ rows }} por página</div>
+      <!-- PAGINAÇÃO -->
+      <ng-template pTemplate="paginatorleft" let-state>
+        <div class="text-sm text-gray-600 flex gap-4 items-center">
+          <span>
+            Exibindo {{ state.first + 1 }} a {{ state.first + state.rows }} de
+            {{ state.totalRecords }} registros
+          </span>
+        </div>
       </ng-template>
     </p-table>
   </div>

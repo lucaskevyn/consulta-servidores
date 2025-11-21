@@ -46,7 +46,7 @@ export class ConsultaServidoresComponent {
   dados: Servidor[] = [];
   loading = false;
 
-  rows = 20;
+  rows = 10;
   globalFilterValue = '';
 
   cols!: Column[];
