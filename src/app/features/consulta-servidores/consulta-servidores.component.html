@@ -35,9 +35,11 @@
       [globalFilterFields]="['matricula', 'nome', 'cargo', 'secretaria']"
       class="min-w-full text-xs"
       [exportHeader]="'header'"
+      (sortFunction)="customSort($event)"
+      [customSort]="true"
     >
       <ng-template #caption>
-        <div class="flex items-center justify-between p-3">
+        <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <i class="pi pi-search text-slate-600"></i>
             <input
