@@ -66,6 +66,8 @@ export class ConsultaServidoresComponent {
     padrao_funcao: [],
   };
 
+  filterValues: { [key: string]: any[] } = {};
+
   initialValue: Servidor[] = [];
   isSorted: boolean | null = null; // CORRIGIDO
 
@@ -122,11 +124,16 @@ export class ConsultaServidoresComponent {
       const vals = this.dados.map((d) => (d as any)[c] ?? '').map(String);
       const set = new Set(vals);
       this.uniqueValues[c] = Array.from(set).sort((a, b) => a.localeCompare(b));
+
+      this.filterValues[c] = [];
     });
   }
 
   clearTableFilters(table: Table) {
     table.clear();
+    Object.keys(this.filterValues).forEach((key) => {
+      this.filterValues[key] = [];
+    });
   }
 
   getOptions(campo: string) {
@@ -253,5 +260,9 @@ export class ConsultaServidoresComponent {
       });
       return (event.order ?? 1) * fallback;
     });
+  }
+
+  get globalFields() {
+    return this.cols.map((c) => c.field);
   }
 }

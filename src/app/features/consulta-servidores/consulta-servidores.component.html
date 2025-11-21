@@ -35,7 +35,7 @@
       [rows]="rows"
       [scrollable]="true"
       scrollHeight="flex"
-      [globalFilterFields]="['matricula', 'nome', 'cargo', 'secretaria']"
+      [globalFilterFields]="globalFields"
       class="min-w-full text-xs flex flex-col"
       [exportHeader]="'header'"
       (sortFunction)="customSort($event)"
@@ -55,15 +55,15 @@
             />
           </div>
 
-          <div>
-            <button
-              title="add"
-              pButton
-              type="button"
+          <div class="flex gap-3">
+            <p-button
               label="Limpar filtros"
-              class="p-button-sm"
+              icon="pi pi-filter-slash"
+              outlined="true"
+              severity="contrast"
               (click)="clearTableFilters(dt)"
-            ></button>
+            ></p-button>
+
             <p-button
               icon="pi pi-external-link"
               label="Export"
@@ -89,11 +89,24 @@
         <tr>
           <th>
             <p-columnFilter
-              type="text"
               field="matricula"
               matchMode="contains"
               showMenu="false"
-            ></p-columnFilter>
+            >
+              <ng-template
+                pTemplate="filter"
+                let-value
+                let-filter="filterCallback"
+              >
+                <input
+                  type="text"
+                  pInputText
+                  [value]="value"
+                  (input)="filter($event.target.value)"
+                  placeholder="Filtrar..."
+                />
+              </ng-template>
+            </p-columnFilter>
           </th>
 
           <th>
@@ -104,7 +117,8 @@
               >
                 <p-multiSelect
                   [options]="getOptions('apoio')"
-                  (onChange)="filterCallback($event.value)"
+                  [(ngModel)]="filterValues['apoio']"
+                  (onChange)="filterCallback(filterValues['apoio'])"
                   appendTo="body"
                 />
               </ng-template>
@@ -119,7 +133,8 @@
               >
                 <p-multiSelect
                   [options]="getOptions('grau')"
-                  (onChange)="filterCallback($event.value)"
+                  [(ngModel)]="filterValues['grau']"
+                  (onChange)="filterCallback(filterValues['grau'])"
                   appendTo="body"
                 />
               </ng-template>
@@ -127,12 +142,21 @@
           </th>
 
           <th>
-            <p-columnFilter
-              type="text"
-              field="nome"
-              matchMode="contains"
-              showMenu="false"
-            ></p-columnFilter>
+            <p-columnFilter field="nome" matchMode="contains" showMenu="false">
+              <ng-template
+                pTemplate="filter"
+                let-value
+                let-filter="filterCallback"
+              >
+                <input
+                  type="text"
+                  pInputText
+                  [value]="value"
+                  (input)="filter($event.target.value)"
+                  placeholder="Filtrar..."
+                />
+              </ng-template>
+            </p-columnFilter>
           </th>
           <th>
             <p-columnFilter field="secretaria" matchMode="in" showMenu="false">
@@ -142,7 +166,8 @@
               >
                 <p-multiSelect
                   [options]="getOptions('secretaria')"
-                  (onChange)="filterCallback($event.value)"
+                  [(ngModel)]="filterValues['secretaria']"
+                  (onChange)="filterCallback(filterValues['secretaria'])"
                   appendTo="body"
                 />
               </ng-template>
@@ -156,7 +181,8 @@
               >
                 <p-multiSelect
                   [options]="getOptions('unidade')"
-                  (onChange)="filterCallback($event.value)"
+                  [(ngModel)]="filterValues['unidade']"
+                  (onChange)="filterCallback(filterValues['unidade'])"
                   appendTo="body"
                 />
               </ng-template>
@@ -170,7 +196,8 @@
               >
                 <p-multiSelect
                   [options]="getOptions('setor')"
-                  (onChange)="filterCallback($event.value)"
+                  [(ngModel)]="filterValues['setor']"
+                  (onChange)="filterCallback(filterValues['setor'])"
                   appendTo="body"
                 />
               </ng-template>
@@ -184,7 +211,8 @@
               >
                 <p-multiSelect
                   [options]="getOptions('centro')"
-                  (onChange)="filterCallback($event.value)"
+                  [(ngModel)]="filterValues['centro']"
+                  (onChange)="filterCallback(filterValues['centro'])"
                   appendTo="body"
                 />
               </ng-template>
@@ -198,7 +226,8 @@
               >
                 <p-multiSelect
                   [options]="getOptions('vinculo')"
-                  (onChange)="filterCallback($event.value)"
+                  [(ngModel)]="filterValues['vinculo']"
+                  (onChange)="filterCallback(filterValues['vinculo'])"
                   appendTo="body"
                 />
               </ng-template>
@@ -212,7 +241,8 @@
               >
                 <p-multiSelect
                   [options]="getOptions('cargo')"
-                  (onChange)="filterCallback($event.value)"
+                  [(ngModel)]="filterValues['cargo']"
+                  (onChange)="filterCallback(filterValues['cargo'])"
                   appendTo="body"
                 />
               </ng-template>
@@ -226,7 +256,8 @@
               >
                 <p-multiSelect
                   [options]="getOptions('padrao')"
-                  (onChange)="filterCallback($event.value)"
+                  [(ngModel)]="filterValues['padrao']"
+                  (onChange)="filterCallback(filterValues['padrao'])"
                   appendTo="body"
                 />
               </ng-template>
@@ -245,7 +276,8 @@
               >
                 <p-multiSelect
                   [options]="getOptions('funcao')"
-                  (onChange)="filterCallback($event.value)"
+                  [(ngModel)]="filterValues['funcao']"
+                  (onChange)="filterCallback(filterValues['funcao'])"
                   appendTo="body"
                 />
               </ng-template>
@@ -263,7 +295,8 @@
               >
                 <p-multiSelect
                   [options]="getOptions('padrao_funcao')"
-                  (onChange)="filterCallback($event.value)"
+                  [(ngModel)]="filterValues['padrao_funcao']"
+                  (onChange)="filterCallback(filterValues['padrao_funcao'])"
                   appendTo="body"
                 />
               </ng-template>
