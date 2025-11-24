@@ -104,6 +104,7 @@
                   [value]="value"
                   (input)="filter($event.target.value)"
                   placeholder="Filtrar..."
+                  class="w-28"
                 />
               </ng-template>
             </p-columnFilter>
@@ -120,6 +121,7 @@
                   [(ngModel)]="filterValues['apoio']"
                   (onChange)="filterCallback(filterValues['apoio'])"
                   appendTo="body"
+                  class="w-28"
                 />
               </ng-template>
             </p-columnFilter>
@@ -136,6 +138,7 @@
                   [(ngModel)]="filterValues['grau']"
                   (onChange)="filterCallback(filterValues['grau'])"
                   appendTo="body"
+                  class="w-28"
                 />
               </ng-template>
             </p-columnFilter>
@@ -154,6 +157,7 @@
                   [value]="value"
                   (input)="filter($event.target.value)"
                   placeholder="Filtrar..."
+                  class="w-28"
                 />
               </ng-template>
             </p-columnFilter>
@@ -167,8 +171,12 @@
                 <p-multiSelect
                   [options]="getOptions('secretaria')"
                   [(ngModel)]="filterValues['secretaria']"
-                  (onChange)="filterCallback(filterValues['secretaria'])"
+                  (onChange)="
+                    filterCallback(filterValues['secretaria']);
+                    onSecretariaChange(filterValues['secretaria'])
+                  "
                   appendTo="body"
+                  class="w-28"
                 />
               </ng-template>
             </p-columnFilter>
@@ -182,8 +190,12 @@
                 <p-multiSelect
                   [options]="getOptions('unidade')"
                   [(ngModel)]="filterValues['unidade']"
-                  (onChange)="filterCallback(filterValues['unidade'])"
+                  (onChange)="
+                    filterCallback(filterValues['unidade']);
+                    onUnidadeChange(filterValues['unidade'])
+                  "
                   appendTo="body"
+                  class="w-28"
                 />
               </ng-template>
             </p-columnFilter>
@@ -197,8 +209,12 @@
                 <p-multiSelect
                   [options]="getOptions('setor')"
                   [(ngModel)]="filterValues['setor']"
-                  (onChange)="filterCallback(filterValues['setor'])"
+                  (onChange)="
+                    filterCallback(filterValues['setor']);
+                    onSetorChange(filterValues['setor'])
+                  "
                   appendTo="body"
+                  class="w-28"
                 />
               </ng-template>
             </p-columnFilter>
@@ -214,6 +230,7 @@
                   [(ngModel)]="filterValues['centro']"
                   (onChange)="filterCallback(filterValues['centro'])"
                   appendTo="body"
+                  class="w-28"
                 />
               </ng-template>
             </p-columnFilter>
@@ -229,6 +246,7 @@
                   [(ngModel)]="filterValues['vinculo']"
                   (onChange)="filterCallback(filterValues['vinculo'])"
                   appendTo="body"
+                  class="w-28"
                 />
               </ng-template>
             </p-columnFilter>
@@ -244,6 +262,7 @@
                   [(ngModel)]="filterValues['cargo']"
                   (onChange)="filterCallback(filterValues['cargo'])"
                   appendTo="body"
+                  class="w-28"
                 />
               </ng-template>
             </p-columnFilter>
@@ -259,6 +278,7 @@
                   [(ngModel)]="filterValues['padrao']"
                   (onChange)="filterCallback(filterValues['padrao'])"
                   appendTo="body"
+                  class="w-28"
                 />
               </ng-template>
             </p-columnFilter>
@@ -279,6 +299,7 @@
                   [(ngModel)]="filterValues['funcao']"
                   (onChange)="filterCallback(filterValues['funcao'])"
                   appendTo="body"
+                  class="w-28"
                 />
               </ng-template>
             </p-columnFilter>
@@ -298,6 +319,7 @@
                   [(ngModel)]="filterValues['padrao_funcao']"
                   (onChange)="filterCallback(filterValues['padrao_funcao'])"
                   appendTo="body"
+                  class="w-28"
                 />
               </ng-template>
             </p-columnFilter>

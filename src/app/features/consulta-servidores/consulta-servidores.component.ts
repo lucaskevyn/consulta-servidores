@@ -66,6 +66,9 @@ export class ConsultaServidoresComponent {
     padrao_funcao: [],
   };
 
+  // Armazena todas as opções originais para restaurar quando necessário
+  fullUniqueValues: { [key: string]: string[] } = {};
+
   filterValues: { [key: string]: any[] } = {};
 
   initialValue: Servidor[] = [];
@@ -127,6 +130,9 @@ export class ConsultaServidoresComponent {
 
       this.filterValues[c] = [];
     });
+
+    // Faz uma cópia profunda para preservar todas as opções
+    this.fullUniqueValues = JSON.parse(JSON.stringify(this.uniqueValues));
   }
 
   clearTableFilters(table: Table) {
@@ -188,6 +194,80 @@ export class ConsultaServidoresComponent {
     } catch (err) {
       console.error('exportToCSV erro:', err);
     }
+  }
+
+  // -----------------------
+  //      FILTROS DEPENDENTES
+  // -----------------------
+
+  onSecretariaChange(selectedSecretarias: string[]) {
+    this.updateUnidadeOptions();
+    this.updateSetorOptions();
+    this.updateCentroOptions();
+  }
+
+  onUnidadeChange(selectedUnidades: string[]) {
+    this.updateSetorOptions();
+    this.updateCentroOptions();
+  }
+
+  onSetorChange(selectedSetores: string[]) {
+    this.updateCentroOptions();
+  }
+
+  private updateUnidadeOptions() {
+    const subset = this.getFilteredData('secretaria');
+    this.updateOptionsFor('unidade', subset);
+  }
+
+  private updateSetorOptions() {
+    const subset = this.getFilteredData('unidade');
+    this.updateOptionsFor('setor', subset);
+  }
+
+  private updateCentroOptions() {
+    const subset = this.getFilteredData('setor');
+    this.updateOptionsFor('centro', subset);
+  }
+
+  /**
+   * Retorna os dados filtrados até o nível solicitado.
+   * Ex: 'unidade' retorna dados filtrados por Secretaria AND Unidade.
+   * Se um filtro estiver vazio, ele não restringe (passa tudo do nível anterior).
+   */
+  private getFilteredData(
+    level: 'secretaria' | 'unidade' | 'setor'
+  ): Servidor[] {
+    let data = this.initialValue;
+
+    // 1. Filtra por Secretaria
+    const secretarias = this.filterValues['secretaria'];
+    if (secretarias && secretarias.length > 0) {
+      data = data.filter((item) => secretarias.includes(item.secretaria));
+    }
+    if (level === 'secretaria') return data;
+
+    // 2. Filtra por Unidade
+    const unidades = this.filterValues['unidade'];
+    if (unidades && unidades.length > 0) {
+      data = data.filter((item) => unidades.includes(item.unidade));
+    }
+    if (level === 'unidade') return data;
+
+    // 3. Filtra por Setor
+    const setores = this.filterValues['setor'];
+    if (setores && setores.length > 0) {
+      data = data.filter((item) => setores.includes(item.setor));
+    }
+    return data; // level === 'setor'
+  }
+
+  private updateOptionsFor(field: string, data: Servidor[]) {
+    const vals = data
+      .map((d) => (d as any)[field])
+      .filter((v) => v != null && v !== '');
+    const unique = Array.from(new Set(vals)).sort((a, b) => a.localeCompare(b));
+    this.uniqueValues[field] = unique;
   }
 
   // -----------------------
