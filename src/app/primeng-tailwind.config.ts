@@ -1,7 +1,7 @@
 export const PRIME_NG_TAILWIND = {
   table: {
     root: { class: 'w-full text-xs' },
-    header: { class: 'bg-gray-100 text-gray-700' },
+    header: { class: 'bg-gray-100 text-gray-700 rounded-t-lg' },
     headerCell: {
       class: 'px-2 py-1 whitespace-nowrap border-b border-gray-300',
     },
