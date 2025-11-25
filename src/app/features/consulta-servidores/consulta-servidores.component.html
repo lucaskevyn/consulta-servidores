@@ -38,6 +38,23 @@
     </div>
   </div>
 
+  <!-- CARDS DE FUNÇÃO -->
+  <div *ngIf="!loading && functionCounts.length > 0" class="flex gap-3">
+    <div
+      *ngFor="let item of functionCounts"
+      class="flex-1 bg-rose-50 p-2 flex flex-col items-center justify-center rounded-lg"
+    >
+      <span class="text-xl font-bold text-rose-800">
+        {{ item.count }}
+      </span>
+      <span
+        class="text-xs font-medium text-rose-700 uppercase tracking-wider text-center"
+      >
+        {{ item.label }}
+      </span>
+    </div>
+  </div>
+
   <!-- WRAPPER DA TABELA (***IMPORTANTE***) -->
   <div
     *ngIf="!loading && dados.length > 0"

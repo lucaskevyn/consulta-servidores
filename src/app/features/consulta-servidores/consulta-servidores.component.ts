@@ -163,6 +163,56 @@ export class ConsultaServidoresComponent {
         return !label.includes('esjud') && !label.includes('tecnologia');
       })
       .sort((a, b) => a.label.localeCompare(b.label));
+
+    this.calculateFunctionCounts();
+  }
+
+  functionCounts: { label: string; count: number }[] = [];
+
+  calculateFunctionCounts() {
+    const combinations = [
+      {
+        label: 'CJ - Adm TJAC',
+        func: 'cj',
+        apoio: 'área administrativa do tjac',
+      },
+      {
+        label: 'FC - Adm TJAC',
+        func: 'fc',
+        apoio: 'área administrativa do tjac',
+      },
+      {
+        label: 'CJ - Jud 1º Grau',
+        func: 'cj',
+        apoio: 'área judiciária de 1º grau',
+      },
+      {
+        label: 'FC - Jud 1º Grau',
+        func: 'fc',
+        apoio: 'área judiciária de 1º grau',
+      },
+      {
+        label: 'CJ - Jud 2º Grau',
+        func: 'cj',
+        apoio: 'área judiciária de 2º grau',
+      },
+      {
+        label: 'FC - Jud 2º Grau',
+        func: 'fc',
+        apoio: 'área judiciária de 2º grau',
+      },
+    ];
+
+    const counts = combinations.map((combo) => {
+      const count = this.dados.filter((d) => {
+        const f = (d.funcao || '').toLowerCase();
+        const a = (d.apoio || '').toLowerCase();
+        return f.includes(combo.func) && a.includes(combo.apoio);
+      }).length;
+      return { label: combo.label, count };
+    });
+
+    this.functionCounts = counts;
   }
 
   clearTableFilters(table: Table) {
