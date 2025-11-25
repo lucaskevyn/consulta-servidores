@@ -143,6 +143,26 @@ export class ConsultaServidoresComponent {
 
     // Faz uma cópia profunda para preservar todas as opções
     this.fullUniqueValues = JSON.parse(JSON.stringify(this.uniqueValues));
+
+    this.calculateApoioCounts();
+  }
+
+  apoioCounts: { label: string; count: number }[] = [];
+
+  calculateApoioCounts() {
+    const counts: { [key: string]: number } = {};
+    this.dados.forEach((d) => {
+      const val = d.apoio || 'Sem Apoio';
+      counts[val] = (counts[val] || 0) + 1;
+    });
+
+    this.apoioCounts = Object.keys(counts)
+      .map((key) => ({ label: key, count: counts[key] }))
+      .filter((item) => {
+        const label = item.label.toLowerCase();
+        return !label.includes('esjud') && !label.includes('tecnologia');
+      })
+      .sort((a, b) => a.label.localeCompare(b.label));
   }
 
   clearTableFilters(table: Table) {

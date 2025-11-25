@@ -1,9 +1,9 @@
-<div class="mx-auto px-8 py-4 flex flex-col h-screen min-h-0">
-  <h2 class="text-2xl font-semibold text-rose-800 mb-4">
+<div class="mx-auto px-8 py-4 flex flex-col h-screen min-h-0 gap-3">
+  <h2 class="text-2xl font-semibold text-rose-800">
     Consulta Servidores — ADMRH
   </h2>
 
-  <div class="mb-4">
+  <div class="mb-2">
     <input
       pButton
       title="input1"
@@ -21,10 +21,27 @@
     <p class="mt-3 font-semibold text-gray-800">Carregando dados...</p>
   </div>
 
+  <!-- CARDS DE APOIO -->
+  <div *ngIf="!loading && apoioCounts.length > 0" class="flex gap-3">
+    <div
+      *ngFor="let item of apoioCounts"
+      class="flex-1 bg-gray-100 p-2 flex flex-col items-center justify-center rounded-lg"
+    >
+      <span class="text-xl font-bold text-rose-800">
+        {{ item.count }}
+      </span>
+      <span
+        class="text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+      >
+        {{ item.label }}
+      </span>
+    </div>
+  </div>
+
   <!-- WRAPPER DA TABELA (***IMPORTANTE***) -->
   <div
     *ngIf="!loading && dados.length > 0"
-    class="border border-gray-300 rounded-lg bg-white flex flex-col grow min-h-0"
+    class="border border-gray-100 rounded-lg bg-white flex flex-col grow min-h-0"
   >
     <p-table
       #dt

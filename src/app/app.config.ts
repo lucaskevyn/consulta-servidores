@@ -1,7 +1,6 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
-import { PRIME_NG_TAILWIND } from './primeng-tailwind.config';
 import Aura from '@primeuix/themes/aura';
 import { definePreset, palette } from '@primeuix/themes';
 import { provideRouter } from '@angular/router';
@@ -12,7 +11,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimationsAsync(),
     providePrimeNG({
-      pt: PRIME_NG_TAILWIND,
       theme: {
         preset: definePreset(Aura, {
           semantic: {
