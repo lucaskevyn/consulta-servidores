@@ -74,6 +74,16 @@ export class ConsultaServidoresComponent {
   initialValue: Servidor[] = [];
   isSorted: boolean | null = null; // CORRIGIDO
 
+  inputPt = {
+    root: {
+      class: 'border border-gray-300 rounded px-2 py-1  h-7',
+    },
+  };
+
+  multiselectPt = {
+    root: { class: 'h-7 min-h-7' },
+  };
+
   constructor(private excelService: ExcelService) {}
 
   ngOnInit() {
