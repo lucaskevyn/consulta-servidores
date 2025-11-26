@@ -8,6 +8,7 @@ import { Button } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SortEvent } from 'primeng/api';
+import { TabsModule } from 'primeng/tabs';
 
 // ---- TIPO CORRIGIDO ----
 // PrimeNG não inclui "data" dentro do SortEvent.
@@ -38,6 +39,7 @@ interface ExportColumn {
     InputText,
     Button,
     FormsModule,
+    TabsModule,
   ],
 })
 export class ConsultaServidoresComponent {

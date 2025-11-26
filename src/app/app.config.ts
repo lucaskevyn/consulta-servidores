@@ -15,6 +15,7 @@ export const appConfig: ApplicationConfig = {
         preset: definePreset(Aura, {
           semantic: {
             primary: palette('{rose}'),
+
             colorScheme: {
               light: {
                 primary: {
@@ -22,6 +23,7 @@ export const appConfig: ApplicationConfig = {
                   hoverColor: '{primary.900}',
                   activeColor: '{primary.950}',
                 },
+                surface: palette('{gray}'),
               },
             },
           },
