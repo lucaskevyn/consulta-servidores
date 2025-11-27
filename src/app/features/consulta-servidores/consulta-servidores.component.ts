@@ -282,10 +282,24 @@ export class ConsultaServidoresComponent {
       return total;
     };
 
+    const allowedVinculos = [
+      'à disposição fprev',
+      'à disposição fps',
+      'ad nutum comissionado',
+      'comissionado (à disposição)',
+      'diversos (requisitados reg prev rgps)',
+      'diversos (requisitados reg prev rpps)',
+      'efetivo comissionado (resolução 03/2013)',
+      'efetivo não comissionado',
+      'transitório não comissionado',
+    ];
+
     const getCount = (apoio: string) => {
-      return this.dados.filter((d) =>
-        (d.apoio || '').toLowerCase().includes(apoio)
-      ).length;
+      return this.dados.filter((d) => {
+        const a = (d.apoio || '').toLowerCase();
+        const v = (d.vinculo || '').toLowerCase().trim();
+        return a.includes(apoio) && allowedVinculos.includes(v);
+      }).length;
     };
 
     this.resolucaoData = [
@@ -334,21 +348,21 @@ export class ConsultaServidoresComponent {
       {
         question:
           'SaJudP2° - Total de Servidores que atuam na Área Judiciária do 2º Grau',
-        label: 'Qtd Jud 2º Grau',
+        label: 'Serv - Jud 2º Grau',
         value: getCount('área judiciária de 2º grau'),
         isCurrency: false,
       },
       {
         question:
           'SaJudP1JETR - Total de Servidores que atuam na Área Judiciária do 1º Grau, dos Juizados Especiais e das Turmas Recursais',
-        label: 'Qtd Jud 1º Grau',
+        label: 'Serv - Jud 1º Grau',
         value: getCount('área judiciária de 1º grau'),
         isCurrency: false,
       },
       {
         question:
           'ServAdmSETI - Total de Servidores na Área Administrativa, exceto os lotados nas escolas judiciais e da magistratura e nas áreas de tecnologia da informação',
-        label: 'Qtd Adm TJAC',
+        label: 'Serv - Adm TJAC',
         value: getCount('área administrativa do tjac'),
         isCurrency: false,
       },

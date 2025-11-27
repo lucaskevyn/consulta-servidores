@@ -524,7 +524,7 @@
           <ng-template #body let-row>
             <tr class="hover:bg-surface-100">
               <td class="py-2 px-4 font-medium">{{ row.label }}</td>
-              <td class="py-2 px-4 font-medium">{{ row.question }}</td>
+              <td class="py-2 px-4">{{ row.question }}</td>
               <td class="py-2 px-4">
                 @if (row.isCurrency) {
                 {{ row.value | currency : "BRL" : "symbol" : "1.2-2" }}
