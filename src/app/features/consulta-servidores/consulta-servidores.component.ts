@@ -168,6 +168,7 @@ export class ConsultaServidoresComponent {
 
     this.calculateFunctionCounts();
     this.calculateCargosData();
+    this.calculateResolucaoData();
   }
 
   functionCounts: { label: string; count: number }[] = [];
@@ -221,6 +222,25 @@ export class ConsultaServidoresComponent {
   // -----------------------
   //      CARGOS TABLE
   // -----------------------
+  references = [
+    { funcao: 'CJ-1G-1', valor: 6779.08 },
+    { funcao: 'CJ-2G-7', valor: 19564.16 },
+    { funcao: 'CJ-2G-6', valor: 15873.55 },
+    { funcao: 'CJ-2G-5', valor: 11875.33 },
+    { funcao: 'CJ-2G-4', valor: 8891.58 },
+    { funcao: 'CJ-2G-3', valor: 6779.08 },
+    { funcao: 'CJ-2G-2', valor: 5012.7 },
+    { funcao: 'CJ-2G-1', valor: 3699.85 },
+    { funcao: 'FC-1G-2', valor: 2000.0 },
+    { funcao: 'FC-1G-1', valor: 1700.0 },
+    { funcao: 'FC-2G-6', valor: 7125.2 },
+    { funcao: 'FC-2G-5', valor: 5334.95 },
+    { funcao: 'FC-2G-4', valor: 4067.45 },
+    { funcao: 'FC-2G-3', valor: 4067.45 },
+    { funcao: 'FC-2G-2', valor: 1700.0 },
+    { funcao: 'FC-2G-1', valor: 1500.0 },
+  ];
+
   cargosData: {
     funcao: string;
     valorUnitario: number;
@@ -229,26 +249,7 @@ export class ConsultaServidoresComponent {
   }[] = [];
 
   calculateCargosData() {
-    const references = [
-      { funcao: 'CJ-1G-1', valor: 6779.08 },
-      { funcao: 'CJ-2G-7', valor: 19564.16 },
-      { funcao: 'CJ-2G-6', valor: 15873.55 },
-      { funcao: 'CJ-2G-5', valor: 11875.33 },
-      { funcao: 'CJ-2G-4', valor: 8891.58 },
-      { funcao: 'CJ-2G-3', valor: 6779.08 },
-      { funcao: 'CJ-2G-2', valor: 5012.7 },
-      { funcao: 'CJ-2G-1', valor: 3699.85 },
-      { funcao: 'FC-1G-2', valor: 2000.0 },
-      { funcao: 'FC-1G-1', valor: 1700.0 },
-      { funcao: 'FC-2G-6', valor: 7125.2 },
-      { funcao: 'FC-2G-5', valor: 5334.95 },
-      { funcao: 'FC-2G-4', valor: 4067.45 },
-      { funcao: 'FC-2G-3', valor: 4067.45 },
-      { funcao: 'FC-2G-2', valor: 1700.0 },
-      { funcao: 'FC-2G-1', valor: 1500.0 },
-    ];
-
-    this.cargosData = references.map((ref) => {
+    this.cargosData = this.references.map((ref) => {
       // Conta quantos registros contêm o código da função (case-insensitive)
       const count = this.dados.filter((d) =>
         (d.funcao || '').toUpperCase().includes(ref.funcao.toUpperCase())
@@ -261,6 +262,97 @@ export class ConsultaServidoresComponent {
         valorTotal: count * ref.valor,
       };
     });
+  }
+
+  resolucaoData: any[] = [];
+
+  calculateResolucaoData() {
+    const getSum = (type: 'CJ' | 'FC', apoio: string) => {
+      let total = 0;
+      const refs = this.references.filter((r) => r.funcao.startsWith(type));
+
+      for (const ref of refs) {
+        const count = this.dados.filter((d) => {
+          const f = (d.funcao || '').toUpperCase();
+          const a = (d.apoio || '').toLowerCase();
+          return f.includes(ref.funcao.toUpperCase()) && a.includes(apoio);
+        }).length;
+        total += count * ref.valor;
+      }
+      return total;
+    };
+
+    const getCount = (apoio: string) => {
+      return this.dados.filter((d) =>
+        (d.apoio || '').toLowerCase().includes(apoio)
+      ).length;
+    };
+
+    this.resolucaoData = [
+      {
+        question:
+          'VCC2º - Valores Integrais dos Cargos em Comissão Alocados na Área Judiciária do 2º Grau',
+        label: 'CJ - Jud 2º Grau',
+        value: getSum('CJ', 'área judiciária de 2º grau'),
+        isCurrency: true,
+      },
+      {
+        question:
+          'VCCTRJE1º - Valores Integrais dos Cargos em Comissão Alocados na Área Judiciária do 1º Grau, nas Turmas Recursais e nos Juizados Especiais',
+        label: 'CJ - Jud 1º Grau',
+        value: getSum('CJ', 'área judiciária de 1º grau'),
+        isCurrency: true,
+      },
+      {
+        question:
+          'VCCAdm - Valores Integrais dos Cargos em Comissão Alocados na Área Administrativa',
+        label: 'CJ - Adm TJAC',
+        value: getSum('CJ', 'área administrativa do tjac'),
+        isCurrency: true,
+      },
+      {
+        question:
+          'VFC2º - Valores Integrais das Funções de Confiança Alocadas na Área Judiciária do 2º grau',
+        label: 'FC - Jud 2º Grau',
+        value: getSum('FC', 'área judiciária de 2º grau'),
+        isCurrency: true,
+      },
+      {
+        question:
+          'VFCTRJE1º - Valores Integrais das Funções de Confiança Alocadas na Área Judiciária do 1º Grau, nas Turmas Recursais e nos Juizados Especiais',
+        label: 'FC - Jud 1º Grau',
+        value: getSum('FC', 'área judiciária de 1º grau'),
+        isCurrency: true,
+      },
+      {
+        question:
+          'VFCAdm - Valores Integrais das Funções de Confiança Alocadas na Área Administrativa',
+        label: 'FC - Adm TJAC',
+        value: getSum('FC', 'área administrativa do tjac'),
+        isCurrency: true,
+      },
+      {
+        question:
+          'SaJudP2° - Total de Servidores que atuam na Área Judiciária do 2º Grau',
+        label: 'Qtd Jud 2º Grau',
+        value: getCount('área judiciária de 2º grau'),
+        isCurrency: false,
+      },
+      {
+        question:
+          'SaJudP1JETR - Total de Servidores que atuam na Área Judiciária do 1º Grau, dos Juizados Especiais e das Turmas Recursais',
+        label: 'Qtd Jud 1º Grau',
+        value: getCount('área judiciária de 1º grau'),
+        isCurrency: false,
+      },
+      {
+        question:
+          'ServAdmSETI - Total de Servidores na Área Administrativa, exceto os lotados nas escolas judiciais e da magistratura e nas áreas de tecnologia da informação',
+        label: 'Qtd Adm TJAC',
+        value: getCount('área administrativa do tjac'),
+        isCurrency: false,
+      },
+    ];
   }
 
   clearTableFilters(table: Table) {

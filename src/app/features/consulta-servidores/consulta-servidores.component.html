@@ -26,6 +26,7 @@
     <p-tablist>
       <p-tab value="0">Geral</p-tab>
       <p-tab value="1">Cargos</p-tab>
+      <p-tab value="2">Resolução 219</p-tab>
     </p-tablist>
     <p-tabpanels ngClass="flex flex-col grow p-0 pt-4 min-h-0">
       <p-tabpanel value="0" ngClass="min-h-0 grow flex flex-col">
@@ -486,6 +487,54 @@
             </ng-template>
           </p-table>
         </div>
+      </p-tabpanel>
+      <p-tabpanel value="2" ngClass="min-h-0 grow flex flex-col">
+        <p-table
+          [value]="resolucaoData"
+          class="min-w-full text-xs flex flex-col h-full"
+          [exportHeader]="'header'"
+          stripedRows
+          [pt]="{
+            root: {
+              class: 'border border-surface-100 rounded-xl'
+            },
+            header: {
+              class: 'bg-surface-100 text-surface-700 rounded-t-xl'
+            }
+          }"
+        >
+          <ng-template #caption>
+            <div class="flex items-center justify-end">
+              <p-button
+                icon="pi pi-external-link"
+                label="Export"
+                (click)="exportToCSV()"
+              />
+            </div>
+          </ng-template>
+
+          <ng-template #header>
+            <tr>
+              <th class="text-sm py-2 px-4 whitespace-nowrap">Descrição</th>
+              <th class="text-sm py-2 px-4 whitespace-nowrap">Pergunta</th>
+              <th class="text-sm py-2 px-4 whitespace-nowrap">Valor</th>
+            </tr>
+          </ng-template>
+
+          <ng-template #body let-row>
+            <tr class="hover:bg-surface-100">
+              <td class="py-2 px-4 font-medium">{{ row.label }}</td>
+              <td class="py-2 px-4 font-medium">{{ row.question }}</td>
+              <td class="py-2 px-4">
+                @if (row.isCurrency) {
+                {{ row.value | currency : "BRL" : "symbol" : "1.2-2" }}
+                } @else {
+                {{ row.value }}
+                }
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
       </p-tabpanel>
     </p-tabpanels>
   </p-tabs>
