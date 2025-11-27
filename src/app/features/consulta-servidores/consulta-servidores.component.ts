@@ -78,7 +78,7 @@ export class ConsultaServidoresComponent {
 
   inputPt = {
     root: {
-      class: 'border border-gray-300 rounded px-2 py-1  h-7',
+      class: 'border border-surface-300 rounded px-2 py-1  h-7',
     },
   };
 
@@ -167,6 +167,7 @@ export class ConsultaServidoresComponent {
       .sort((a, b) => a.label.localeCompare(b.label));
 
     this.calculateFunctionCounts();
+    this.calculateCargosData();
   }
 
   functionCounts: { label: string; count: number }[] = [];
@@ -215,6 +216,51 @@ export class ConsultaServidoresComponent {
     });
 
     this.functionCounts = counts;
+  }
+
+  // -----------------------
+  //      CARGOS TABLE
+  // -----------------------
+  cargosData: {
+    funcao: string;
+    valorUnitario: number;
+    quantidade: number;
+    valorTotal: number;
+  }[] = [];
+
+  calculateCargosData() {
+    const references = [
+      { funcao: 'CJ-1G-1', valor: 6779.08 },
+      { funcao: 'CJ-2G-7', valor: 19564.16 },
+      { funcao: 'CJ-2G-6', valor: 15873.55 },
+      { funcao: 'CJ-2G-5', valor: 11875.33 },
+      { funcao: 'CJ-2G-4', valor: 8891.58 },
+      { funcao: 'CJ-2G-3', valor: 6779.08 },
+      { funcao: 'CJ-2G-2', valor: 5012.7 },
+      { funcao: 'CJ-2G-1', valor: 3699.85 },
+      { funcao: 'FC-1G-2', valor: 2000.0 },
+      { funcao: 'FC-1G-1', valor: 1700.0 },
+      { funcao: 'FC-2G-6', valor: 7125.2 },
+      { funcao: 'FC-2G-5', valor: 5334.95 },
+      { funcao: 'FC-2G-4', valor: 4067.45 },
+      { funcao: 'FC-2G-3', valor: 4067.45 },
+      { funcao: 'FC-2G-2', valor: 1700.0 },
+      { funcao: 'FC-2G-1', valor: 1500.0 },
+    ];
+
+    this.cargosData = references.map((ref) => {
+      // Conta quantos registros contêm o código da função (case-insensitive)
+      const count = this.dados.filter((d) =>
+        (d.funcao || '').toUpperCase().includes(ref.funcao.toUpperCase())
+      ).length;
+
+      return {
+        funcao: ref.funcao,
+        valorUnitario: ref.valor,
+        quantidade: count,
+        valorTotal: count * ref.valor,
+      };
+    });
   }
 
   clearTableFilters(table: Table) {

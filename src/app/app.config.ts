@@ -1,10 +1,14 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, LOCALE_ID } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { definePreset, palette } from '@primeuix/themes';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
+
+registerLocaleData(localePt, 'pt-BR');
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,7 +19,6 @@ export const appConfig: ApplicationConfig = {
         preset: definePreset(Aura, {
           semantic: {
             primary: palette('{rose}'),
-
             colorScheme: {
               light: {
                 primary: {
@@ -23,7 +26,7 @@ export const appConfig: ApplicationConfig = {
                   hoverColor: '{primary.900}',
                   activeColor: '{primary.950}',
                 },
-                surface: palette('{gray}'),
+                // surface: palette('{gray}'),
               },
             },
           },
@@ -37,5 +40,6 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
   ],
 };

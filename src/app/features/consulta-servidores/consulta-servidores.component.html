@@ -17,9 +17,9 @@
   @if (loading) {
   <div class="text-center my-8">
     <div
-      class="w-10 h-10 border-4 border-gray-300 border-t-rose-800 rounded-full animate-spin mx-auto"
+      class="w-10 h-10 border-4 border-surface-300 border-t-rose-800 rounded-full animate-spin mx-auto"
     ></div>
-    <p class="mt-3 font-semibold text-gray-800">Carregando dados...</p>
+    <p class="mt-3 font-semibold text-surface-800">Carregando dados...</p>
   </div>
   } @if (!loading && apoioCounts.length > 0) {
   <p-tabs value="0" ngClass="grow flex flex-col min-h-0">
@@ -44,23 +44,23 @@
           stripedRows
           [pt]="{
             root: {
-              class: 'border border-gray-200 rounded-xl'
+              class: 'border border-surface-100 rounded-xl'
             },
             header: {
-              class: 'bg-surface-50 text-gray-700 rounded-t-xl'
+              class: 'bg-surface-100 text-surface-700 rounded-t-xl'
             },
             pcPaginator: {
               root: {
                 class:
-                  'border-t border-gray-200 text-gray-700 rounded-b-xl rounded-t-none'
+                  'border-t border-surface-200 text-surface-700 rounded-b-xl rounded-t-none'
               }
-            }
+            },
           }"
         >
           <ng-template #caption>
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <i class="pi pi-search text-gray-500"></i>
+                <i class="pi pi-search text-surface-500"></i>
                 <input
                   pInputText
                   type="text"
@@ -364,7 +364,7 @@
           </ng-template>
 
           <ng-template #body let-row let-columns="columns">
-            <tr class="hover:bg-rose-50">
+            <tr class="hover:bg-surface-100">
               @for (col of columns; track col.field) {
               <td>
                 {{ row[col.field] }}
@@ -374,7 +374,7 @@
           </ng-template>
 
           <ng-template pTemplate="paginatorleft" let-state>
-            <div class="text-sm text-gray-600 flex gap-4 items-center">
+            <div class="text-sm text-surface-600 flex gap-4 items-center">
               <span>
                 Exibindo {{ state.first + 1 }} a
                 {{ state.first + state.rows }} de
@@ -384,17 +384,17 @@
           </ng-template>
         </p-table>
       </p-tabpanel>
-      <p-tabpanel value="1" ngClass="min-h-0 grow flex flex-col gap-3"
-        ><div class="flex gap-3">
+      <p-tabpanel value="1" ngClass="min-h-0 grow flex flex-col gap-3">
+        <div class="flex gap-3">
           @for (item of apoioCounts; track item.label) {
           <div
-            class="flex-1 bg-gray-50 p-2 flex flex-col items-center justify-center rounded-lg"
+            class="flex-1 bg-surface-100 p-2 flex flex-col items-center justify-center rounded-xl"
           >
             <span class="text-xl font-bold text-rose-800">
               {{ item.count }}
             </span>
             <span
-              class="text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+              class="text-xs font-medium text-surface-500 uppercase tracking-wider text-center"
             >
               {{ item.label }}
             </span>
@@ -405,7 +405,7 @@
         <div class="flex gap-3">
           @for (item of functionCounts; track item.label) {
           <div
-            class="flex-1 bg-gray-50 p-2 flex flex-col items-center justify-center rounded-lg"
+            class="flex-1 bg-surface-100 p-2 flex flex-col items-center justify-center rounded-xl"
           >
             <span class="text-xl font-bold text-rose-800">
               {{ item.count }}
@@ -418,418 +418,81 @@
           </div>
           }
         </div>
+
+        <div class="grow min-h-0">
+          <p-table
+            #dt2
+            [value]="cargosData"
+            [columns]="[
+              { field: 'funcao', header: 'Função' },
+              { field: 'valorUnitario', header: 'Valor Unitário' },
+              { field: 'quantidade', header: 'Quantidade' },
+              { field: 'valorTotal', header: 'Valor Total' }
+            ]"
+            class="min-w-full text-xs flex flex-col h-full"
+            [exportHeader]="'header'"
+            stripedRows
+            [pt]="{
+            root: {
+              class: 'border border-surface-100 rounded-xl'
+            },
+            header: {
+              class: 'bg-surface-100 text-surface-700 rounded-t-xl'
+            },
+            pcPaginator: {
+              root: {
+                class:
+                  'border-t border-surface-200 text-surface-700 rounded-b-xl rounded-t-none'
+              }
+            },
+          }"
+          >
+            <ng-template #caption>
+              <div class="flex items-center justify-end">
+                <p-button
+                  icon="pi pi-external-link"
+                  label="Export"
+                  (click)="exportToCSV()"
+                />
+              </div>
+            </ng-template>
+
+            <ng-template #header let-columns>
+              <tr>
+                @for (col of columns; track col.field) {
+                <th
+                  [pSortableColumn]="col.field"
+                  class="text-sm py-2 px-4 whitespace-nowrap"
+                >
+                  {{ col.header }} <p-sortIcon [field]="col.field" />
+                </th>
+                }
+              </tr>
+            </ng-template>
+
+            <ng-template #body let-row>
+              <tr class="hover:bg-surface-100">
+                <td>{{ row.funcao }}</td>
+                <td>
+                  {{
+                    row.valorUnitario | currency : "BRL" : "symbol" : "1.2-2"
+                  }}
+                </td>
+                <td>{{ row.quantidade }}</td>
+                <td>
+                  {{ row.valorTotal | currency : "BRL" : "symbol" : "1.2-2" }}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
       </p-tabpanel>
     </p-tabpanels>
   </p-tabs>
 
   } @else if (!loading && (!dados || dados.length === 0)) {
-  <div class="text-gray-600">
+  <div class="text-surface-600">
     Faça o upload do arquivo .xlsx para exibir os dados.
   </div>
   }
 </div>
-<!-- 
-<div class="mx-auto px-8 py-4 flex flex-col h-screen min-h-0 gap-3">
-  <h2 class="text-2xl font-semibold text-rose-800">
-    Consulta Servidores — ADMRH
-  </h2>
-
-  <div class="mb-2">
-    <input
-      pButton
-      title="input1"
-      type="file"
-      accept=".xlsx"
-      (change)="onFileSelected($event)"
-      class="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-rose-800 file:text-white hover:file:bg-rose-900 cursor-pointer"
-    />
-  </div>
-
-  @if (loading) {
-  <div class="text-center my-8">
-    <div
-      class="w-10 h-10 border-4 border-gray-300 border-t-rose-800 rounded-full animate-spin mx-auto"
-    ></div>
-    <p class="mt-3 font-semibold text-gray-800">Carregando dados...</p>
-  </div>
-  } @if (!loading && apoioCounts.length > 0) {
-  <div
-    class="border border-gray-100 rounded-lg bg-white flex flex-col grow min-h-0"
-  >
-    <p-table
-      #dt
-      [value]="dados"
-      [paginator]="true"
-      [rowsPerPageOptions]="[10, 25, 50]"
-      [columns]="cols"
-      [rows]="rows"
-      [globalFilterFields]="globalFields"
-      class="min-w-full text-xs flex flex-col h-full"
-      [exportHeader]="'header'"
-      (sortFunction)="customSort($event)"
-      [customSort]="true"
-      [pt]="{
-        header: { class: 'bg-gray-50 text-gray-700 rounded-t-lg' }
-      }"
-    >
-      <ng-template #caption>
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <i class="pi pi-search text-gray-600"></i>
-            <input
-              pInputText
-              type="text"
-              placeholder="Filtro global..."
-              [(ngModel)]="globalFilterValue"
-              (input)="dt.filterGlobal(globalFilterValue, 'contains')"
-              class="h-9 px-3 rounded"
-              [pt]="inputPt"
-            />
-          </div>
-
-          <div class="flex gap-3">
-            <p-button
-              label="Limpar filtros"
-              icon="pi pi-filter-slash"
-              outlined="true"
-              severity="contrast"
-              (click)="clearTableFilters(dt)"
-            ></p-button>
-
-            <p-button
-              icon="pi pi-external-link"
-              label="Export"
-              (click)="exportToCSV()"
-            />
-          </div>
-        </div>
-      </ng-template>
-
-      <ng-template #header let-columns>
-        <tr>
-          @for (col of columns; track col.field) {
-          <th
-            [pSortableColumn]="col.field"
-            class="text-sm py-2 px-4 whitespace-nowrap"
-          >
-            {{ col.header }} <p-sortIcon [field]="col.field" />
-          </th>
-          }
-        </tr>
-
-        <tr>
-          <th>
-            <p-columnFilter
-              field="matricula"
-              matchMode="contains"
-              showMenu="false"
-            >
-              <ng-template
-                pTemplate="filter"
-                let-value
-                let-filter="filterCallback"
-              >
-                <input
-                  type="text"
-                  pInputText
-                  [value]="value"
-                  (input)="filter($event.target.value)"
-                  placeholder="Filtrar..."
-                  class="w-28"
-                  [pt]="inputPt"
-                />
-              </ng-template>
-            </p-columnFilter>
-          </th>
-
-          <th>
-            <p-columnFilter field="apoio" matchMode="in" showMenu="false">
-              <ng-template
-                pTemplate="filter"
-                let-filterCallback="filterCallback"
-              >
-                <p-multiSelect
-                  [options]="getOptions('apoio')"
-                  [(ngModel)]="filterValues['apoio']"
-                  (onChange)="filterCallback(filterValues['apoio'])"
-                  appendTo="body"
-                  class="w-28"
-                  [pt]="multiselectPt"
-                />
-              </ng-template>
-            </p-columnFilter>
-          </th>
-
-          <th>
-            <p-columnFilter field="grau" matchMode="in" showMenu="false">
-              <ng-template
-                pTemplate="filter"
-                let-filterCallback="filterCallback"
-              >
-                <p-multiSelect
-                  [options]="getOptions('grau')"
-                  [(ngModel)]="filterValues['grau']"
-                  (onChange)="filterCallback(filterValues['grau'])"
-                  appendTo="body"
-                  class="w-28"
-                  [pt]="multiselectPt"
-                />
-              </ng-template>
-            </p-columnFilter>
-          </th>
-
-          <th>
-            <p-columnFilter field="nome" matchMode="contains" showMenu="false">
-              <ng-template
-                pTemplate="filter"
-                let-value
-                let-filter="filterCallback"
-              >
-                <input
-                  type="text"
-                  pInputText
-                  [value]="value"
-                  (input)="filter($event.target.value)"
-                  placeholder="Filtrar..."
-                  class="w-28"
-                  [pt]="inputPt"
-                />
-              </ng-template>
-            </p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter field="secretaria" matchMode="in" showMenu="false">
-              <ng-template
-                pTemplate="filter"
-                let-filterCallback="filterCallback"
-              >
-                <p-multiSelect
-                  [options]="getOptions('secretaria')"
-                  [(ngModel)]="filterValues['secretaria']"
-                  (onChange)="
-                    filterCallback(filterValues['secretaria']);
-                    onSecretariaChange(filterValues['secretaria'])
-                  "
-                  appendTo="body"
-                  class="w-28"
-                  [pt]="multiselectPt"
-                />
-              </ng-template>
-            </p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter field="unidade" matchMode="in" showMenu="false">
-              <ng-template
-                pTemplate="filter"
-                let-filterCallback="filterCallback"
-              >
-                <p-multiSelect
-                  [options]="getOptions('unidade')"
-                  [(ngModel)]="filterValues['unidade']"
-                  (onChange)="
-                    filterCallback(filterValues['unidade']);
-                    onUnidadeChange(filterValues['unidade'])
-                  "
-                  appendTo="body"
-                  class="w-28"
-                  [pt]="multiselectPt"
-                />
-              </ng-template>
-            </p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter field="setor" matchMode="in" showMenu="false">
-              <ng-template
-                pTemplate="filter"
-                let-filterCallback="filterCallback"
-              >
-                <p-multiSelect
-                  [options]="getOptions('setor')"
-                  [(ngModel)]="filterValues['setor']"
-                  (onChange)="
-                    filterCallback(filterValues['setor']);
-                    onSetorChange(filterValues['setor'])
-                  "
-                  appendTo="body"
-                  class="w-28"
-                  [pt]="multiselectPt"
-                />
-              </ng-template>
-            </p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter field="centro" matchMode="in" showMenu="false">
-              <ng-template
-                pTemplate="filter"
-                let-filterCallback="filterCallback"
-              >
-                <p-multiSelect
-                  [options]="getOptions('centro')"
-                  [(ngModel)]="filterValues['centro']"
-                  (onChange)="filterCallback(filterValues['centro'])"
-                  appendTo="body"
-                  class="w-28"
-                  [pt]="multiselectPt"
-                />
-              </ng-template>
-            </p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter field="vinculo" matchMode="in" showMenu="false">
-              <ng-template
-                pTemplate="filter"
-                let-filterCallback="filterCallback"
-              >
-                <p-multiSelect
-                  [options]="getOptions('vinculo')"
-                  [(ngModel)]="filterValues['vinculo']"
-                  (onChange)="filterCallback(filterValues['vinculo'])"
-                  appendTo="body"
-                  class="w-28"
-                  [pt]="multiselectPt"
-                />
-              </ng-template>
-            </p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter field="cargo" matchMode="in" showMenu="false">
-              <ng-template
-                pTemplate="filter"
-                let-filterCallback="filterCallback"
-              >
-                <p-multiSelect
-                  [options]="getOptions('cargo')"
-                  [(ngModel)]="filterValues['cargo']"
-                  (onChange)="filterCallback(filterValues['cargo'])"
-                  appendTo="body"
-                  class="w-28"
-                  [pt]="multiselectPt"
-                />
-              </ng-template>
-            </p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter field="padrao" matchMode="in" showMenu="false">
-              <ng-template
-                pTemplate="filter"
-                let-filterCallback="filterCallback"
-              >
-                <p-multiSelect
-                  [options]="getOptions('padrao')"
-                  [(ngModel)]="filterValues['padrao']"
-                  (onChange)="filterCallback(filterValues['padrao'])"
-                  appendTo="body"
-                  class="w-28"
-                  [pt]="multiselectPt"
-                />
-              </ng-template>
-            </p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter
-              field="funcao"
-              matchMode="in"
-              [showMenu]="false"
-              showClearButton="false"
-            >
-              <ng-template
-                pTemplate="filter"
-                let-filterCallback="filterCallback"
-              >
-                <p-multiSelect
-                  [options]="getOptions('funcao')"
-                  [(ngModel)]="filterValues['funcao']"
-                  (onChange)="filterCallback(filterValues['funcao'])"
-                  appendTo="body"
-                  class="w-28"
-                  [pt]="multiselectPt"
-                />
-              </ng-template>
-            </p-columnFilter>
-          </th>
-          <th>
-            <p-columnFilter
-              field="padrao_funcao"
-              matchMode="in"
-              showMenu="false"
-            >
-              <ng-template
-                pTemplate="filter"
-                let-filterCallback="filterCallback"
-              >
-                <p-multiSelect
-                  [options]="getOptions('padrao_funcao')"
-                  [(ngModel)]="filterValues['padrao_funcao']"
-                  (onChange)="filterCallback(filterValues['padrao_funcao'])"
-                  appendTo="body"
-                  class="w-28"
-                  [pt]="multiselectPt"
-                />
-              </ng-template>
-            </p-columnFilter>
-          </th>
-        </tr>
-      </ng-template>
-
-      <ng-template #body let-row let-columns="columns">
-        <tr class="hover:bg-rose-50">
-          @for (col of columns; track col.field) {
-          <td>
-            {{ row[col.field] }}
-          </td>
-          }
-        </tr>
-      </ng-template>
-
-      <ng-template pTemplate="paginatorleft" let-state>
-        <div class="text-sm text-gray-600 flex gap-4 items-center">
-          <span>
-            Exibindo {{ state.first + 1 }} a {{ state.first + state.rows }} de
-            {{ state.totalRecords }} registros
-          </span>
-        </div>
-      </ng-template>
-    </p-table>
-  </div>
-
-  >
-  <div class="flex gap-3">
-    @for (item of apoioCounts; track item.label) {
-    <div
-      class="flex-1 bg-gray-50 p-2 flex flex-col items-center justify-center rounded-lg"
-    >
-      <span class="text-xl font-bold text-rose-800">
-        {{ item.count }}
-      </span>
-      <span
-        class="text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
-      >
-        {{ item.label }}
-      </span>
-    </div>
-    }
-  </div>
-
-  <div class="flex gap-3">
-    @for (item of functionCounts; track item.label) {
-    <div
-      class="flex-1 bg-rose-50 p-2 flex flex-col items-center justify-center rounded-lg"
-    >
-      <span class="text-xl font-bold text-rose-800">
-        {{ item.count }}
-      </span>
-      <span
-        class="text-xs font-medium text-rose-700 uppercase tracking-wider text-center"
-      >
-        {{ item.label }}
-      </span>
-    </div>
-    }
-  </div>
-
-  } @else if (!loading && (!dados || dados.length === 0)) {
-  <div class="text-gray-600">
-    Faça o upload do arquivo .xlsx para exibir os dados.
-  </div>
-  }
-</div> -->
