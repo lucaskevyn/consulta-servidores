@@ -109,7 +109,23 @@ export class ConsultaServidoresComponent {
       title: col.header,
       dataKey: col.field,
     }));
+
+    this.cargosCols = [
+      { field: 'funcao', header: 'Função' },
+      { field: 'valorUnitario', header: 'Valor Unitário' },
+      { field: 'quantidade', header: 'Quantidade' },
+      { field: 'valorTotal', header: 'Valor Total' },
+    ];
+
+    this.resolucaoCols = [
+      { field: 'label', header: 'Descrição' },
+      { field: 'question', header: 'Pergunta' },
+      { field: 'value', header: 'Valor' },
+    ];
   }
+
+  cargosCols!: Column[];
+  resolucaoCols!: Column[];
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -384,18 +400,37 @@ export class ConsultaServidoresComponent {
     }));
   }
 
-  exportToCSV() {
+  exportToCSV(
+    data: any[] | null = null,
+    columns: Column[] | null = null,
+    filename: string = 'consulta-servidores'
+  ) {
     try {
+      // Se não passar dados, tenta pegar da tabela principal (dt)
       const tableData =
-        (this.dt && (this.dt.filteredValue ?? this.dt.value)) || this.dados;
+        data ||
+        (this.dt && (this.dt.filteredValue ?? this.dt.value)) ||
+        this.dados;
+
+      // Se não passar colunas, usa as colunas principais
+      const cols = columns || this.cols;
 
       if (!tableData || !tableData.length) return;
 
-      const fields = this.cols.map((c) => c.field);
-      const headers = this.cols.map((c) => c.header);
+      const fields = cols.map((c) => c.field);
+      const headers = cols.map((c) => c.header);
 
       const escapeValue = (value: any): string => {
         if (value == null) return '';
+
+        // Se for número, formata com vírgula (pt-BR)
+        if (typeof value === 'number') {
+          return value.toLocaleString('pt-BR', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+        }
+
         let s = String(value).replace(/\r\n/g, '\n').replace(/"/g, '""');
         return /[;"\n\r]/.test(s) ? `"${s}"` : s;
       };
@@ -416,7 +451,7 @@ export class ConsultaServidoresComponent {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'consulta-servidores.csv';
+      a.download = `${filename}.csv`;
       a.style.display = 'none';
       document.body.appendChild(a);
       a.click();

@@ -83,8 +83,8 @@
 
                 <p-button
                   icon="pi pi-external-link"
-                  label="Export"
-                  (click)="exportToCSV()"
+                  label="Exportar"
+                  (click)="exportToCSV(null, null, 'geral')"
                 />
               </div>
             </div>
@@ -424,12 +424,7 @@
           <p-table
             #dt2
             [value]="cargosData"
-            [columns]="[
-              { field: 'funcao', header: 'Função' },
-              { field: 'valorUnitario', header: 'Valor Unitário' },
-              { field: 'quantidade', header: 'Quantidade' },
-              { field: 'valorTotal', header: 'Valor Total' }
-            ]"
+            [columns]="cargosCols"
             class="min-w-full text-xs flex flex-col h-full"
             [exportHeader]="'header'"
             stripedRows
@@ -452,8 +447,8 @@
               <div class="flex items-center justify-end">
                 <p-button
                   icon="pi pi-external-link"
-                  label="Export"
-                  (click)="exportToCSV()"
+                  label="Exportar"
+                  (click)="exportToCSV(cargosData, cargosCols, 'cargos')"
                 />
               </div>
             </ng-template>
@@ -507,8 +502,8 @@
             <div class="flex items-center justify-end">
               <p-button
                 icon="pi pi-external-link"
-                label="Export"
-                (click)="exportToCSV()"
+                label="Exportar"
+                (click)="exportToCSV(resolucaoData, resolucaoCols, 'resolucao')"
               />
             </div>
           </ng-template>
