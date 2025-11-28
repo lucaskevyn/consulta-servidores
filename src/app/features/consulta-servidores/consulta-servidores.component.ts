@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SortEvent } from 'primeng/api';
 import { TabsModule } from 'primeng/tabs';
+import { TooltipModule } from 'primeng/tooltip';
 
 // ---- TIPO CORRIGIDO ----
 // PrimeNG não inclui "data" dentro do SortEvent.
@@ -40,6 +41,7 @@ interface ExportColumn {
     Button,
     FormsModule,
     TabsModule,
+    TooltipModule,
   ],
 })
 export class ConsultaServidoresComponent {
@@ -322,6 +324,8 @@ export class ConsultaServidoresComponent {
       {
         question:
           'VCC2º - Valores Integrais dos Cargos em Comissão Alocados na Área Judiciária do 2º Grau',
+        tooltip:
+          'Soma dos valores integrais (100%) dos cargos em comissão alocados para servidores da área judiciária de 2º grau ao final do período-base',
         label: 'CJ - Jud 2º Grau',
         value: getSum('CJ', 'área judiciária de 2º grau'),
         isCurrency: true,
@@ -329,6 +333,8 @@ export class ConsultaServidoresComponent {
       {
         question:
           'VCCTRJE1º - Valores Integrais dos Cargos em Comissão Alocados na Área Judiciária do 1º Grau, nas Turmas Recursais e nos Juizados Especiais',
+        tooltip:
+          'Soma dos valores integrais (100%) dos cargos em comissão alocados para servidores da área judiciária do 1º grau, das Turmas Recursais e dos Juizados Especiais ao final do período-base',
         label: 'CJ - Jud 1º Grau',
         value: getSum('CJ', 'área judiciária de 1º grau'),
         isCurrency: true,
@@ -336,6 +342,8 @@ export class ConsultaServidoresComponent {
       {
         question:
           'VCCAdm - Valores Integrais dos Cargos em Comissão Alocados na Área Administrativa',
+        tooltip:
+          'Soma dos valores integrais (100%) dos cargos em comissão alocados para servidores da área administrativa ao final do período-base. Excluir do cálculo os valores referentes aos cargos em comissão de servidores alocados nas escolas judiciais e da magistratura (TPEsc) e nas áreas de tecnologia da informação (TPTIC)',
         label: 'CJ - Adm TJAC',
         value: getSum('CJ', 'área administrativa do tjac'),
         isCurrency: true,
@@ -343,6 +351,8 @@ export class ConsultaServidoresComponent {
       {
         question:
           'VFC2º - Valores Integrais das Funções de Confiança Alocadas na Área Judiciária do 2º grau',
+        tooltip:
+          'Soma dos valores integrais (100%) das funções de confiança alocadas para servidores da área judiciária de 2º grau ao final do período-base',
         label: 'FC - Jud 2º Grau',
         value: getSum('FC', 'área judiciária de 2º grau'),
         isCurrency: true,
@@ -350,6 +360,8 @@ export class ConsultaServidoresComponent {
       {
         question:
           'VFCTRJE1º - Valores Integrais das Funções de Confiança Alocadas na Área Judiciária do 1º Grau, nas Turmas Recursais e nos Juizados Especiais',
+        tooltip:
+          'Soma dos valores integrais (100%) das funções de confiança alocadas para servidores da área judiciária do 1º grau, das Turmas Recursais e dos Juizados Especiais ao final do período-base',
         label: 'FC - Jud 1º Grau',
         value: getSum('FC', 'área judiciária de 1º grau'),
         isCurrency: true,
@@ -357,6 +369,8 @@ export class ConsultaServidoresComponent {
       {
         question:
           'VFCAdm - Valores Integrais das Funções de Confiança Alocadas na Área Administrativa',
+        tooltip:
+          'Soma dos valores integrais (100%) das funções de confiança alocadas para servidores da área administrativa ao final do período-base. Excluir do cálculo os valores referentes às funções de confiança de servidores alocados nas escolas judiciais e da magistratura (TPEsc) e nas áreas de tecnologia da informação (TPTIC',
         label: 'FC - Adm TJAC',
         value: getSum('FC', 'área administrativa do tjac'),
         isCurrency: true,
@@ -364,6 +378,8 @@ export class ConsultaServidoresComponent {
       {
         question:
           'SaJudP2° - Total de Servidores que atuam na Área Judiciária do 2º Grau',
+        tooltip:
+          'Total de cargos de servidores providos, lotados nas áreas judiciárias do 2º Grau, ao final do período-base, abrangendo os servidores efetivos, os comissionados sem vínculo efetivo e os que ingressaram por cessão ou requisição',
         label: 'Serv - Jud 2º Grau',
         value: getCount('área judiciária de 2º grau'),
         isCurrency: false,
@@ -371,6 +387,8 @@ export class ConsultaServidoresComponent {
       {
         question:
           'SaJudP1JETR - Total de Servidores que atuam na Área Judiciária do 1º Grau, dos Juizados Especiais e das Turmas Recursais',
+        tooltip:
+          'Total de cargos de servidores providos, lotados nas áreas judiciárias do 1º Grau, dos Juizados Especiais e das Turmas Recursais ao final do período-base, abrangendo os servidores efetivos, os comissionados sem vínculo efetivo e os que ingressaram por cessão ou requisição',
         label: 'Serv - Jud 1º Grau',
         value: getCount('área judiciária de 1º grau'),
         isCurrency: false,
@@ -378,6 +396,8 @@ export class ConsultaServidoresComponent {
       {
         question:
           'ServAdmSETI - Total de Servidores na Área Administrativa, exceto os lotados nas escolas judiciais e da magistratura e nas áreas de tecnologia da informação',
+        tooltip:
+          'Total de cargos de servidores providos, lotados nas áreas de apoio indireto à atividade judicante ao final do período-base, abrangendo os servidores efetivos (TPEfetAdm), os comissionados sem vínculo efetivo (TPSVAdm) e os que ingressaram por cessão ou requisição (TPIAdm). Excluir do cálculo os servidores alocados nas escolas judiciais e da magistratura (TPEsc) e nas áreas de tecnologia da informação (TPTIC)',
         label: 'Serv - Adm TJAC',
         value: getCount('área administrativa do tjac'),
         isCurrency: false,
