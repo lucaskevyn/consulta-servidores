@@ -95,6 +95,18 @@ export class ConsultaServidoresComponent {
     root: { class: 'h-7 min-h-7' },
   };
 
+  allowedVinculos = [
+    'à disposição fprev',
+    'à disposição fps',
+    'ad nutum comissionado',
+    'comissionado (à disposição)',
+    'diversos (requisitados reg prev rgps)',
+    'diversos (requisitados reg prev rpps)',
+    'efetivo comissionado (resolução 03/2013)',
+    'efetivo não comissionado',
+    'transitório não comissionado',
+  ];
+
   constructor(private excelService: ExcelService) {}
 
   ngOnInit() {
@@ -178,23 +190,22 @@ export class ConsultaServidoresComponent {
   apoioCounts: { label: string; count: number }[] = [];
 
   calculateApoioCounts() {
-    const counts: { [key: string]: number } = {};
-    this.dados.forEach((d) => {
-      const val = d.apoio || 'Sem Apoio';
-      counts[val] = (counts[val] || 0) + 1;
-    });
-
-    this.apoioCounts = Object.keys(counts)
-      .map((key) => ({ label: key, count: counts[key] }))
-      .filter((item) => {
-        const label = item.label.toLowerCase();
-        return !label.includes('esjud') && !label.includes('tecnologia');
-      })
-      .sort((a, b) => a.label.localeCompare(b.label));
-
     this.calculateFunctionCounts();
     this.calculateCargosData();
     this.calculateResolucaoData();
+
+    this.apoioCounts[0] = {
+      label: 'ÁREA ADMINISTRATIVA DO TJAC',
+      count: this.resolucaoData[8].value,
+    };
+    this.apoioCounts[1] = {
+      label: 'ÁREA JUDICIÁRIA DE 1º GRAU',
+      count: this.resolucaoData[7].value,
+    };
+    this.apoioCounts[2] = {
+      label: 'ÁREA JUDICIÁRIA DE 2º GRAU',
+      count: this.resolucaoData[6].value,
+    };
   }
 
   functionCounts: { label: string; count: number }[] = [];
@@ -341,23 +352,11 @@ export class ConsultaServidoresComponent {
       return total;
     };
 
-    const allowedVinculos = [
-      'à disposição fprev',
-      'à disposição fps',
-      'ad nutum comissionado',
-      'comissionado (à disposição)',
-      'diversos (requisitados reg prev rgps)',
-      'diversos (requisitados reg prev rpps)',
-      'efetivo comissionado (resolução 03/2013)',
-      'efetivo não comissionado',
-      'transitório não comissionado',
-    ];
-
     const getCount = (apoio: string) => {
       return this.dados.filter((d) => {
         const a = (d.apoio || '').toLowerCase();
         const v = (d.vinculo || '').toLowerCase().trim();
-        return a.includes(apoio) && allowedVinculos.includes(v);
+        return a.includes(apoio) && this.allowedVinculos.includes(v);
       }).length;
     };
 
