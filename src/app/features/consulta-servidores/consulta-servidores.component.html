@@ -442,6 +442,8 @@
               }
             },
           }"
+            [customSort]="true"
+            (sortFunction)="customSort($event, 'cargos')"
           >
             <ng-template #caption>
               <div class="flex items-center justify-end">
@@ -469,6 +471,7 @@
             <ng-template #body let-row>
               <tr class="hover:bg-surface-100">
                 <td>{{ row.funcao }}</td>
+                <td>{{ row.apoio }}</td>
                 <td>
                   {{
                     row.valorUnitario | currency : "BRL" : "symbol" : "1.2-2"

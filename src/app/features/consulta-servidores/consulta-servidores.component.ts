@@ -15,7 +15,7 @@ import { TooltipModule } from 'primeng/tooltip';
 // PrimeNG não inclui "data" dentro do SortEvent.
 // Então criamos uma extensão segura:
 interface SortEventWithData extends SortEvent {
-  data: Servidor[];
+  data: any[];
 }
 
 // ------------------------
@@ -46,6 +46,7 @@ interface ExportColumn {
 })
 export class ConsultaServidoresComponent {
   @ViewChild('dt') dt!: Table;
+  @ViewChild('dt2') dt2!: Table;
 
   dados: Servidor[] = [];
   loading = false;
@@ -76,7 +77,13 @@ export class ConsultaServidoresComponent {
   filterValues: { [key: string]: any[] } = {};
 
   initialValue: Servidor[] = [];
-  isSorted: boolean | null = null; // CORRIGIDO
+  initialCargosData: any[] = [];
+
+  // Estado de ordenação por tabela (null = padrão, true = asc, false = desc)
+  sortStates: { [key: string]: boolean | null } = {
+    main: null,
+    cargos: null,
+  };
 
   inputPt = {
     root: {
@@ -114,6 +121,7 @@ export class ConsultaServidoresComponent {
 
     this.cargosCols = [
       { field: 'funcao', header: 'Função' },
+      { field: 'apoio', header: 'Apoio' },
       { field: 'valorUnitario', header: 'Valor Unitário' },
       { field: 'quantidade', header: 'Quantidade' },
       { field: 'valorTotal', header: 'Valor Total' },
@@ -229,6 +237,7 @@ export class ConsultaServidoresComponent {
       const count = this.dados.filter((d) => {
         const f = (d.funcao || '').toLowerCase();
         const a = (d.apoio || '').toLowerCase();
+
         return f.includes(combo.func) && a.includes(combo.apoio);
       }).length;
       return { label: combo.label, count };
@@ -261,25 +270,57 @@ export class ConsultaServidoresComponent {
 
   cargosData: {
     funcao: string;
+    apoio: string;
     valorUnitario: number;
     quantidade: number;
     valorTotal: number;
   }[] = [];
 
   calculateCargosData() {
-    this.cargosData = this.references.map((ref) => {
-      // Conta quantos registros contêm o código da função (case-insensitive)
-      const count = this.dados.filter((d) =>
-        (d.funcao || '').toUpperCase().includes(ref.funcao.toUpperCase())
-      ).length;
+    this.cargosData = [];
 
-      return {
-        funcao: ref.funcao,
-        valorUnitario: ref.valor,
-        quantidade: count,
-        valorTotal: count * ref.valor,
-      };
+    this.references.forEach((ref) => {
+      // 1. Filtra registros que correspondem à função
+      const matchingRows = this.dados.filter((d) =>
+        (d.funcao || '').toUpperCase().includes(ref.funcao.toUpperCase())
+      );
+
+      // 2. Agrupa por Apoio
+      const groups: { [apoio: string]: number } = {};
+
+      matchingRows.forEach((row) => {
+        const apoioVal = row.apoio || 'Sem Apoio';
+        const apoioLower = apoioVal.toLowerCase();
+
+        // Exclusão explícita
+        if (apoioLower.includes('esjud') || apoioLower.includes('tecnologia')) {
+          return;
+        }
+
+        groups[apoioVal] = (groups[apoioVal] || 0) + 1;
+      });
+
+      // 3. Gera as linhas resultantes para esta função
+      Object.keys(groups).forEach((apoioKey) => {
+        const qtd = groups[apoioKey];
+        this.cargosData.push({
+          funcao: ref.funcao,
+          apoio: apoioKey,
+          valorUnitario: ref.valor,
+          quantidade: qtd,
+          valorTotal: qtd * ref.valor,
+        });
+      });
     });
+
+    // Opcional: ordenar por função e depois apoio
+    this.cargosData.sort((a, b) => {
+      const cmpFunc = a.funcao.localeCompare(b.funcao);
+      if (cmpFunc !== 0) return cmpFunc;
+      return a.apoio.localeCompare(b.apoio);
+    });
+
+    this.initialCargosData = [...this.cargosData];
   }
 
   resolucaoData: any[] = [];
@@ -560,35 +601,67 @@ export class ConsultaServidoresComponent {
   }
 
   // -----------------------
-  //      3-ESTADOS
+  //      3-ESTADOS (GENÉRICO)
   // -----------------------
-  customSort(event: SortEvent) {
-    // PrimeNG NÃO passa `data` no SortEvent, então pegamos manualmente
-    const eventWithData: SortEventWithData = {
-      ...event,
-      data: this.dados,
-    };
-
-    if (this.isSorted == null) {
-      this.isSorted = true;
-      this.sortTableData(eventWithData);
-    } else if (this.isSorted === true) {
-      this.isSorted = false;
-      this.sortTableData(eventWithData);
-    } else if (this.isSorted === false) {
-      this.isSorted = null;
-      this.dados = [...this.initialValue]; // <-- corrigido (antes era products)
-      this.dt.reset();
+  customSort(event: SortEvent, tableKey: string = 'main') {
+    switch (tableKey) {
+      case 'main':
+        this.executeSort(
+          event,
+          this.dados,
+          (d) => (this.dados = d),
+          this.initialValue,
+          'main',
+          this.dt
+        );
+        break;
+      case 'cargos':
+        this.executeSort(
+          event,
+          this.cargosData,
+          (d) => (this.cargosData = d),
+          this.initialCargosData,
+          'cargos',
+          this.dt2
+        );
+        break;
     }
   }
 
-  // usa o mesmo SortEventWithData do seu código
-  sortTableData(event: SortEventWithData) {
-    const field = event.field as keyof Servidor;
+  executeSort(
+    event: SortEvent,
+    currentData: any[],
+    setData: (data: any[]) => void,
+    initialData: any[],
+    key: string,
+    table?: Table
+  ) {
+    const eventWithData: SortEventWithData = {
+      ...event,
+      data: currentData,
+    };
+
+    const currentState = this.sortStates[key];
+
+    if (currentState == null) {
+      this.sortStates[key] = true;
+      this.sortArray(eventWithData);
+    } else if (currentState === true) {
+      this.sortStates[key] = false;
+      this.sortArray(eventWithData);
+    } else if (currentState === false) {
+      this.sortStates[key] = null;
+      setData([...initialData]); // Restaura ordem inicial
+      if (table) table.reset();
+    }
+  }
+
+  sortArray(event: SortEventWithData) {
+    const field = event.field!;
 
     event.data.sort((data1, data2) => {
-      let value1 = data1[field];
-      let value2 = data2[field];
+      let value1 = (data1 as any)[field];
+      let value2 = (data2 as any)[field];
 
       // normaliza null/undefined
       if (value1 == null && value2 != null) return (event.order ?? 1) * -1;
@@ -597,15 +670,9 @@ export class ConsultaServidoresComponent {
 
       // Se ambos são strings, faz comparação robusta
       if (typeof value1 === 'string' && typeof value2 === 'string') {
-        // remove espaços extras
         const s1 = value1.trim();
         const s2 = value2.trim();
 
-        // opcional: descomente para remover diacríticos (acentos) antes da comparação
-        // const s1clean = s1.normalize('NFD').replace(/\p{Diacritic}/gu, '');
-        // const s2clean = s2.normalize('NFD').replace(/\p{Diacritic}/gu, '');
-
-        // comparar com locale adequado e sensibilidade 'base' (ignora maiúsc/minúsc e acentos)
         const cmp = s1.localeCompare(s2, 'pt-BR', {
           sensitivity: 'base',
           numeric: true,
