@@ -486,7 +486,49 @@
           </p-table>
         </div>
       </p-tabpanel>
-      <p-tabpanel value="2" ngClass="min-h-0 grow flex flex-col">
+      <p-tabpanel value="2" ngClass="min-h-0 grow flex flex-col gap-3">
+        <span class="font-medium -mb-1 text-surface-600">Área Judiciária</span>
+        <div class="grid grid-cols-6 gap-3">
+          @for (item of calculosJudiciaria; track item.label) {
+          <div
+            class="bg-surface-100 p-2 flex flex-col items-center justify-center rounded-xl"
+          >
+            <span class="text-xs font-medium text-surface-500 text-center">
+              {{ item.label }}
+            </span>
+            <span class="text-xl font-bold text-rose-800">
+              {{ item.value }}
+            </span>
+
+            <span class="text-xs text-surface-500 text-center">
+              {{ item.desc }}
+            </span>
+          </div>
+          }
+        </div>
+
+        <span class="font-medium -mb-1 text-surface-600"
+          >Área de Apoio Direto ou Indireto</span
+        >
+        <div class="grid grid-cols-6 gap-3">
+          @for (item of calculosApoio; track item.label) {
+          <div
+            class="bg-surface-100 p-2 flex flex-col items-center justify-center rounded-xl"
+          >
+            <span class="text-xs font-medium text-surface-500 text-center">
+              {{ item.label }}
+            </span>
+            <span class="text-xl font-bold text-rose-800">
+              {{ item.value }}
+            </span>
+
+            <span class="text-xs text-surface-500 text-center">
+              {{ item.desc }}
+            </span>
+          </div>
+          }
+        </div>
+
         <p-table
           [value]="resolucaoData"
           class="min-w-full text-xs flex flex-col h-full"

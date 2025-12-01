@@ -107,6 +107,9 @@ export class ConsultaServidoresComponent {
     'transitório não comissionado',
   ];
 
+  calculosJudiciaria: { label: string; value: any; desc?: string }[] = [];
+  calculosApoio: { label: string; value: any; desc?: string }[] = [];
+
   constructor(private excelService: ExcelService) {}
 
   ngOnInit() {
@@ -441,6 +444,255 @@ export class ConsultaServidoresComponent {
         label: 'Serv - Adm TJAC',
         value: getCount('área administrativa do tjac'),
         isCurrency: false,
+      },
+    ];
+
+    const totalJud = this.resolucaoData[6].value + this.resolucaoData[7].value;
+    const totalJudValor =
+      this.resolucaoData[0].value +
+      this.resolucaoData[1].value +
+      this.resolucaoData[3].value +
+      this.resolucaoData[4].value;
+
+    this.calculosJudiciaria = [
+      {
+        label: '1º Grau',
+        value: this.resolucaoData[7].value,
+        desc: 'Servidores',
+      },
+      {
+        label: '2º Grau',
+        value: this.resolucaoData[6].value,
+        desc: 'Servidores',
+      },
+      {
+        label: '1º Grau (%)',
+        value:
+          ((this.resolucaoData[7].value / totalJud) * 100).toLocaleString(
+            'pt-BR',
+            {
+              maximumFractionDigits: 2,
+            }
+          ) + '%',
+        desc: 'Referência 91,5%',
+      },
+      {
+        label: '2º Grau (%)',
+        value:
+          ((this.resolucaoData[6].value / totalJud) * 100).toLocaleString(
+            'pt-BR',
+            {
+              maximumFractionDigits: 2,
+            }
+          ) + '%',
+        desc: 'Referência 8,5%',
+      },
+      {
+        label: 'Diferença',
+        value: (totalJud * 0.915 - this.resolucaoData[7].value).toFixed(0),
+        desc:
+          totalJud * 0.915 - this.resolucaoData[7].value >= 0
+            ? 'Migrar para o primeiro grau'
+            : 'Não necessita migrar',
+      },
+      {
+        label: 'Situação Item',
+        value:
+          (this.resolucaoData[7].value / totalJud) * 100 >= 91.5
+            ? '20pts'
+            : '0pts',
+        desc:
+          (this.resolucaoData[7].value / totalJud) * 100 >= 91.5
+            ? 'Cumprido'
+            : 'Não cumprido',
+      },
+      // Valores
+      {
+        label: '1º Grau',
+        value: (
+          this.resolucaoData[1].value + this.resolucaoData[4].value
+        ).toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }),
+        desc: 'Valor',
+      },
+      {
+        label: '2º Grau',
+        value: (
+          this.resolucaoData[0].value + this.resolucaoData[3].value
+        ).toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }),
+        desc: 'Valor',
+      },
+      {
+        label: '1º Grau (%)',
+        value:
+          (
+            ((this.resolucaoData[1].value + this.resolucaoData[4].value) /
+              totalJudValor) *
+            100
+          ).toLocaleString('pt-BR', {
+            maximumFractionDigits: 2,
+          }) + '%',
+        desc: 'Referência 90,5%',
+      },
+      {
+        label: '2º Grau (%)',
+        value:
+          (
+            ((this.resolucaoData[0].value + this.resolucaoData[3].value) /
+              totalJudValor) *
+            100
+          ).toLocaleString('pt-BR', {
+            maximumFractionDigits: 2,
+          }) + '%',
+        desc: 'Referência 8,5%',
+      },
+      {
+        label: 'Diferença',
+        value: (
+          totalJudValor * 0.915 -
+          (this.resolucaoData[1].value + this.resolucaoData[4].value)
+        ).toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }),
+        desc:
+          totalJudValor * 0.915 -
+            (this.resolucaoData[1].value + this.resolucaoData[4].value) >=
+          0
+            ? 'Migrar para o primeiro grau'
+            : 'Não necessita migrar',
+      },
+      {
+        label: 'Situação Item',
+        value:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+            totalJudValor >=
+          0.915
+            ? '20pts'
+            : '0pts',
+        desc:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+            totalJudValor >=
+          0.915
+            ? 'Cumprido'
+            : 'Não cumprido',
+      },
+    ];
+
+    const totalApoio = this.resolucaoData[8].value + totalJud;
+    const totalApoioValor =
+      this.resolucaoData[0].value +
+      this.resolucaoData[1].value +
+      this.resolucaoData[2].value +
+      this.resolucaoData[3].value +
+      this.resolucaoData[4].value +
+      this.resolucaoData[5].value;
+
+    this.calculosApoio = [
+      {
+        label: 'Apoio Direto',
+        value: totalJud,
+        desc: 'Servidores',
+      },
+      {
+        label: 'Apoio Indireto',
+        value: this.resolucaoData[8].value,
+        desc: 'Servidores',
+      },
+      {
+        label: 'Apoio Direto (%)',
+        value:
+          (
+            ((this.resolucaoData[7].value + this.resolucaoData[6].value) /
+              totalApoio) *
+            100
+          ).toLocaleString('pt-BR', {
+            maximumFractionDigits: 2,
+          }) + '%',
+        desc: 'Referência 70%',
+      },
+      {
+        label: 'Apoio Indireto (%)',
+        value:
+          ((this.resolucaoData[8].value / totalApoio) * 100).toLocaleString(
+            'pt-BR',
+            {
+              maximumFractionDigits: 2,
+            }
+          ) + '%',
+        desc: 'Referência 30%',
+      },
+      {
+        label: 'Diferença',
+        value: (totalApoio * 0.7 - totalJud).toFixed(0),
+        desc:
+          totalApoio * 0.7 - totalJud >= 0
+            ? 'Migrar para o apoio direto'
+            : 'Não necessita migrar',
+      },
+      {
+        label: 'Situação Item',
+        value: totalJud / totalApoio >= 0.7 ? '20pts' : '0pts',
+        desc: totalJud / totalApoio >= 0.7 ? 'Cumprido' : 'Não cumprido',
+      },
+
+      // Valores
+      {
+        label: 'Apoio Direto',
+        value: totalJudValor.toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }),
+        desc: 'Valor',
+      },
+      {
+        label: 'Apoio Indireto',
+        value: (totalApoioValor - totalJudValor).toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }),
+        desc: 'Valor',
+      },
+      {
+        label: 'Apoio Direto (%)',
+        value:
+          ((totalJudValor / totalApoioValor) * 100).toLocaleString('pt-BR', {
+            maximumFractionDigits: 2,
+          }) + '%',
+        desc: 'Referência 70%',
+      },
+      {
+        label: 'Apoio Indireto (%)',
+        value:
+          (
+            ((totalApoioValor - totalJudValor) / totalApoioValor) *
+            100
+          ).toLocaleString('pt-BR', {
+            maximumFractionDigits: 2,
+          }) + '%',
+        desc: 'Referência 30%',
+      },
+      {
+        label: 'Diferença',
+        value: (totalApoioValor * 0.7 - totalJudValor).toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }),
+        desc:
+          totalApoioValor * 0.7 - totalJudValor >= 0
+            ? 'Migrar para o apoio direto'
+            : 'Não necessita migrar',
+      },
+      {
+        label: 'Situação Item',
+        value: totalJudValor / totalApoioValor >= 0.7 ? '20pts' : '0pts',
+        desc:
+          totalJudValor / totalApoioValor >= 0.7 ? 'Cumprido' : 'Não cumprido',
       },
     ];
   }
