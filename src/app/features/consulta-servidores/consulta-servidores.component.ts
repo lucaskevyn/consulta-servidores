@@ -107,8 +107,20 @@ export class ConsultaServidoresComponent {
     'transitório não comissionado',
   ];
 
-  calculosJudiciaria: { label: string; value: any; desc?: string }[] = [];
-  calculosApoio: { label: string; value: any; desc?: string }[] = [];
+  calculosJudiciaria: {
+    label: string;
+    value: any;
+    desc?: string;
+    bgColor?: string;
+    textColor?: string;
+  }[] = [];
+  calculosApoio: {
+    label: string;
+    value: any;
+    desc?: string;
+    bgColor?: string;
+    textColor?: string;
+  }[] = [];
 
   constructor(private excelService: ExcelService) {}
 
@@ -498,13 +510,19 @@ export class ConsultaServidoresComponent {
       {
         label: 'Situação Item',
         value:
-          (this.resolucaoData[7].value / totalJud) * 100 >= 91.5
-            ? '20pts'
-            : '0pts',
+          this.resolucaoData[7].value / totalJud >= 0.915 ? '20pts' : '0pts',
         desc:
-          (this.resolucaoData[7].value / totalJud) * 100 >= 91.5
+          this.resolucaoData[7].value / totalJud >= 0.915
             ? 'Cumprido'
             : 'Não cumprido',
+        bgColor:
+          this.resolucaoData[7].value / totalJud >= 0.915
+            ? 'bg-green-50'
+            : 'bg-rose-50',
+        textColor:
+          this.resolucaoData[7].value / totalJud >= 0.915
+            ? 'text-green-800'
+            : 'text-rose-800',
       },
       // Valores
       {
@@ -581,6 +599,16 @@ export class ConsultaServidoresComponent {
           0.915
             ? 'Cumprido'
             : 'Não cumprido',
+        bgColor:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+          totalJudValor
+            ? 'bg-rose-50'
+            : 'bg-green-50',
+        textColor:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+          totalJudValor
+            ? 'text-rose-800'
+            : 'text-green-800',
       },
     ];
 
@@ -639,6 +667,9 @@ export class ConsultaServidoresComponent {
         label: 'Situação Item',
         value: totalJud / totalApoio >= 0.7 ? '20pts' : '0pts',
         desc: totalJud / totalApoio >= 0.7 ? 'Cumprido' : 'Não cumprido',
+        bgColor: totalJud / totalApoio >= 0.7 ? 'bg-green-50' : 'bg-rose-50',
+        textColor:
+          totalJud / totalApoio >= 0.7 ? 'text-green-800' : 'text-rose-800',
       },
 
       // Valores
@@ -693,6 +724,12 @@ export class ConsultaServidoresComponent {
         value: totalJudValor / totalApoioValor >= 0.7 ? '20pts' : '0pts',
         desc:
           totalJudValor / totalApoioValor >= 0.7 ? 'Cumprido' : 'Não cumprido',
+        bgColor:
+          totalJudValor / totalApoioValor >= 0.7 ? 'bg-green-50' : 'bg-rose-50',
+        textColor:
+          totalJudValor / totalApoioValor >= 0.7
+            ? 'text-green-800'
+            : 'text-rose-800',
       },
     ];
   }

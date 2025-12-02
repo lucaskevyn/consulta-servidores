@@ -491,16 +491,34 @@
         <div class="grid grid-cols-6 gap-3">
           @for (item of calculosJudiciaria; track item.label) {
           <div
-            class="bg-surface-100 p-2 flex flex-col items-center justify-center rounded-xl"
+            class="p-2 flex flex-col items-center justify-center rounded-xl"
+            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-100'"
           >
-            <span class="text-xs font-medium text-surface-500 text-center">
+            <span
+              class="text-xs font-medium text-center"
+              [ngClass]="
+                item.textColor
+                  ? item.textColor + ' opacity-80'
+                  : 'text-surface-500'
+              "
+            >
               {{ item.label }}
             </span>
-            <span class="text-xl font-bold text-rose-800">
+            <span
+              class="text-xl font-bold"
+              [ngClass]="item.textColor ? item.textColor : 'text-rose-800'"
+            >
               {{ item.value }}
             </span>
 
-            <span class="text-xs text-surface-500 text-center">
+            <span
+              class="text-xs text-center"
+              [ngClass]="
+                item.textColor
+                  ? item.textColor + ' opacity-80'
+                  : 'text-surface-500'
+              "
+            >
               {{ item.desc }}
             </span>
           </div>
@@ -513,16 +531,34 @@
         <div class="grid grid-cols-6 gap-3">
           @for (item of calculosApoio; track item.label) {
           <div
-            class="bg-surface-100 p-2 flex flex-col items-center justify-center rounded-xl"
+            class="p-2 flex flex-col items-center justify-center rounded-xl"
+            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-100'"
           >
-            <span class="text-xs font-medium text-surface-500 text-center">
+            <span
+              class="text-xs font-medium text-center"
+              [ngClass]="
+                item.textColor
+                  ? item.textColor + ' opacity-80'
+                  : 'text-surface-500'
+              "
+            >
               {{ item.label }}
             </span>
-            <span class="text-xl font-bold text-rose-800">
+            <span
+              class="text-xl font-bold"
+              [ngClass]="item.textColor ? item.textColor : 'text-rose-800'"
+            >
               {{ item.value }}
             </span>
 
-            <span class="text-xs text-surface-500 text-center">
+            <span
+              class="text-xs text-center"
+              [ngClass]="
+                item.textColor
+                  ? item.textColor + ' opacity-80'
+                  : 'text-surface-500'
+              "
+            >
               {{ item.desc }}
             </span>
           </div>
