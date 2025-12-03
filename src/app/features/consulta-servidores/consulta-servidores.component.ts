@@ -107,14 +107,7 @@ export class ConsultaServidoresComponent {
     'transitório não comissionado',
   ];
 
-  calculosJudiciaria: {
-    label: string;
-    value: any;
-    desc?: string;
-    bgColor?: string;
-    textColor?: string;
-  }[] = [];
-  calculosApoio: {
+  calculosResolucao: {
     label: string;
     value: any;
     desc?: string;
@@ -466,7 +459,17 @@ export class ConsultaServidoresComponent {
       this.resolucaoData[3].value +
       this.resolucaoData[4].value;
 
-    this.calculosJudiciaria = [
+    const totalApoio = this.resolucaoData[8].value + totalJud;
+    const totalApoioValor =
+      this.resolucaoData[0].value +
+      this.resolucaoData[1].value +
+      this.resolucaoData[2].value +
+      this.resolucaoData[3].value +
+      this.resolucaoData[4].value +
+      this.resolucaoData[5].value;
+
+    this.calculosResolucao = [
+      // item a)
       {
         label: '1º Grau',
         value: this.resolucaoData[7].value,
@@ -524,7 +527,7 @@ export class ConsultaServidoresComponent {
             ? 'text-green-800'
             : 'text-rose-800',
       },
-      // Valores
+      // item b)
       {
         label: '1º Grau',
         value: (
@@ -610,18 +613,8 @@ export class ConsultaServidoresComponent {
             ? 'text-rose-800'
             : 'text-green-800',
       },
-    ];
 
-    const totalApoio = this.resolucaoData[8].value + totalJud;
-    const totalApoioValor =
-      this.resolucaoData[0].value +
-      this.resolucaoData[1].value +
-      this.resolucaoData[2].value +
-      this.resolucaoData[3].value +
-      this.resolucaoData[4].value +
-      this.resolucaoData[5].value;
-
-    this.calculosApoio = [
+      // item c)
       {
         label: 'Apoio Direto',
         value: totalJud,
@@ -672,7 +665,7 @@ export class ConsultaServidoresComponent {
           totalJud / totalApoio >= 0.7 ? 'text-green-800' : 'text-rose-800',
       },
 
-      // Valores
+      // item d)
       {
         label: 'Apoio Direto',
         value: totalJudValor.toLocaleString('pt-BR', {
