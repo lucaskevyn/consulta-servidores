@@ -679,17 +679,17 @@ export class ConsultaServidoresComponent {
         item: 'a) Distribuição de servidores por grau de jurisdição (91,5% - Triênio 2024)',
         label: 'Situação Item',
         value:
-          this.resolucaoData[7].value / totalJud >= 0.915 ? '20pts' : '0pts',
+          this.resolucaoData[7].value / totalJud >= 0.905 ? '20pts' : '0pts',
         desc:
-          this.resolucaoData[7].value / totalJud >= 0.915
+          this.resolucaoData[7].value / totalJud >= 0.905
             ? 'Cumprido'
             : 'Não cumprido',
         bgColor:
-          this.resolucaoData[7].value / totalJud >= 0.915
+          this.resolucaoData[7].value / totalJud >= 0.905
             ? 'bg-green-50'
             : 'bg-rose-50',
         textColor:
-          this.resolucaoData[7].value / totalJud >= 0.915
+          this.resolucaoData[7].value / totalJud >= 0.905
             ? 'text-green-800'
             : 'text-rose-800',
       },
@@ -699,13 +699,13 @@ export class ConsultaServidoresComponent {
         value:
           (this.resolucaoData[1].value + this.resolucaoData[4].value) /
             totalJudValor >=
-          0.915
+          0.905
             ? '20pts'
             : '0pts',
         desc:
           (this.resolucaoData[1].value + this.resolucaoData[4].value) /
             totalJudValor >=
-          0.915
+          0.905
             ? 'Cumprido'
             : 'Não cumprido',
         bgColor:
