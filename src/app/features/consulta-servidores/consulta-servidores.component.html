@@ -25,6 +25,7 @@
       <p-tab value="0">Geral</p-tab>
       <p-tab value="1">Cargos</p-tab>
       <p-tab value="2">Resolução 219</p-tab>
+      <p-tab value="3">Priorização do 1º Grau</p-tab>
     </p-tablist>
     <p-tabpanels ngClass="flex flex-col grow p-0 pt-4 min-h-0">
       <p-tabpanel value="0" ngClass="min-h-0 grow flex flex-col">
@@ -641,7 +642,9 @@
           </div>
           }
         </div>
+      </p-tabpanel>
 
+      <p-tabpanel value="3" ngClass="min-h-0 grow flex flex-col">
         <p-table
           [value]="resolucaoData"
           class="min-w-full text-xs flex flex-col h-full"
