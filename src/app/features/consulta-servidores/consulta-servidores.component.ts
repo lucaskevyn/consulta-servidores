@@ -115,6 +115,15 @@ export class ConsultaServidoresComponent {
     textColor?: string;
   }[] = [];
 
+  situacaoPremio: {
+    item: string;
+    label: string;
+    value: any;
+    desc?: string;
+    bgColor?: string;
+    textColor?: string;
+  }[] = [];
+
   constructor(private excelService: ExcelService) {}
 
   ngOnInit() {
@@ -510,23 +519,7 @@ export class ConsultaServidoresComponent {
             ? 'Migrar para o primeiro grau'
             : 'Não necessita migrar',
       },
-      {
-        label: 'Situação Item',
-        value:
-          this.resolucaoData[7].value / totalJud >= 0.915 ? '20pts' : '0pts',
-        desc:
-          this.resolucaoData[7].value / totalJud >= 0.915
-            ? 'Cumprido'
-            : 'Não cumprido',
-        bgColor:
-          this.resolucaoData[7].value / totalJud >= 0.915
-            ? 'bg-green-50'
-            : 'bg-rose-50',
-        textColor:
-          this.resolucaoData[7].value / totalJud >= 0.915
-            ? 'text-green-800'
-            : 'text-rose-800',
-      },
+
       // item b)
       {
         label: '1º Grau',
@@ -558,7 +551,7 @@ export class ConsultaServidoresComponent {
           ).toLocaleString('pt-BR', {
             maximumFractionDigits: 2,
           }) + '%',
-        desc: 'Referência 90,5%',
+        desc: 'Referência 91,5%',
       },
       {
         label: '2º Grau (%)',
@@ -587,31 +580,6 @@ export class ConsultaServidoresComponent {
           0
             ? 'Migrar para o primeiro grau'
             : 'Não necessita migrar',
-      },
-      {
-        label: 'Situação Item',
-        value:
-          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-            totalJudValor >=
-          0.915
-            ? '20pts'
-            : '0pts',
-        desc:
-          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-            totalJudValor >=
-          0.915
-            ? 'Cumprido'
-            : 'Não cumprido',
-        bgColor:
-          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-          totalJudValor
-            ? 'bg-rose-50'
-            : 'bg-green-50',
-        textColor:
-          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-          totalJudValor
-            ? 'text-rose-800'
-            : 'text-green-800',
       },
 
       // item c)
@@ -655,14 +623,6 @@ export class ConsultaServidoresComponent {
           totalApoio * 0.7 - totalJud >= 0
             ? 'Migrar para o apoio direto'
             : 'Não necessita migrar',
-      },
-      {
-        label: 'Situação Item',
-        value: totalJud / totalApoio >= 0.7 ? '20pts' : '0pts',
-        desc: totalJud / totalApoio >= 0.7 ? 'Cumprido' : 'Não cumprido',
-        bgColor: totalJud / totalApoio >= 0.7 ? 'bg-green-50' : 'bg-rose-50',
-        textColor:
-          totalJud / totalApoio >= 0.7 ? 'text-green-800' : 'text-rose-800',
       },
 
       // item d)
@@ -712,7 +672,64 @@ export class ConsultaServidoresComponent {
             ? 'Migrar para o apoio direto'
             : 'Não necessita migrar',
       },
+    ];
+
+    this.situacaoPremio = [
       {
+        item: 'a) Distribuição de servidores por grau de jurisdição (91,5% - Triênio 2024)',
+        label: 'Situação Item',
+        value:
+          this.resolucaoData[7].value / totalJud >= 0.915 ? '20pts' : '0pts',
+        desc:
+          this.resolucaoData[7].value / totalJud >= 0.915
+            ? 'Cumprido'
+            : 'Não cumprido',
+        bgColor:
+          this.resolucaoData[7].value / totalJud >= 0.915
+            ? 'bg-green-50'
+            : 'bg-rose-50',
+        textColor:
+          this.resolucaoData[7].value / totalJud >= 0.915
+            ? 'text-green-800'
+            : 'text-rose-800',
+      },
+      {
+        item: 'b) Distribuição de cargos e funções por grau de jurisdição',
+        label: 'Situação Item',
+        value:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+            totalJudValor >=
+          0.915
+            ? '20pts'
+            : '0pts',
+        desc:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+            totalJudValor >=
+          0.915
+            ? 'Cumprido'
+            : 'Não cumprido',
+        bgColor:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+          totalJudValor
+            ? 'bg-rose-50'
+            : 'bg-green-50',
+        textColor:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+          totalJudValor
+            ? 'text-rose-800'
+            : 'text-green-800',
+      },
+      {
+        item: 'c) Limite de 30% de servidores na área de apoio indireto (Administrativo)',
+        label: 'Situação Item',
+        value: totalJud / totalApoio >= 0.7 ? '20pts' : '0pts',
+        desc: totalJud / totalApoio >= 0.7 ? 'Cumprido' : 'Não cumprido',
+        bgColor: totalJud / totalApoio >= 0.7 ? 'bg-green-50' : 'bg-rose-50',
+        textColor:
+          totalJud / totalApoio >= 0.7 ? 'text-green-800' : 'text-rose-800',
+      },
+      {
+        item: 'd) Limite de 30% de cargos e funções na área de apoio indireto (Administrativo)',
         label: 'Situação Item',
         value: totalJudValor / totalApoioValor >= 0.7 ? '20pts' : '0pts',
         desc:

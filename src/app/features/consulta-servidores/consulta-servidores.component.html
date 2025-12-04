@@ -26,6 +26,7 @@
       <p-tab value="1">Cargos</p-tab>
       <p-tab value="2">Resolução 219</p-tab>
       <p-tab value="3">Priorização do 1º Grau</p-tab>
+      <p-tab value="4">Prêmio de Qualidade</p-tab>
     </p-tablist>
     <p-tabpanels ngClass="flex flex-col grow p-0 pt-4 min-h-0">
       <p-tabpanel value="0" ngClass="min-h-0 grow flex flex-col">
@@ -486,12 +487,12 @@
         </div>
       </p-tabpanel>
       <p-tabpanel value="2" ngClass="min-h-0 grow flex flex-col gap-3">
-        <div class="grid grid-cols-6 gap-3">
-          <span class="font-medium -mb-1 text-surface-600 col-span-6"
+        <div class="grid grid-cols-5 gap-3">
+          <span class="font-medium -mb-1 text-surface-600 col-span-5"
             >a) Distribuição de servidores por grau de jurisdição (91,5% -
             Triênio 2024)</span
           >
-          @for (item of calculosResolucao | slice:0:6; track item.label) {
+          @for (item of calculosResolucao | slice:0:5; track item.label) {
           <div
             class="p-2 flex flex-col items-center justify-center rounded-xl"
             [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-100'"
@@ -526,10 +527,10 @@
           </div>
           }
 
-          <span class="font-medium -mb-1 text-surface-600 col-span-6"
+          <span class="font-medium -mb-1 text-surface-600 col-span-5"
             >b) Distribuição de cargos e funções por grau de jurisdição
           </span>
-          @for (item of calculosResolucao | slice:6:12; track item.label) {
+          @for (item of calculosResolucao | slice:5:10; track item.label) {
           <div
             class="p-2 flex flex-col items-center justify-center rounded-xl"
             [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-100'"
@@ -564,11 +565,11 @@
           </div>
           }
 
-          <span class="font-medium -mb-1 text-surface-600 col-span-6"
+          <span class="font-medium -mb-1 text-surface-600 col-span-5"
             >c) Limite de 30% de servidores na área de apoio indireto
             (Administrativo)
           </span>
-          @for (item of calculosResolucao | slice:12:18; track item.label) {
+          @for (item of calculosResolucao | slice:10:15; track item.label) {
           <div
             class="p-2 flex flex-col items-center justify-center rounded-xl"
             [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-100'"
@@ -603,11 +604,11 @@
           </div>
           }
 
-          <span class="font-medium -mb-1 text-surface-600 col-span-6"
+          <span class="font-medium -mb-1 text-surface-600 col-span-5"
             >d) Limite de 30% de cargos e funções na área de apoio indireto
             (Administrativo)
           </span>
-          @for (item of calculosResolucao | slice:18:24; track item.label) {
+          @for (item of calculosResolucao | slice:15:20; track item.label) {
           <div
             class="p-2 flex flex-col items-center justify-center rounded-xl"
             [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-100'"
@@ -695,6 +696,50 @@
             </tr>
           </ng-template>
         </p-table>
+      </p-tabpanel>
+
+      <p-tabpanel value="4" ngClass="min-h-0 grow flex flex-col">
+        <div class="grid grid-cols-2 gap-3">
+          @for (item of situacaoPremio | slice:0:6; track item.label) {
+          <div class="flex flex-col gap-3">
+            <span class="font-medium -mb-1 text-surface-600">{{
+              item.item
+            }}</span>
+            <div
+              class="p-2 flex flex-col items-center justify-center rounded-xl"
+              [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-100'"
+            >
+              <span
+                class="text-xs font-medium text-center"
+                [ngClass]="
+                  item.textColor
+                    ? item.textColor + ' opacity-80'
+                    : 'text-surface-500'
+                "
+              >
+                {{ item.label }}
+              </span>
+              <span
+                class="text-xl font-bold"
+                [ngClass]="item.textColor ? item.textColor : 'text-rose-800'"
+              >
+                {{ item.value }}
+              </span>
+
+              <span
+                class="text-xs text-center"
+                [ngClass]="
+                  item.textColor
+                    ? item.textColor + ' opacity-80'
+                    : 'text-surface-500'
+                "
+              >
+                {{ item.desc }}
+              </span>
+            </div>
+          </div>
+          }
+        </div>
       </p-tabpanel>
     </p-tabpanels>
   </p-tabs>
