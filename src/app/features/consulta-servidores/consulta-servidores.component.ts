@@ -722,7 +722,7 @@ export class ConsultaServidoresComponent {
       {
         item: 'c) Limite de 30% de servidores na área de apoio indireto (Administrativo)',
         label: 'Situação Item',
-        value: totalJud / totalApoio >= 0.7 ? '20pts' : '0pts',
+        value: totalJud / totalApoio >= 0.7 ? '15pts' : '0pts',
         desc: totalJud / totalApoio >= 0.7 ? 'Cumprido' : 'Não cumprido',
         bgColor: totalJud / totalApoio >= 0.7 ? 'bg-green-50' : 'bg-rose-50',
         textColor:
@@ -731,7 +731,7 @@ export class ConsultaServidoresComponent {
       {
         item: 'd) Limite de 30% de cargos e funções na área de apoio indireto (Administrativo)',
         label: 'Situação Item',
-        value: totalJudValor / totalApoioValor >= 0.7 ? '20pts' : '0pts',
+        value: totalJudValor / totalApoioValor >= 0.7 ? '15pts' : '0pts',
         desc:
           totalJudValor / totalApoioValor >= 0.7 ? 'Cumprido' : 'Não cumprido',
         bgColor:
