@@ -345,6 +345,7 @@
                   </ng-template>
                 </p-columnFilter>
               </th>
+
               <th>
                 <p-columnFilter
                   field="classificacao_tlp"
@@ -361,6 +362,27 @@
                       (onChange)="
                         filterCallback(filterValues['classificacao_tlp'])
                       "
+                      appendTo="body"
+                      class="w-28"
+                      [pt]="multiselectPt"
+                    />
+                  </ng-template>
+                </p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  field="situacao"
+                  matchMode="in"
+                  showMenu="false"
+                >
+                  <ng-template
+                    pTemplate="filter"
+                    let-filterCallback="filterCallback"
+                  >
+                    <p-multiSelect
+                      [options]="getOptions('situacao')"
+                      [(ngModel)]="filterValues['situacao']"
+                      (onChange)="filterCallback(filterValues['situacao'])"
                       appendTo="body"
                       class="w-28"
                       [pt]="multiselectPt"
