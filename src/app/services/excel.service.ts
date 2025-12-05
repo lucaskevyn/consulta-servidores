@@ -17,7 +17,7 @@ export interface Servidor {
   funcao: string;
   // padrao_funcao: string;
   jurisdicao: string;
-  classificacao_plp: string;
+  classificacao_tlp: string;
 }
 
 const CAMPOS: Array<[keyof Servidor, string]> = [
@@ -34,7 +34,7 @@ const CAMPOS: Array<[keyof Servidor, string]> = [
   // ['padrao', 'AG'],
   ['funcao', 'AJ'],
   ['jurisdicao', 'BK'],
-  ['classificacao_plp', 'CH'],
+  ['classificacao_tlp', 'CH'],
 
   // ['padrao_funcao', 'AY'],
 ];

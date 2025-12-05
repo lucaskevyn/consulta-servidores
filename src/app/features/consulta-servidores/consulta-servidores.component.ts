@@ -70,7 +70,7 @@ export class ConsultaServidoresComponent {
     funcao: [],
     // padrao_funcao: [],
     jurisdicao: [],
-    classificacao_plp: [],
+    classificacao_tlp: [],
   };
 
   // Armazena todas as opções originais para restaurar quando necessário
@@ -143,7 +143,7 @@ export class ConsultaServidoresComponent {
       // { field: 'padrao', header: 'Padrão' },
       { field: 'funcao', header: 'Função' },
       { field: 'jurisdicao', header: 'Jurisdicão' },
-      { field: 'classificacao_plp', header: 'Classificação PLP' },
+      { field: 'classificacao_tlp', header: 'Classificação TLP' },
       // { field: 'padrao_funcao', header: 'Padrão Função' },
     ];
 

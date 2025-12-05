@@ -346,7 +346,7 @@
               </th>
               <th>
                 <p-columnFilter
-                  field="classificacao_plp"
+                  field="classificacao_tlp"
                   matchMode="in"
                   showMenu="false"
                 >
@@ -355,10 +355,10 @@
                     let-filterCallback="filterCallback"
                   >
                     <p-multiSelect
-                      [options]="getOptions('classificacao_plp')"
-                      [(ngModel)]="filterValues['classificacao_plp']"
+                      [options]="getOptions('classificacao_tlp')"
+                      [(ngModel)]="filterValues['classificacao_tlp']"
                       (onChange)="
-                        filterCallback(filterValues['classificacao_plp'])
+                        filterCallback(filterValues['classificacao_tlp'])
                       "
                       appendTo="body"
                       class="w-28"
