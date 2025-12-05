@@ -302,23 +302,6 @@
                 </p-columnFilter>
               </th>
               <th>
-                <p-columnFilter field="padrao" matchMode="in" showMenu="false">
-                  <ng-template
-                    pTemplate="filter"
-                    let-filterCallback="filterCallback"
-                  >
-                    <p-multiSelect
-                      [options]="getOptions('padrao')"
-                      [(ngModel)]="filterValues['padrao']"
-                      (onChange)="filterCallback(filterValues['padrao'])"
-                      appendTo="body"
-                      class="w-28"
-                      [pt]="multiselectPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-              <th>
                 <p-columnFilter
                   field="funcao"
                   matchMode="in"
@@ -342,7 +325,7 @@
               </th>
               <th>
                 <p-columnFilter
-                  field="padrao_funcao"
+                  field="jurisdicao"
                   matchMode="in"
                   showMenu="false"
                 >
@@ -351,9 +334,32 @@
                     let-filterCallback="filterCallback"
                   >
                     <p-multiSelect
-                      [options]="getOptions('padrao_funcao')"
-                      [(ngModel)]="filterValues['padrao_funcao']"
-                      (onChange)="filterCallback(filterValues['padrao_funcao'])"
+                      [options]="getOptions('jurisdicao')"
+                      [(ngModel)]="filterValues['jurisdicao']"
+                      (onChange)="filterCallback(filterValues['jurisdicao'])"
+                      appendTo="body"
+                      class="w-28"
+                      [pt]="multiselectPt"
+                    />
+                  </ng-template>
+                </p-columnFilter>
+              </th>
+              <th>
+                <p-columnFilter
+                  field="classificacao_plp"
+                  matchMode="in"
+                  showMenu="false"
+                >
+                  <ng-template
+                    pTemplate="filter"
+                    let-filterCallback="filterCallback"
+                  >
+                    <p-multiSelect
+                      [options]="getOptions('classificacao_plp')"
+                      [(ngModel)]="filterValues['classificacao_plp']"
+                      (onChange)="
+                        filterCallback(filterValues['classificacao_plp'])
+                      "
                       appendTo="body"
                       class="w-28"
                       [pt]="multiselectPt"

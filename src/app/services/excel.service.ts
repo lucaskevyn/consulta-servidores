@@ -13,9 +13,11 @@ export interface Servidor {
   centro: string;
   vinculo: string;
   cargo: string;
-  padrao: string;
+  // padrao: string;
   funcao: string;
-  padrao_funcao: string;
+  // padrao_funcao: string;
+  jurisdicao: string;
+  classificacao_plp: string;
 }
 
 const CAMPOS: Array<[keyof Servidor, string]> = [
@@ -29,9 +31,12 @@ const CAMPOS: Array<[keyof Servidor, string]> = [
   ['centro', 'AP'],
   ['vinculo', 'M'],
   ['cargo', 'AI'],
-  ['padrao', 'AG'],
+  // ['padrao', 'AG'],
   ['funcao', 'AJ'],
-  ['padrao_funcao', 'AY'],
+  ['jurisdicao', 'BK'],
+  ['classificacao_plp', 'CH'],
+
+  // ['padrao_funcao', 'AY'],
 ];
 
 @Injectable({ providedIn: 'root' })

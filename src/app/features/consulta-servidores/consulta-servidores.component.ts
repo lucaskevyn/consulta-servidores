@@ -66,9 +66,11 @@ export class ConsultaServidoresComponent {
     centro: [],
     vinculo: [],
     cargo: [],
-    padrao: [],
+    // padrao: [],
     funcao: [],
-    padrao_funcao: [],
+    // padrao_funcao: [],
+    jurisdicao: [],
+    classificacao_plp: [],
   };
 
   // Armazena todas as opções originais para restaurar quando necessário
@@ -138,9 +140,11 @@ export class ConsultaServidoresComponent {
       { field: 'centro', header: 'Centro' },
       { field: 'vinculo', header: 'Vínculo' },
       { field: 'cargo', header: 'Cargo' },
-      { field: 'padrao', header: 'Padrão' },
+      // { field: 'padrao', header: 'Padrão' },
       { field: 'funcao', header: 'Função' },
-      { field: 'padrao_funcao', header: 'Padrão Função' },
+      { field: 'jurisdicao', header: 'Jurisdicão' },
+      { field: 'classificacao_plp', header: 'Classificação PLP' },
+      // { field: 'padrao_funcao', header: 'Padrão Função' },
     ];
 
     this.exportColumns = this.cols.map((col) => ({
