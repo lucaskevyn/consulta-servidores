@@ -495,27 +495,37 @@ export class ConsultaServidoresComponent {
         value: this.resolucaoData[6].value,
         desc: 'Servidores',
       },
+      // {
+      //   label: '1º Grau (%)',
+      //   value:
+      //     ((this.resolucaoData[7].value / totalJud) * 100).toLocaleString(
+      //       'pt-BR',
+      //       {
+      //         maximumFractionDigits: 2,
+      //       }
+      //     ) + '%',
+      //   desc: 'Referência 91,5%',
+      // },
+      // {
+      //   label: '2º Grau (%)',
+      //   value:
+      //     ((this.resolucaoData[6].value / totalJud) * 100).toLocaleString(
+      //       'pt-BR',
+      //       {
+      //         maximumFractionDigits: 2,
+      //       }
+      //     ) + '%',
+      //   desc: 'Referência 8,5%',
+      // },
       {
-        label: '1º Grau (%)',
-        value:
-          ((this.resolucaoData[7].value / totalJud) * 100).toLocaleString(
-            'pt-BR',
-            {
-              maximumFractionDigits: 2,
-            }
-          ) + '%',
-        desc: 'Referência 91,5%',
+        label: '1º Grau Ideal',
+        value: (totalJud * 0.915).toFixed(0),
+        desc: 'Servidores',
       },
       {
-        label: '2º Grau (%)',
-        value:
-          ((this.resolucaoData[6].value / totalJud) * 100).toLocaleString(
-            'pt-BR',
-            {
-              maximumFractionDigits: 2,
-            }
-          ) + '%',
-        desc: 'Referência 8,5%',
+        label: '2º Grau Ideal',
+        value: (totalJud * 0.085).toFixed(0),
+        desc: 'Servidores',
       },
       {
         label: 'Diferença',
@@ -547,29 +557,45 @@ export class ConsultaServidoresComponent {
         }),
         desc: 'Valor',
       },
+      // {
+      //   label: '1º Grau (%)',
+      //   value:
+      //     (
+      //       ((this.resolucaoData[1].value + this.resolucaoData[4].value) /
+      //         totalJudValor) *
+      //       100
+      //     ).toLocaleString('pt-BR', {
+      //       maximumFractionDigits: 2,
+      //     }) + '%',
+      //   desc: 'Referência 91,5%',
+      // },
+      // {
+      //   label: '2º Grau (%)',
+      //   value:
+      //     (
+      //       ((this.resolucaoData[0].value + this.resolucaoData[3].value) /
+      //         totalJudValor) *
+      //       100
+      //     ).toLocaleString('pt-BR', {
+      //       maximumFractionDigits: 2,
+      //     }) + '%',
+      //   desc: 'Referência 8,5%',
+      // },
       {
-        label: '1º Grau (%)',
-        value:
-          (
-            ((this.resolucaoData[1].value + this.resolucaoData[4].value) /
-              totalJudValor) *
-            100
-          ).toLocaleString('pt-BR', {
-            maximumFractionDigits: 2,
-          }) + '%',
-        desc: 'Referência 91,5%',
+        label: '1º Grau  Ideal',
+        value: (totalJudValor * 0.915).toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }),
+        desc: 'Valor',
       },
       {
-        label: '2º Grau (%)',
-        value:
-          (
-            ((this.resolucaoData[0].value + this.resolucaoData[3].value) /
-              totalJudValor) *
-            100
-          ).toLocaleString('pt-BR', {
-            maximumFractionDigits: 2,
-          }) + '%',
-        desc: 'Referência 8,5%',
+        label: '2º Grau Ideal',
+        value: (totalJudValor * 0.085).toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }),
+        desc: 'Valor',
       },
       {
         label: 'Diferença',
@@ -599,28 +625,38 @@ export class ConsultaServidoresComponent {
         value: this.resolucaoData[8].value,
         desc: 'Servidores',
       },
+      // {
+      //   label: 'Apoio Direto (%)',
+      //   value:
+      //     (
+      //       ((this.resolucaoData[7].value + this.resolucaoData[6].value) /
+      //         totalApoio) *
+      //       100
+      //     ).toLocaleString('pt-BR', {
+      //       maximumFractionDigits: 2,
+      //     }) + '%',
+      //   desc: 'Referência 70%',
+      // },
+      // {
+      //   label: 'Apoio Indireto (%)',
+      //   value:
+      //     ((this.resolucaoData[8].value / totalApoio) * 100).toLocaleString(
+      //       'pt-BR',
+      //       {
+      //         maximumFractionDigits: 2,
+      //       }
+      //     ) + '%',
+      //   desc: 'Referência 30%',
+      // },
       {
-        label: 'Apoio Direto (%)',
-        value:
-          (
-            ((this.resolucaoData[7].value + this.resolucaoData[6].value) /
-              totalApoio) *
-            100
-          ).toLocaleString('pt-BR', {
-            maximumFractionDigits: 2,
-          }) + '%',
-        desc: 'Referência 70%',
+        label: '1º Grau Ideal',
+        value: (totalApoio * 0.7).toFixed(0),
+        desc: 'Servidores',
       },
       {
-        label: 'Apoio Indireto (%)',
-        value:
-          ((this.resolucaoData[8].value / totalApoio) * 100).toLocaleString(
-            'pt-BR',
-            {
-              maximumFractionDigits: 2,
-            }
-          ) + '%',
-        desc: 'Referência 30%',
+        label: '2º Grau Ideal',
+        value: (totalApoio * 0.3).toFixed(0),
+        desc: 'Servidores',
       },
       {
         label: 'Diferença',
@@ -648,24 +684,40 @@ export class ConsultaServidoresComponent {
         }),
         desc: 'Valor',
       },
+      // {
+      //   label: 'Apoio Direto (%)',
+      //   value:
+      //     ((totalJudValor / totalApoioValor) * 100).toLocaleString('pt-BR', {
+      //       maximumFractionDigits: 2,
+      //     }) + '%',
+      //   desc: 'Referência 70%',
+      // },
+      // {
+      //   label: 'Apoio Indireto (%)',
+      //   value:
+      //     (
+      //       ((totalApoioValor - totalJudValor) / totalApoioValor) *
+      //       100
+      //     ).toLocaleString('pt-BR', {
+      //       maximumFractionDigits: 2,
+      //     }) + '%',
+      //   desc: 'Referência 30%',
+      // },
       {
-        label: 'Apoio Direto (%)',
-        value:
-          ((totalJudValor / totalApoioValor) * 100).toLocaleString('pt-BR', {
-            maximumFractionDigits: 2,
-          }) + '%',
-        desc: 'Referência 70%',
+        label: '1º Grau  Ideal',
+        value: (totalApoioValor * 0.7).toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }),
+        desc: 'Valor',
       },
       {
-        label: 'Apoio Indireto (%)',
-        value:
-          (
-            ((totalApoioValor - totalJudValor) / totalApoioValor) *
-            100
-          ).toLocaleString('pt-BR', {
-            maximumFractionDigits: 2,
-          }) + '%',
-        desc: 'Referência 30%',
+        label: '2º Grau Ideal',
+        value: (totalApoioValor * 0.3).toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }),
+        desc: 'Valor',
       },
       {
         label: 'Diferença',
