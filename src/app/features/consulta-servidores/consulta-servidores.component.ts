@@ -119,13 +119,14 @@ export class ConsultaServidoresComponent {
   }[] = [];
 
   situacaoPremio: {
-    item: string;
     label: string;
     value: any;
     desc?: string;
     bgColor?: string;
     textColor?: string;
   }[] = [];
+
+  totalPontos: number = 0;
 
   constructor(private excelService: ExcelService) {}
 
@@ -495,28 +496,6 @@ export class ConsultaServidoresComponent {
         value: this.resolucaoData[6].value,
         desc: 'Servidores',
       },
-      // {
-      //   label: '1º Grau (%)',
-      //   value:
-      //     ((this.resolucaoData[7].value / totalJud) * 100).toLocaleString(
-      //       'pt-BR',
-      //       {
-      //         maximumFractionDigits: 2,
-      //       }
-      //     ) + '%',
-      //   desc: 'Referência 91,5%',
-      // },
-      // {
-      //   label: '2º Grau (%)',
-      //   value:
-      //     ((this.resolucaoData[6].value / totalJud) * 100).toLocaleString(
-      //       'pt-BR',
-      //       {
-      //         maximumFractionDigits: 2,
-      //       }
-      //     ) + '%',
-      //   desc: 'Referência 8,5%',
-      // },
       {
         label: '1º Grau Ideal',
         value: (totalJud * 0.915).toFixed(0),
@@ -557,30 +536,7 @@ export class ConsultaServidoresComponent {
         }),
         desc: 'Valor',
       },
-      // {
-      //   label: '1º Grau (%)',
-      //   value:
-      //     (
-      //       ((this.resolucaoData[1].value + this.resolucaoData[4].value) /
-      //         totalJudValor) *
-      //       100
-      //     ).toLocaleString('pt-BR', {
-      //       maximumFractionDigits: 2,
-      //     }) + '%',
-      //   desc: 'Referência 91,5%',
-      // },
-      // {
-      //   label: '2º Grau (%)',
-      //   value:
-      //     (
-      //       ((this.resolucaoData[0].value + this.resolucaoData[3].value) /
-      //         totalJudValor) *
-      //       100
-      //     ).toLocaleString('pt-BR', {
-      //       maximumFractionDigits: 2,
-      //     }) + '%',
-      //   desc: 'Referência 8,5%',
-      // },
+
       {
         label: '1º Grau  Ideal',
         value: (totalJudValor * 0.915).toLocaleString('pt-BR', {
@@ -625,29 +581,7 @@ export class ConsultaServidoresComponent {
         value: this.resolucaoData[8].value,
         desc: 'Servidores',
       },
-      // {
-      //   label: 'Apoio Direto (%)',
-      //   value:
-      //     (
-      //       ((this.resolucaoData[7].value + this.resolucaoData[6].value) /
-      //         totalApoio) *
-      //       100
-      //     ).toLocaleString('pt-BR', {
-      //       maximumFractionDigits: 2,
-      //     }) + '%',
-      //   desc: 'Referência 70%',
-      // },
-      // {
-      //   label: 'Apoio Indireto (%)',
-      //   value:
-      //     ((this.resolucaoData[8].value / totalApoio) * 100).toLocaleString(
-      //       'pt-BR',
-      //       {
-      //         maximumFractionDigits: 2,
-      //       }
-      //     ) + '%',
-      //   desc: 'Referência 30%',
-      // },
+
       {
         label: 'Apoio Direto Ideal',
         value: (totalApoio * 0.7).toFixed(0),
@@ -684,25 +618,7 @@ export class ConsultaServidoresComponent {
         }),
         desc: 'Valor',
       },
-      // {
-      //   label: 'Apoio Direto (%)',
-      //   value:
-      //     ((totalJudValor / totalApoioValor) * 100).toLocaleString('pt-BR', {
-      //       maximumFractionDigits: 2,
-      //     }) + '%',
-      //   desc: 'Referência 70%',
-      // },
-      // {
-      //   label: 'Apoio Indireto (%)',
-      //   value:
-      //     (
-      //       ((totalApoioValor - totalJudValor) / totalApoioValor) *
-      //       100
-      //     ).toLocaleString('pt-BR', {
-      //       maximumFractionDigits: 2,
-      //     }) + '%',
-      //   desc: 'Referência 30%',
-      // },
+
       {
         label: 'Apoio Direto Ideal',
         value: (totalApoioValor * 0.7).toLocaleString('pt-BR', {
@@ -734,7 +650,18 @@ export class ConsultaServidoresComponent {
 
     this.situacaoPremio = [
       {
-        item: 'a) Distribuição de servidores por grau de jurisdição (91,5% - Triênio 2024)',
+        label: '1º Grau (%)',
+        value:
+          ((this.resolucaoData[7].value / totalJud) * 100).toLocaleString(
+            'pt-BR',
+            {
+              maximumFractionDigits: 2,
+            }
+          ) + '%',
+        desc: 'Referência 91,5%',
+      },
+      {
+        // item: 'a) Distribuição de servidores por grau de jurisdição (91,5% - Triênio 2024)',
         label: 'Situação Item',
         value:
           this.resolucaoData[7].value / totalJud >= 0.905 ? '20pts' : '0pts',
@@ -752,7 +679,19 @@ export class ConsultaServidoresComponent {
             : 'text-rose-800',
       },
       {
-        item: 'b) Distribuição de cargos e funções por grau de jurisdição',
+        label: '1º Grau (%)',
+        value:
+          (
+            ((this.resolucaoData[1].value + this.resolucaoData[4].value) /
+              totalJudValor) *
+            100
+          ).toLocaleString('pt-BR', {
+            maximumFractionDigits: 2,
+          }) + '%',
+        desc: 'Referência 91,5%',
+      },
+      {
+        // item: 'b) Distribuição de cargos e funções por grau de jurisdição',
         label: 'Situação Item',
         value:
           (this.resolucaoData[1].value + this.resolucaoData[4].value) /
@@ -777,8 +716,20 @@ export class ConsultaServidoresComponent {
             ? 'text-rose-800'
             : 'text-green-800',
       },
+
       {
-        item: 'c) Limite de 30% de servidores na área de apoio indireto (Administrativo)',
+        label: 'Apoio Indireto (%)',
+        value:
+          ((this.resolucaoData[8].value / totalApoio) * 100).toLocaleString(
+            'pt-BR',
+            {
+              maximumFractionDigits: 2,
+            }
+          ) + '%',
+        desc: 'Referência 30%',
+      },
+      {
+        // item: 'c) Limite de 30% de servidores na área de apoio indireto (Administrativo)',
         label: 'Situação Item',
         value: totalJud / totalApoio >= 0.7 ? '15pts' : '0pts',
         desc: totalJud / totalApoio >= 0.7 ? 'Cumprido' : 'Não cumprido',
@@ -786,8 +737,20 @@ export class ConsultaServidoresComponent {
         textColor:
           totalJud / totalApoio >= 0.7 ? 'text-green-800' : 'text-rose-800',
       },
+
       {
-        item: 'd) Limite de 30% de cargos e funções na área de apoio indireto (Administrativo)',
+        label: 'Apoio Indireto (%)',
+        value:
+          (
+            ((totalApoioValor - totalJudValor) / totalApoioValor) *
+            100
+          ).toLocaleString('pt-BR', {
+            maximumFractionDigits: 2,
+          }) + '%',
+        desc: 'Referência 30%',
+      },
+      {
+        // item: 'd) Limite de 30% de cargos e funções na área de apoio indireto (Administrativo)',
         label: 'Situação Item',
         value: totalJudValor / totalApoioValor >= 0.7 ? '15pts' : '0pts',
         desc:
@@ -800,6 +763,17 @@ export class ConsultaServidoresComponent {
             : 'text-rose-800',
       },
     ];
+
+    const indices = [1, 3, 5, 7];
+    this.totalPontos = indices.reduce((acc, index) => {
+      const item = this.situacaoPremio[index];
+      if (item && item.value) {
+        // extract number from "20pts" -> 20
+        const val = parseInt(item.value.toString().replace(/\D/g, ''), 10) || 0;
+        return acc + val;
+      }
+      return acc;
+    }, 0);
   }
 
   clearTableFilters(table: Table) {
