@@ -649,12 +649,12 @@ export class ConsultaServidoresComponent {
       //   desc: 'Referência 30%',
       // },
       {
-        label: '1º Grau Ideal',
+        label: 'Apoio Direto Ideal',
         value: (totalApoio * 0.7).toFixed(0),
         desc: 'Servidores',
       },
       {
-        label: '2º Grau Ideal',
+        label: 'Apoio Indireto Ideal',
         value: (totalApoio * 0.3).toFixed(0),
         desc: 'Servidores',
       },
@@ -704,7 +704,7 @@ export class ConsultaServidoresComponent {
       //   desc: 'Referência 30%',
       // },
       {
-        label: '1º Grau  Ideal',
+        label: 'Apoio Direto Ideal',
         value: (totalApoioValor * 0.7).toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL',
@@ -712,7 +712,7 @@ export class ConsultaServidoresComponent {
         desc: 'Valor',
       },
       {
-        label: '2º Grau Ideal',
+        label: 'Apoio Indireto Ideal',
         value: (totalApoioValor * 0.3).toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL',
