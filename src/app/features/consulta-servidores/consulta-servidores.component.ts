@@ -217,6 +217,8 @@ export class ConsultaServidoresComponent {
     this.calculateFunctionCounts();
     this.calculateCargosData();
     this.calculateResolucaoData();
+    this.calculateVinculoGroups();
+    this.calculateAreaVinculoStats();
 
     this.apoioCounts[0] = {
       label: 'ÁREA ADMINISTRATIVA DO TJAC',
@@ -279,6 +281,121 @@ export class ConsultaServidoresComponent {
     });
 
     this.functionCounts = counts;
+  }
+
+  vinculoGroups: {
+    category: string;
+    total: number;
+    items: { label: string; count: number }[];
+  }[] = [];
+
+  calculateVinculoGroups() {
+    const groupsDefinition = [
+      {
+        category: 'Efetivos',
+        matchers: [
+          'efetivo não comissionado',
+          'efetivo comissionado (resolução 03/2013)',
+          'transitório não comissionado',
+        ],
+      },
+      {
+        category: 'Requisitados',
+        matchers: [
+          'à disposição fprev',
+          'à disposição fps',
+          'comissionado (à disposição)',
+          'diversos (requisitados reg prev rgps)',
+          'diversos (requisitados reg prev rpps)',
+        ],
+      },
+      {
+        category: 'Comissionado s/ Vínculo',
+        matchers: ['ad nutum comissionado'],
+      },
+    ];
+
+    this.vinculoGroups = groupsDefinition.map((group) => {
+      let groupTotal = 0;
+      const items = group.matchers.map((matcher) => {
+        const count = this.dados.filter((d) => {
+          const v = (d.vinculo || '').toLowerCase().trim();
+          const a = (d.apoio || '').toLowerCase();
+          const matchVinculo = v === matcher;
+          const excludedApoio = a.includes('esjud') || a.includes('tecnologia');
+
+          return matchVinculo && !excludedApoio;
+        }).length;
+        groupTotal += count;
+        return { label: matcher, count };
+      });
+
+      return {
+        category: group.category,
+        total: groupTotal,
+        items: items,
+      };
+    });
+  }
+
+  areaVinculoStats: {
+    areaName: string;
+    groups: { category: string; count: number }[];
+  }[] = [];
+
+  calculateAreaVinculoStats() {
+    const areas = [
+      'área administrativa do tjac',
+      'área judiciária de 1º grau',
+      'área judiciária de 2º grau',
+    ];
+
+    const groupsDefinition = [
+      {
+        category: 'Efetivos',
+        matchers: [
+          'efetivo não comissionado',
+          'efetivo comissionado (resolução 03/2013)',
+          'transitório não comissionado',
+        ],
+      },
+      {
+        category: 'Requisitados',
+        matchers: [
+          'à disposição fprev',
+          'à disposição fps',
+          'comissionado (à disposição)',
+          'diversos (requisitados reg prev rgps)',
+          'diversos (requisitados reg prev rpps)',
+        ],
+      },
+      {
+        category: 'Comissionado s/ Vínculo',
+        matchers: ['ad nutum comissionado'],
+      },
+    ];
+
+    this.areaVinculoStats = areas.map((area) => {
+      const groups = groupsDefinition.map((group) => {
+        let count = 0;
+        count = this.dados.filter((d) => {
+          const v = (d.vinculo || '').toLowerCase().trim();
+          const a = (d.apoio || '').toLowerCase(); // Area is derived from 'apoio'
+
+          if (!a.includes(area)) return false;
+          if (!group.matchers.includes(v)) return false;
+
+          return true;
+        }).length;
+
+        return { category: group.category, count };
+      });
+
+      return {
+        areaName: area.toUpperCase(),
+        groups,
+      };
+    });
   }
 
   // -----------------------

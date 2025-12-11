@@ -23,10 +23,11 @@
   <p-tabs value="0" ngClass="grow flex flex-col min-h-0">
     <p-tablist>
       <p-tab value="0">Geral</p-tab>
-      <p-tab value="1">Cargos</p-tab>
-      <p-tab value="2">Cálculos da Distribuição</p-tab>
-      <p-tab value="3">Priorização do 1º Grau</p-tab>
-      <p-tab value="4">Prêmio de Qualidade (Art. 9, I, a-d)</p-tab>
+      <p-tab value="1">Cargos e Funções</p-tab>
+      <p-tab value="2">Servidores</p-tab>
+      <p-tab value="3">Cálculos da Distribuição</p-tab>
+      <p-tab value="4">Priorização do 1º Grau</p-tab>
+      <p-tab value="5">Prêmio de Qualidade (Art. 9, I, a-d)</p-tab>
     </p-tablist>
     <p-tabpanels ngClass="flex flex-col grow p-0 pt-4 min-h-0">
       <p-tabpanel value="0" ngClass="min-h-0 grow flex flex-col">
@@ -49,7 +50,7 @@
               class: 'border border-surface-100 rounded-xl'
             },
             header: {
-              class: 'bg-surface-100 text-surface-700 rounded-t-xl'
+              class: 'bg-surface-50 text-surface-700 rounded-t-xl'
             },
             pcPaginator: {
               root: {
@@ -394,7 +395,7 @@
           </ng-template>
 
           <ng-template #body let-row let-columns="columns">
-            <tr class="hover:bg-surface-100">
+            <tr class="hover:bg-surface-50">
               @for (col of columns; track col.field) {
               <td>
                 {{ row[col.field] }}
@@ -416,26 +417,9 @@
       </p-tabpanel>
       <p-tabpanel value="1" ngClass="min-h-0 grow flex flex-col gap-3">
         <div class="flex gap-3">
-          @for (item of apoioCounts; track item.label) {
-          <div
-            class="flex-1 bg-surface-100 p-2 flex flex-col items-center justify-center rounded-xl"
-          >
-            <span class="text-xl font-bold text-rose-800">
-              {{ item.count }}
-            </span>
-            <span
-              class="text-xs font-medium text-surface-500 uppercase tracking-wider text-center"
-            >
-              {{ item.label }}
-            </span>
-          </div>
-          }
-        </div>
-
-        <div class="flex gap-3">
           @for (item of functionCounts; track item.label) {
           <div
-            class="flex-1 bg-surface-100 p-2 flex flex-col items-center justify-center rounded-xl"
+            class="flex-1 bg-surface-50 p-2 flex flex-col items-center justify-center rounded-xl"
           >
             <span class="text-xl font-bold text-rose-800">
               {{ item.count }}
@@ -463,7 +447,7 @@
               class: 'border border-surface-100 rounded-xl'
             },
             header: {
-              class: 'bg-surface-100 text-surface-700 rounded-t-xl'
+              class: 'bg-surface-50 text-surface-700 rounded-t-xl'
             },
             pcPaginator: {
               root: {
@@ -499,7 +483,7 @@
             </ng-template>
 
             <ng-template #body let-row>
-              <tr class="hover:bg-surface-100">
+              <tr class="hover:bg-surface-50">
                 <td>{{ row.funcao }}</td>
                 <td>{{ row.apoio }}</td>
                 <td>
@@ -516,7 +500,74 @@
           </p-table>
         </div>
       </p-tabpanel>
-      <p-tabpanel value="2" ngClass="min-h-0 grow flex flex-col gap-3">
+      <p-tabpanel value="2" ngClass="min-h-0 grow flex flex-col">
+        <div class="flex gap-3">
+          @for (item of apoioCounts; track item.label) {
+          <div
+            class="flex-1 bg-surface-50 p-2 flex flex-col items-center justify-center rounded-xl"
+          >
+            <span class="text-xl font-bold text-rose-800">
+              {{ item.count }}
+            </span>
+            <span
+              class="text-xs font-medium text-surface-500 uppercase tracking-wider text-center"
+            >
+              {{ item.label }}
+            </span>
+          </div>
+          }
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 overflow-y-auto">
+          @for (group of vinculoGroups; track group.category) {
+          <div class="bg-surface-50 p-4 rounded-xl flex flex-col gap-3">
+            <div
+              class="flex justify-between items-center border-b border-surface-200 pb-2"
+            >
+              <span class="font-bold text-rose-800">{{ group.category }}</span>
+              <span class="text-lg font-bold">{{ group.total }}</span>
+            </div>
+            <div class="flex flex-col gap-2">
+              @for (item of group.items; track item.label) {
+              <div class="flex justify-between items-center text-sm">
+                <span class="text-surface-600 capitalize text-left pr-2">{{
+                  item.label
+                }}</span>
+                <span class="font-semibold">{{ item.count }}</span>
+              </div>
+              }
+            </div>
+          </div>
+          }
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 overflow-y-auto">
+          @for (area of areaVinculoStats; track area.areaName) {
+          <div
+            class="bg-surface-50 p-4 rounded-xl border border-surface-200 flex flex-col gap-3"
+          >
+            <div
+              class="flex justify-between items-center border-b border-surface-200 pb-2"
+            >
+              <span class="font-bold text-rose-800 text-sm">{{
+                area.areaName
+              }}</span>
+            </div>
+            <div class="flex flex-col gap-2">
+              @for (group of area.groups; track group.category) {
+              <div class="flex justify-between items-center text-sm">
+                <span class="text-surface-600 capitalize text-left pr-2">{{
+                  group.category
+                }}</span>
+                <span class="font-semibold">{{ group.count }}</span>
+              </div>
+              }
+            </div>
+          </div>
+          }
+        </div>
+      </p-tabpanel>
+      <p-tabpanel value="3" ngClass="min-h-0 grow flex flex-col gap-3">
         <div class="grid grid-cols-5 gap-3">
           <span class="font-medium -mb-1 text-surface-600 col-span-5"
             >a) Distribuição de servidores por grau de jurisdição (91,5% -
@@ -525,7 +576,7 @@
           @for (item of calculosResolucao | slice:0:5; track item.label) {
           <div
             class="p-2 flex flex-col items-center justify-center rounded-xl"
-            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-100'"
+            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-50'"
           >
             <span
               class="text-xs font-medium text-center"
@@ -563,7 +614,7 @@
           @for (item of calculosResolucao | slice:5:10; track item.label) {
           <div
             class="p-2 flex flex-col items-center justify-center rounded-xl"
-            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-100'"
+            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-50'"
           >
             <span
               class="text-xs font-medium text-center"
@@ -602,7 +653,7 @@
           @for (item of calculosResolucao | slice:10:15; track item.label) {
           <div
             class="p-2 flex flex-col items-center justify-center rounded-xl"
-            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-100'"
+            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-50'"
           >
             <span
               class="text-xs font-medium text-center"
@@ -641,7 +692,7 @@
           @for (item of calculosResolucao | slice:15:20; track item.label) {
           <div
             class="p-2 flex flex-col items-center justify-center rounded-xl"
-            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-100'"
+            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-50'"
           >
             <span
               class="text-xs font-medium text-center"
@@ -675,7 +726,7 @@
         </div>
       </p-tabpanel>
 
-      <p-tabpanel value="3" ngClass="min-h-0 grow flex flex-col">
+      <p-tabpanel value="4" ngClass="min-h-0 grow flex flex-col">
         <p-table
           [value]="resolucaoData"
           class="min-w-full text-xs flex flex-col h-full"
@@ -686,7 +737,7 @@
               class: 'border border-surface-100 rounded-xl'
             },
             header: {
-              class: 'bg-surface-100 text-surface-700 rounded-t-xl'
+              class: 'bg-surface-50 text-surface-700 rounded-t-xl'
             }
           }"
         >
@@ -710,7 +761,7 @@
 
           <ng-template #body let-row>
             <tr
-              class="hover:bg-surface-100"
+              class="hover:bg-surface-50"
               [pTooltip]="row.tooltip"
               autoHide="false"
             >
@@ -728,11 +779,11 @@
         </p-table>
       </p-tabpanel>
 
-      <p-tabpanel value="4" ngClass="min-h-0 grow flex flex-col">
+      <p-tabpanel value="5" ngClass="min-h-0 grow flex flex-col">
         <div class="grid grid-cols-4 gap-3">
           <div class="col-span-4 flex gap-3">
             <div
-              class="flex-1 p-2 flex flex-col items-center justify-center rounded-xl bg-surface-100"
+              class="flex-1 p-2 flex flex-col items-center justify-center rounded-xl bg-surface-50"
             >
               <span class="text-xs font-medium text-center text-surface-500">
                 Obtido
@@ -742,7 +793,7 @@
               </span>
             </div>
             <div
-              class="flex-1 p-2 flex flex-col items-center justify-center rounded-xl bg-surface-100"
+              class="flex-1 p-2 flex flex-col items-center justify-center rounded-xl bg-surface-50"
             >
               <span class="text-xs font-medium text-center text-surface-500">
                 Máximo
@@ -750,7 +801,7 @@
               <span class="text-xl font-bold text-rose-800"> 70pts </span>
             </div>
             <div
-              class="flex-1 p-2 flex flex-col items-center justify-center rounded-xl bg-surface-100"
+              class="flex-1 p-2 flex flex-col items-center justify-center rounded-xl bg-surface-50"
             >
               <span class="text-xs font-medium text-center text-surface-500">
                 Percentual
@@ -773,7 +824,7 @@
           <div class="flex flex-col gap-3">
             <div
               class="p-2 flex flex-col items-center justify-center rounded-xl"
-              [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-100'"
+              [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-50'"
             >
               <span
                 class="text-xs font-medium text-center"
@@ -818,7 +869,7 @@
           <div class="flex flex-col gap-3">
             <div
               class="p-2 flex flex-col items-center justify-center rounded-xl"
-              [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-100'"
+              [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-50'"
             >
               <span
                 class="text-xs font-medium text-center"
