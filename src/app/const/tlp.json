@@ -1,0 +1,712 @@
+[
+  {
+    "unidade": "ASSESSORIA DE APOIO A JURISDICAO - ASSAJ",
+    "tlp": 2,
+    "municipio": 4140
+  },
+  {
+    "unidade": "CENTRAL DE CALCULOS - CECAL",
+    "tlp": 2,
+    "municipio": 4140
+  },
+  {
+    "unidade": "CENTRAL DE JUIZES LEIGOS E CONCILIADORES - CELEC",
+    "tlp": 2,
+    "municipio": 4140
+  },
+  {
+    "unidade": "CENTRAL DE SERVICOS MULTIDISCIPLINARES - CESEM",
+    "tlp": 2,
+    "municipio": 4140
+  },
+  {
+    "unidade": "CENTRO JUDICIÁRIO DE SOLUÇÃO DE CONFLITOS E CIDADANIA DE JORDÃO",
+    "tlp": 2,
+    "municipio": 2577
+  },
+  {
+    "unidade": "CENTRO JUDICIÁRIO DE SOLUÇÃO DE CONFLITOS E CIDADANIA DE PORTO WALTER",
+    "tlp": 2,
+    "municipio": 3930
+  },
+  {
+    "unidade": "CENTRO JUDICIÁRIO DE SOLUÇÃO DE CONFLITOS E CIDADANIA DE SANTA ROSA DO PURUS",
+    "tlp": 2,
+    "municipio": 4415
+  },
+  {
+    "unidade": "CENTRO JUDICIARIO DE SOLUCAO DE CONFLITOS E CIDADANIA E JUIZADO DE TRANSITO DE RIO BRANCO",
+    "tlp": 2,
+    "municipio": 4140
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE ACRELANDIA",
+    "tlp": 2,
+    "municipio": 26
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE ASSIS BRASIL",
+    "tlp": 2,
+    "municipio": 5650
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE BRASILEIA",
+    "tlp": 2,
+    "municipio": 741
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE BUJARI",
+    "tlp": 2,
+    "municipio": 784
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE CAPIXABA",
+    "tlp": 2,
+    "municipio": 1067
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE CRUZEIRO DO SUL",
+    "tlp": 2,
+    "municipio": 1465
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE EPITACIOLANDIA",
+    "tlp": 2,
+    "municipio": 1657
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE FEIJO",
+    "tlp": 2,
+    "municipio": 1735
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE MANCIO LIMA",
+    "tlp": 2,
+    "municipio": 2851
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE MANOEL URBANO",
+    "tlp": 2,
+    "municipio": 2865.4415
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE PLACIDO DE CASTRO",
+    "tlp": 2,
+    "municipio": 3823
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE PORTO ACRE",
+    "tlp": 2,
+    "municipio": 3896
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE RIO BRANCO",
+    "tlp": 2,
+    "municipio": 4140
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE RODRIGUES ALVES",
+    "tlp": 2,
+    "municipio": 4209
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE SENA MADUREIRA",
+    "tlp": 2,
+    "municipio": 4902
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE SENADOR GUIOMARD",
+    "tlp": 2,
+    "municipio": 4910
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE TARAUACA",
+    "tlp": 2,
+    "municipio": 2577.5117
+  },
+  {
+    "unidade": "DIRETORIA DO FORO DE XAPURI",
+    "tlp": 2,
+    "municipio": 5499
+  },
+  {
+    "unidade": "FORUM DIGITAL DE JORDAO",
+    "tlp": 1,
+    "municipio": 2577
+  },
+  {
+    "unidade": "FORUM DIGITAL DE MARECHAL THAUMATURGO",
+    "tlp": 1,
+    "municipio": 2911
+  },
+  {
+    "unidade": "FORUM DIGITAL DE PORTO WALTER",
+    "tlp": 1,
+    "municipio": 3930
+  },
+  {
+    "unidade": "FORUM DIGITAL DE SANTA ROSA DO PURUS",
+    "tlp": 1,
+    "municipio": 4415
+  },
+  {
+    "unidade": "JUIZADO ESPECIAL CIVEL E DE FAZENDA PUBLICA DE CRUZEIRO DO SUL",
+    "tlp": 1,
+    "municipio": 1465
+  },
+  {
+    "unidade": "JUIZADO ESPECIAL CRIMINAL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "JUIZADO ESPECIAL DE FAZENDA PUBLICA DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "PRIMEIRA TURMA RECURSAL",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "PRIMEIRA VARA CIVEL DE CRUZEIRO DO SUL",
+    "tlp": 1,
+    "municipio": 1465
+  },
+  {
+    "unidade": "PRIMEIRA VARA CIVEL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "PRIMEIRA VARA CRIMINAL DE CRUZEIRO DO SUL",
+    "tlp": 1,
+    "municipio": 1465
+  },
+  {
+    "unidade": "PRIMEIRA VARA CRIMINAL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "PRIMEIRA VARA DA INFANCIA E JUVENTUDE DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "PRIMEIRA VARA DE FAMILIA DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "PRIMEIRA VARA DE FAZENDA PUBLICA DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "PRIMEIRA VARA DE PROTECAO A MULHER DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "PRIMEIRA VARA DO TRIBUNAL DO JURI DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "PRIMEIRO JUIZADO ESPECIAL CIVEL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "QUARTA VARA CIVEL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "QUINTA VARA CIVEL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SECRETARIA DAS TURMAS RECURSAIS",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SECRETARIA DE APOIO A JURISDICAO - SEAJU",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SEGUNDA TURMA RECURSAL",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SEGUNDA VARA CIVEL DE CRUZEIRO DO SUL",
+    "tlp": 1,
+    "municipio": 1465
+  },
+  {
+    "unidade": "SEGUNDA VARA CIVEL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SEGUNDA VARA CRIMINAL DE CRUZEIRO DO SUL",
+    "tlp": 1,
+    "municipio": 1465
+  },
+  {
+    "unidade": "SEGUNDA VARA CRIMINAL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SEGUNDA VARA DA INFANCIA E JUVENTUDE DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SEGUNDA VARA DE FAMILIA DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SEGUNDA VARA DE FAZENDA PUBLICA DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SEGUNDA VARA DE PROTECAO A MULHER DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SEGUNDA VARA DO TRIBUNAL DO JURI E AUDITORIA MILITAR DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SEGUNDO JUIZADO ESPECIAL CIVEL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SEXTA VARA CIVEL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "TERCEIRA VARA CIVEL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "TERCEIRA VARA CRIMINAL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "TERCEIRA VARA DE FAMILIA DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "TERCEIRO JUIZADO ESPECIAL CIVEL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "VARA CIVEL DE BRASILEIA",
+    "tlp": 1,
+    "municipio": 741
+  },
+  {
+    "unidade": "VARA CIVEL DE FEIJO",
+    "tlp": 1,
+    "municipio": 1735
+  },
+  {
+    "unidade": "VARA CIVEL DE SENA MADUREIRA",
+    "tlp": 1,
+    "municipio": 4902
+  },
+  {
+    "unidade": "VARA CIVEL DE SENADOR GUIOMARD",
+    "tlp": 1,
+    "municipio": 4910
+  },
+  {
+    "unidade": "VARA CIVEL DE TARAUACA",
+    "tlp": 1,
+    "municipio": 2577.5117
+  },
+  {
+    "unidade": "VARA CRIMINAL DE BRASILEIA",
+    "tlp": 1,
+    "municipio": 741
+  },
+  {
+    "unidade": "VARA CRIMINAL DE FEIJO",
+    "tlp": 1,
+    "municipio": 1735
+  },
+  {
+    "unidade": "VARA CRIMINAL DE SENA MADUREIRA",
+    "tlp": 1,
+    "municipio": 4902
+  },
+  {
+    "unidade": "VARA CRIMINAL DE SENADOR GUIOMARD",
+    "tlp": 1,
+    "municipio": 4910
+  },
+  {
+    "unidade": "VARA CRIMINAL DE TARAUACA",
+    "tlp": 1,
+    "municipio": 2577.5117
+  },
+  {
+    "unidade": "VARA DE DELITOS DE ORGANIZACOES CRIMINOSAS DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "VARA DE DELITOS DE ROUBO E EXTORSAO DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "VARA DE EXECUCAO FISCAL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "VARA DE EXECUÇÃO FISCAL DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "VARA DE EXECUCOES DE PENAS E MEDIDAS ALTERNATIVAS DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "VARA DE EXECUCOES PENAIS NO REGIME FECHADO DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "VARA DE INFANCIA E JUVENTUDE DE CRUZEIRO DO SUL",
+    "tlp": 1,
+    "municipio": 1465
+  },
+  {
+    "unidade": "VARA DE PROTECAO A MULHER E EXECUCAO PENAL",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "VARA DE PROTEÇÃO À MULHER E EXECUÇÃO PENAL DE CRUZEIRO DO SUL",
+    "tlp": 1,
+    "municipio": 1465
+  },
+  {
+    "unidade": "VARA DE SUCESSOES, REGISTROS PUBLICOS E CARTAS PRECATORIAS CIVEIS DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "VARA ESTADUAL DO JUIZ DE GARANTIAS DE RIO BRANCO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "VARA UNICA DE ACRELANDIA",
+    "tlp": 1,
+    "municipio": 26
+  },
+  {
+    "unidade": "VARA UNICA DE ASSIS BRASIL",
+    "tlp": 1,
+    "municipio": 5650
+  },
+  {
+    "unidade": "VARA ÚNICA DE ASSIS BRASIL",
+    "tlp": 1,
+    "municipio": 5650
+  },
+  {
+    "unidade": "VARA UNICA DE BUJARI",
+    "tlp": 1,
+    "municipio": 784
+  },
+  {
+    "unidade": "VARA UNICA DE CAPIXABA",
+    "tlp": 1,
+    "municipio": 1067
+  },
+  {
+    "unidade": "VARA UNICA DE EPITACIOLANDIA",
+    "tlp": 1,
+    "municipio": 1657
+  },
+  {
+    "unidade": "VARA UNICA DE MANCIO LIMA",
+    "tlp": 1,
+    "municipio": 2851
+  },
+  {
+    "unidade": "VARA UNICA DE MANOEL URBANO",
+    "tlp": 1,
+    "municipio": 2865.4415
+  },
+  {
+    "unidade": "VARA UNICA DE PLACIDO DE CASTRO",
+    "tlp": 1,
+    "municipio": 3823
+  },
+  {
+    "unidade": "VARA UNICA DE PORTO ACRE",
+    "tlp": 1,
+    "municipio": 3896
+  },
+  {
+    "unidade": "VARA UNICA DE RODRIGUES ALVES",
+    "tlp": 1,
+    "municipio": 4209
+  },
+  {
+    "unidade": "VARA UNICA DE XAPURI",
+    "tlp": 1,
+    "municipio": 5499
+  },
+  {
+    "unidade": "GABINETE DA DESEMBARGADORA DENISE CASTELO BONFIM",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DA DESEMBARGADORA REGINA CÉLIA FERRARI LONGUINI",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DA DESEMBARGADORA WALDIRENE OLIVEIRA DA CRUZ LIMA CORDEIRO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DE DESEMBARGADOR",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DO DESEMBARGADOR ÉLCIO SABO MENDES JÚNIOR",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DO DESEMBARGADOR FRANCISCO DJALMA DA SILVA",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DO DESEMBARGADOR JÚNIOR ALBERTO RIBEIRO",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DO DESEMBARGADOR LOIS CARLOS ARRUDA",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DO DESEMBARGADOR LUIS VITÓRIO CAMOLEZ",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DO DESEMBARGADOR RAIMUNDO NONATO MAIA",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DO DESEMBARGADOR ROBERTO BARROS DOS SANTOS",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DO DESEMBARGADOR SAMOEL MARTINS EVANGELISTA",
+    "tlp": 1,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SUBSECRETARIA DE APOIO AS SESSOES",
+    "tlp": 2,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SUBSECRETARIA DE DISTRIBUIÇÃO",
+    "tlp": 2,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SUBSECRETARIA DE GESTÃO DE FEITOS",
+    "tlp": 2,
+    "municipio": 4140
+  },
+  {
+    "unidade": "ASSESSORIA DA SECRETARIA DE TECNOLOGIA DA INFORMAÇÃO E COMUNICAÇÃO",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "ASSESSORIA JURÍDICA DA CORREGEDORIA-GERAL DA JUSTIÇA",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "ASSESSORIA JURÍDICA DA PRESIDÊNCIA",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "COMISSÃO PERMANENTE DE LICITAÇÃO",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "COORDENADORIA DE ANÁLISE E AUTOMAÇÃO DE PROCESSOS JUDICIAIS",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "COORDENADORIA DE APOIO AOS PROGRAMAS SOCIAIS",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "COORDENADORIA DE BEM-ESTAR E SAÚDE",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "COORDENADORIA DE GESTÃO DE MEMÓRIA E ARQUIVOS",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "COORDENADORIA DE GESTÃO FUNCIONAL E REMUNERAÇÃO DE MAGISTRADOS",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "COORDENADORIA DE NORMAS E JURISPRUDÊNCIA",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "COORDENADORIA DE SERVIÇOS AUXILIARES",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DA CORREGEDORIA-GERAL DA JUSTIÇA",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DA PRESIDÊNCIA",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "GABINETE DE SEGURANÇA INSTITUCIONAL",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "OUVIDORIA GERAL",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SECRETARIA DE GESTÃO DE PESSOAS",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SECRETARIA DE GESTÃO ORÇAMENTÁRIA E FINANÇAS",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SECRETARIA DE LOGÍSTICA E GESTÃO ADMINISTRATIVA",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SECRETARIA-GERAL",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SUBSECRETARIA DE ATENDIMENTO AO PÚBLICO EXTERNO",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SUBSECRETARIA DE ESTRATÉGIA E SUSTENTABILIDADE",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SUBSECRETARIA DE EXECUÇÃO FINANCEIRA",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SUBSECRETARIA DE GESTÃO DE BENS E MATERIAIS",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SUBSECRETARIA DE GESTÃO DE COMPRAS",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SUBSECRETARIA DE GESTÃO DE DESENVOLVIMENTO DE SERVIDORES",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SUBSECRETARIA DE GESTÃO DE SERVIDORES E FOLHA DE PAGAMENTO",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SUBSECRETARIA DE GESTÃO DE TRANSPORTE",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SUBSECRETARIA DE INFRAESTRUTURA",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "SUBSECRETARIA DE TRANSFORMAÇÃO ORGANIZACIONAL",
+    "tlp": 3,
+    "municipio": 4140
+  },
+  {
+    "unidade": "TRIBUNAL DE JUSTIÇA",
+    "tlp": 3,
+    "municipio": 4140
+  }
+]

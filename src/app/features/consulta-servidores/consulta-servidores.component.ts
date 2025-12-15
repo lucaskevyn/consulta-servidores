@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { SortEvent } from 'primeng/api';
 import { TabsModule } from 'primeng/tabs';
 import { TooltipModule } from 'primeng/tooltip';
+import tlpList from '../../const/tlp.json';
 
 // ---- TIPO CORRIGIDO ----
 // PrimeNG não inclui "data" dentro do SortEvent.
@@ -27,6 +28,34 @@ interface Column {
 interface ExportColumn {
   title: string;
   dataKey: string;
+}
+
+export interface TlpRow {
+  grau: string;
+  tipo: string;
+  dsc_unidade: string;
+  uf: string;
+  municipio: number;
+  lp: number;
+  lr_efet: number;
+  lr_i: number;
+  lr_sv: number;
+  cj_1g_1: number;
+  cj_2g_1: number;
+  cj_2g_2: number;
+  cj_2g_3: number;
+  cj_2g_4: number;
+  cj_2g_5: number;
+  cj_2g_6: number;
+  cj_2g_7: number;
+  fc_1g_1: number;
+  fc_1g_2: number;
+  fc_2g_1: number;
+  fc_2g_2: number;
+  fc_2g_3: number;
+  fc_2g_4: number;
+  fc_2g_5: number;
+  fc_2g_6: number;
 }
 
 @Component({
@@ -47,6 +76,7 @@ interface ExportColumn {
 export class ConsultaServidoresComponent {
   @ViewChild('dt') dt!: Table;
   @ViewChild('dt2') dt2!: Table;
+  @ViewChild('dtTlp') dtTlp!: Table;
 
   dados: Servidor[] = [];
   loading = false;
@@ -57,7 +87,7 @@ export class ConsultaServidoresComponent {
   cols!: Column[];
   exportColumns!: ExportColumn[];
 
-  uniqueValues: { [key: string]: string[] } = {
+  uniqueValues: { [key: string]: any[] } = {
     apoio: [],
     grau: [],
     secretaria: [],
@@ -70,9 +100,10 @@ export class ConsultaServidoresComponent {
     funcao: [],
     // padrao_funcao: [],
     jurisdicao: [],
-    classificacao_tlp: [],
-    situacao: [],
   };
+
+  tlpList: any[] = tlpList;
+  tlpData: TlpRow[] = [];
 
   // Armazena todas as opções originais para restaurar quando necessário
   fullUniqueValues: { [key: string]: string[] } = {};
@@ -81,11 +112,13 @@ export class ConsultaServidoresComponent {
 
   initialValue: Servidor[] = [];
   initialCargosData: any[] = [];
+  initialTlpData: TlpRow[] = [];
 
   // Estado de ordenação por tabela (null = padrão, true = asc, false = desc)
   sortStates: { [key: string]: boolean | null } = {
     main: null,
     cargos: null,
+    tlp: null,
   };
 
   inputPt = {
@@ -168,10 +201,39 @@ export class ConsultaServidoresComponent {
       { field: 'question', header: 'Pergunta' },
       { field: 'value', header: 'Valor' },
     ];
+
+    this.tlpCols = [
+      { field: 'grau', header: 'Grau' },
+      { field: 'tipo', header: 'Tipo' },
+      { field: 'dsc_unidade', header: 'Unidade' },
+      { field: 'uf', header: 'UF' },
+      { field: 'municipio', header: 'Município' },
+      { field: 'lp', header: 'LP' },
+      { field: 'lr_efet', header: 'LR-EFET' },
+      { field: 'lr_i', header: 'LR-I' },
+      { field: 'lr_sv', header: 'LR-SV' },
+      { field: 'cj_1g_1', header: 'CJ-1G-1' },
+      { field: 'cj_2g_1', header: 'CJ-2G-1' },
+      { field: 'cj_2g_2', header: 'CJ-2G-2' },
+      { field: 'cj_2g_3', header: 'CJ-2G-3' },
+      { field: 'cj_2g_4', header: 'CJ-2G-4' },
+      { field: 'cj_2g_5', header: 'CJ-2G-5' },
+      { field: 'cj_2g_6', header: 'CJ-2G-6' },
+      { field: 'cj_2g_7', header: 'CJ-2G-7' },
+      { field: 'fc_1g_1', header: 'FC-1G-1' },
+      { field: 'fc_1g_2', header: 'FC-1G-2' },
+      { field: 'fc_2g_1', header: 'FC-2G-1' },
+      { field: 'fc_2g_2', header: 'FC-2G-2' },
+      { field: 'fc_2g_3', header: 'FC-2G-3' },
+      { field: 'fc_2g_4', header: 'FC-2G-4' },
+      { field: 'fc_2g_5', header: 'FC-2G-5' },
+      { field: 'fc_2g_6', header: 'FC-2G-6' },
+    ];
   }
 
   cargosCols!: Column[];
   resolucaoCols!: Column[];
+  tlpCols!: Column[];
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -209,6 +271,7 @@ export class ConsultaServidoresComponent {
     this.fullUniqueValues = JSON.parse(JSON.stringify(this.uniqueValues));
 
     this.calculateApoioCounts();
+    this.calculateTlpData();
   }
 
   apoioCounts: { label: string; count: number }[] = [];
@@ -396,6 +459,152 @@ export class ConsultaServidoresComponent {
         groups,
       };
     });
+  }
+
+  calculateTlpData() {
+    this.tlpData = [];
+
+    this.tlpList.forEach((item: any) => {
+      // Normaliza o nome da unidade do TLP para comparação
+      const unidadeTlp = (item.unidade || '').trim().toUpperCase();
+
+      // Filtra os dados (servidores) que pertencem a essa unidade
+      const matchingServidores = this.dados.filter((d) => {
+        const unidadeDados = (d.unidade || '').trim().toUpperCase();
+        return unidadeDados === unidadeTlp;
+      });
+
+      // Se não houver servidores, ainda criamos a linha, mas com counts 0?
+      // Ou pegamos grau/ tipo de algum lugar? Vamos tentar pegar do primeiro servidor.
+      // Se não tiver servidor, grau/tipo ficam vazios.
+      const first = matchingServidores[0];
+      const grau = first ? first.grau || '' : '';
+      const tipo = first ? first.jurisdicao || '' : ''; // tipo = campo jurisdicao
+      const dsc_unidade = first ? first.unidade : item.unidade;
+
+      let lr_efet = 0;
+      let lr_i = 0;
+      let lr_sv = 0;
+
+      // Funções
+      let cj_1g_1 = 0;
+      // cj-2g
+      let cj_2g_1 = 0;
+      let cj_2g_2 = 0;
+      let cj_2g_3 = 0;
+      let cj_2g_4 = 0;
+      let cj_2g_5 = 0;
+      let cj_2g_6 = 0;
+      let cj_2g_7 = 0;
+      // fc-1g
+      let fc_1g_1 = 0;
+      let fc_1g_2 = 0;
+      // fc-2g
+      let fc_2g_1 = 0;
+      let fc_2g_2 = 0;
+      let fc_2g_3 = 0;
+      let fc_2g_4 = 0;
+      let fc_2g_5 = 0;
+      let fc_2g_6 = 0;
+
+      matchingServidores.forEach((s) => {
+        const vinculo = (s.vinculo || '').toLowerCase().trim();
+        const funcao = (s.funcao || '').toLowerCase().trim();
+
+        // --- Contagem por Vínculo ---
+        if (
+          [
+            'efetivo não comissionado',
+            'efetivo comissionado (resolução 03/2013)',
+            'transitório não comissionado',
+          ].includes(vinculo)
+        ) {
+          lr_efet++;
+        }
+
+        if (
+          [
+            'à disposição fprev',
+            'à disposição fps',
+            'comissionado (à disposição)',
+            'diversos (requisitados reg prev rgps)',
+            'diversos (requisitados reg prev rpps)',
+          ].includes(vinculo)
+        ) {
+          lr_i++;
+        }
+
+        if (['ad nutum comissionado'].includes(vinculo)) {
+          lr_sv++;
+        }
+
+        // --- Contagem por Função ---
+        if (funcao.includes('cj-1g-1')) cj_1g_1++;
+
+        if (funcao.includes('cj-2g-1')) cj_2g_1++;
+        if (funcao.includes('cj-2g-2')) cj_2g_2++;
+        if (funcao.includes('cj-2g-3')) cj_2g_3++;
+        if (funcao.includes('cj-2g-4')) cj_2g_4++;
+        if (funcao.includes('cj-2g-5')) cj_2g_5++;
+        if (funcao.includes('cj-2g-6')) cj_2g_6++;
+        if (funcao.includes('cj-2g-7')) cj_2g_7++;
+
+        if (funcao.includes('fc-1g-1')) fc_1g_1++;
+        if (funcao.includes('fc-1g-2')) fc_1g_2++;
+
+        if (funcao.includes('fc-2g-1')) fc_2g_1++;
+        if (funcao.includes('fc-2g-2')) fc_2g_2++;
+        if (funcao.includes('fc-2g-3')) fc_2g_3++;
+        if (funcao.includes('fc-2g-4')) fc_2g_4++;
+        if (funcao.includes('fc-2g-5')) fc_2g_5++;
+        if (funcao.includes('fc-2g-6')) fc_2g_6++;
+      });
+
+      this.tlpData.push({
+        grau,
+        tipo,
+        dsc_unidade,
+        uf: 'AC',
+        municipio: item.municipio,
+        lp: item.tlp,
+        lr_efet,
+        lr_i,
+        lr_sv,
+        cj_1g_1,
+        cj_2g_1,
+        cj_2g_2,
+        cj_2g_3,
+        cj_2g_4,
+        cj_2g_5,
+        cj_2g_6,
+        cj_2g_7,
+        fc_1g_1,
+        fc_1g_2,
+        fc_2g_1,
+        fc_2g_2,
+        fc_2g_3,
+        fc_2g_4,
+        fc_2g_5,
+        fc_2g_6,
+      });
+    });
+
+    this.initialTlpData = [...this.tlpData];
+
+    // Popula filtros TLP
+    const lps = this.tlpData
+      .map((d) => d.lp)
+      .filter((v) => v !== null && v !== undefined);
+    this.uniqueValues['tlp_lp'] = Array.from(new Set(lps)).sort((a, b) => {
+      // Sort numérico ou string
+      if (typeof a === 'number' && typeof b === 'number') return a - b;
+      return String(a).localeCompare(String(b));
+    });
+
+    const unidades = this.tlpData.map((d) => d.dsc_unidade).filter((v) => !!v);
+    this.uniqueValues['tlp_unidade'] = Array.from(new Set(unidades)).sort(
+      (a, b) => a.localeCompare(b)
+    );
   }
 
   // -----------------------
@@ -1070,6 +1279,16 @@ export class ConsultaServidoresComponent {
           this.initialCargosData,
           'cargos',
           this.dt2
+        );
+        break;
+      case 'tlp':
+        this.executeSort(
+          event,
+          this.tlpData,
+          (d) => (this.tlpData = d),
+          this.initialTlpData,
+          'tlp',
+          this.dtTlp
         );
         break;
     }

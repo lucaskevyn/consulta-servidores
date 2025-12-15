@@ -28,6 +28,7 @@
       <p-tab value="3">Cálculos da Distribuição</p-tab>
       <p-tab value="4">Priorização do 1º Grau</p-tab>
       <p-tab value="5">Prêmio de Qualidade (Art. 9, I, a-d)</p-tab>
+      <p-tab value="6">Dados TLP</p-tab>
     </p-tablist>
     <p-tabpanels ngClass="flex flex-col grow p-0 pt-4 min-h-0">
       <p-tabpanel value="0" ngClass="min-h-0 grow flex flex-col">
@@ -900,6 +901,106 @@
           </div>
           }
         </div>
+      </p-tabpanel>
+
+      <p-tabpanel value="6" ngClass="min-h-0 grow flex flex-col">
+        <p-table
+          #dtTlp
+          [value]="tlpData"
+          class="min-w-full text-xs flex flex-col h-full"
+          [exportHeader]="'header'"
+          stripedRows
+          [columns]="tlpCols"
+          (sortFunction)="customSort($event, 'tlp')"
+          [customSort]="true"
+          size="small"
+          [pt]="{
+            root: {
+              class: 'border border-surface-100 rounded-xl'
+            },
+            header: {
+              class: 'bg-surface-50 text-surface-700 rounded-t-xl'
+            }
+          }"
+        >
+          <ng-template #caption>
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <p-multiSelect
+                  [options]="getOptions('tlp_lp')"
+                  (onChange)="dtTlp.filter($event.value, 'lp', 'in')"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Filtrar por LP"
+                  class="min-w-40"
+                  appendTo="body"
+                  [maxSelectedLabels]="1"
+                  selectedItemsLabel="{0} itens selecionados"
+                />
+                <p-multiSelect
+                  [options]="getOptions('tlp_unidade')"
+                  (onChange)="dtTlp.filter($event.value, 'dsc_unidade', 'in')"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Filtrar por Unidade"
+                  class="min-w-64"
+                  appendTo="body"
+                  [maxSelectedLabels]="1"
+                  selectedItemsLabel="{0} itens selecionados"
+                />
+              </div>
+
+              <p-button
+                icon="pi pi-external-link"
+                label="Exportar"
+                (click)="exportToCSV(tlpData, tlpCols, 'tlp')"
+              />
+            </div>
+          </ng-template>
+
+          <ng-template #header let-columns>
+            <tr>
+              @for (col of columns; track col.field) {
+              <th
+                [pSortableColumn]="col.field"
+                class="text-sm py-2 px-4 whitespace-nowrap"
+              >
+                {{ col.header }} <p-sortIcon [field]="col.field" />
+              </th>
+              }
+            </tr>
+          </ng-template>
+
+          <ng-template #body let-row>
+            <tr class="hover:bg-surface-50">
+              <td class="py-2 px-4">{{ row.grau }}</td>
+              <td class="py-2 px-4">{{ row.tipo }}</td>
+              <td class="py-2 px-4 font-medium">{{ row.dsc_unidade }}</td>
+              <td class="py-2 px-4">{{ row.uf }}</td>
+              <td class="py-2 px-4">{{ row.municipio }}</td>
+              <td class="py-2 px-4">{{ row.lp }}</td>
+              <td class="py-2 px-4">{{ row.lr_efet }}</td>
+              <td class="py-2 px-4">{{ row.lr_i }}</td>
+              <td class="py-2 px-4">{{ row.lr_sv }}</td>
+              <td class="py-2 px-4">{{ row.cj_1g_1 }}</td>
+              <td class="py-2 px-4">{{ row.cj_2g_1 }}</td>
+              <td class="py-2 px-4">{{ row.cj_2g_2 }}</td>
+              <td class="py-2 px-4">{{ row.cj_2g_3 }}</td>
+              <td class="py-2 px-4">{{ row.cj_2g_4 }}</td>
+              <td class="py-2 px-4">{{ row.cj_2g_5 }}</td>
+              <td class="py-2 px-4">{{ row.cj_2g_6 }}</td>
+              <td class="py-2 px-4">{{ row.cj_2g_7 }}</td>
+              <td class="py-2 px-4">{{ row.fc_1g_1 }}</td>
+              <td class="py-2 px-4">{{ row.fc_1g_2 }}</td>
+              <td class="py-2 px-4">{{ row.fc_2g_1 }}</td>
+              <td class="py-2 px-4">{{ row.fc_2g_2 }}</td>
+              <td class="py-2 px-4">{{ row.fc_2g_3 }}</td>
+              <td class="py-2 px-4">{{ row.fc_2g_4 }}</td>
+              <td class="py-2 px-4">{{ row.fc_2g_5 }}</td>
+              <td class="py-2 px-4">{{ row.fc_2g_6 }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
       </p-tabpanel>
     </p-tabpanels>
   </p-tabs>
