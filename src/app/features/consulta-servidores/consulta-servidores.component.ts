@@ -108,7 +108,10 @@ export class ConsultaServidoresComponent {
   // Armazena todas as opções originais para restaurar quando necessário
   fullUniqueValues: { [key: string]: string[] } = {};
 
-  filterValues: { [key: string]: any[] } = {};
+  filterValues: { [key: string]: any[] } = {
+    tlp_lp: [],
+    tlp_unidade: [],
+  };
 
   initialValue: Servidor[] = [];
   initialCargosData: any[] = [];

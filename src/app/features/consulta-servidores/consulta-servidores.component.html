@@ -928,6 +928,7 @@
               <div class="flex items-center gap-2">
                 <p-multiSelect
                   [options]="getOptions('tlp_lp')"
+                  [(ngModel)]="filterValues['tlp_lp']"
                   (onChange)="dtTlp.filter($event.value, 'lp', 'in')"
                   optionLabel="label"
                   optionValue="value"
@@ -939,6 +940,7 @@
                 />
                 <p-multiSelect
                   [options]="getOptions('tlp_unidade')"
+                  [(ngModel)]="filterValues['tlp_unidade']"
                   (onChange)="dtTlp.filter($event.value, 'dsc_unidade', 'in')"
                   optionLabel="label"
                   optionValue="value"
@@ -949,12 +951,20 @@
                   selectedItemsLabel="{0} itens selecionados"
                 />
               </div>
-
-              <p-button
-                icon="pi pi-external-link"
-                label="Exportar"
-                (click)="exportToCSV(tlpData, tlpCols, 'tlp')"
-              />
+              <div class="flex items-center gap-2">
+                <p-button
+                  label="Limpar filtros"
+                  icon="pi pi-filter-slash"
+                  outlined="true"
+                  severity="contrast"
+                  (click)="clearTableFilters(dtTlp)"
+                ></p-button>
+                <p-button
+                  icon="pi pi-external-link"
+                  label="Exportar"
+                  (click)="exportToCSV(tlpData, tlpCols, 'tlp')"
+                />
+              </div>
             </div>
           </ng-template>
 
