@@ -1,7 +1,7 @@
 <div class="flex gap-3">
   @for (item of functionCounts; track item.label) {
   <div
-    class="flex-1 bg-surface-50 p-2 flex flex-col items-center justify-center rounded-xl"
+    class="flex-1 bg-surface-0 p-2 flex flex-col items-center justify-center rounded-xl"
   >
     <span class="text-xl font-bold text-rose-800">
       {{ item.count }}
@@ -13,7 +13,7 @@
   }
 </div>
 
-<div class="grow min-h-0 pt-4">
+<div class="grow min-h-0 pt-3">
   <p-table
     #dt2
     [value]="cargosData"
@@ -27,7 +27,7 @@
       class: 'border border-surface-100 rounded-xl'
     },
     header: {
-      class: 'bg-surface-50 text-surface-700 rounded-t-xl'
+      class: 'bg-surface-0 text-surface-700 rounded-t-xl'
     },
     pcPaginator: {
       root: {

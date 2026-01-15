@@ -61,13 +61,43 @@ export class ConsultaServidoresComponent {
   sidebarCollapsed = false;
 
   menuItems = [
-    { label: 'Geral', icon: 'pi pi-home', value: 0 },
-    { label: 'Cargos e Funções', icon: 'pi pi-list', value: 1 },
-    { label: 'Servidores', icon: 'pi pi-users', value: 2 },
-    { label: 'Cálculos', icon: 'pi pi-calculator', value: 3 },
-    { label: 'Priorização 1º Grau', icon: 'pi pi-sort-amount-up', value: 4 },
-    { label: 'Prêmio Qualidade', icon: 'pi pi-star', value: 5 },
-    { label: 'TLP', icon: 'pi pi-table', value: 6 },
+    { label: 'Geral', labelHeader: 'Geral', icon: 'pi pi-home', value: 0 },
+    {
+      label: 'Cargos e Funções',
+      labelHeader: 'Cargos e Funções',
+      icon: 'pi pi-list',
+      value: 1,
+    },
+    {
+      label: 'Servidores',
+      labelHeader: 'Servidores',
+      icon: 'pi pi-users',
+      value: 2,
+    },
+    {
+      label: 'Cálculos',
+      labelHeader: 'Cálculos da Distribuição',
+      icon: 'pi pi-calculator',
+      value: 3,
+    },
+    {
+      label: 'Priorização 1º Grau',
+      labelHeader: 'Priorização 1º Grau',
+      icon: 'pi pi-sort-amount-up',
+      value: 4,
+    },
+    {
+      label: 'Prêmio Qualidade',
+      labelHeader: 'Prêmio de Qualidade (Art. 9 I, a-d)',
+      icon: 'pi pi-star',
+      value: 5,
+    },
+    {
+      label: 'TLP',
+      labelHeader: 'Tabela de Lotação de Pessoal',
+      icon: 'pi pi-table',
+      value: 6,
+    },
   ];
 
   toggleSidebar() {
@@ -991,8 +1021,8 @@ export class ConsultaServidoresComponent {
             : 'Não cumprido',
         bgColor:
           this.resolucaoData[7].value / totalJud >= 0.905
-            ? 'bg-green-50'
-            : 'bg-rose-50',
+            ? 'bg-green-100'
+            : 'bg-rose-100',
         textColor:
           this.resolucaoData[7].value / totalJud >= 0.905
             ? 'text-green-800'
@@ -1028,8 +1058,8 @@ export class ConsultaServidoresComponent {
         bgColor:
           (this.resolucaoData[1].value + this.resolucaoData[4].value) /
           totalJudValor
-            ? 'bg-rose-50'
-            : 'bg-green-50',
+            ? 'bg-rose-100'
+            : 'bg-green-100',
         textColor:
           (this.resolucaoData[1].value + this.resolucaoData[4].value) /
           totalJudValor
@@ -1053,7 +1083,7 @@ export class ConsultaServidoresComponent {
         label: 'Situação Item',
         value: totalJud / totalApoio >= 0.7 ? '15pts' : '0pts',
         desc: totalJud / totalApoio >= 0.7 ? 'Cumprido' : 'Não cumprido',
-        bgColor: totalJud / totalApoio >= 0.7 ? 'bg-green-50' : 'bg-rose-50',
+        bgColor: totalJud / totalApoio >= 0.7 ? 'bg-green-100' : 'bg-rose-100',
         textColor:
           totalJud / totalApoio >= 0.7 ? 'text-green-800' : 'text-rose-800',
       },
@@ -1076,7 +1106,9 @@ export class ConsultaServidoresComponent {
         desc:
           totalJudValor / totalApoioValor >= 0.7 ? 'Cumprido' : 'Não cumprido',
         bgColor:
-          totalJudValor / totalApoioValor >= 0.7 ? 'bg-green-50' : 'bg-rose-50',
+          totalJudValor / totalApoioValor >= 0.7
+            ? 'bg-green-100'
+            : 'bg-rose-100',
         textColor:
           totalJudValor / totalApoioValor >= 0.7
             ? 'text-green-800'

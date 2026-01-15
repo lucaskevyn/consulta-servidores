@@ -17,7 +17,7 @@
       class: 'border border-surface-100 rounded-xl'
     },
     header: {
-      class: 'bg-surface-50 text-surface-700 rounded-t-xl'
+      class: 'bg-surface-0 text-surface-700 rounded-t-xl'
     },
     pcPaginator: {
       root: {
@@ -30,14 +30,14 @@
   <ng-template #caption>
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <i class="pi pi-search text-surface-500"></i>
+        <i class="pi pi-search text-surface-500 ml-2"></i>
         <input
           pInputText
           type="text"
           placeholder="Filtro global..."
           [(ngModel)]="globalFilterValue"
           (input)="dt.filterGlobal(globalFilterValue, 'contains')"
-          class="h-9 px-3 rounded border-0"
+          class="h-9 px-2 rounded border-0"
         />
       </div>
 
