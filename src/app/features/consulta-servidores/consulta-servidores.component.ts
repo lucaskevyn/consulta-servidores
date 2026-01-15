@@ -278,31 +278,15 @@ export class ConsultaServidoresComponent {
     // Faz uma cópia profunda para preservar todas as opções
     this.fullUniqueValues = JSON.parse(JSON.stringify(this.uniqueValues));
 
-    this.calculateApoioCounts();
+    this.calculateStats();
     this.calculateTlpData();
   }
 
-  apoioCounts: { label: string; count: number }[] = [];
-
-  calculateApoioCounts() {
+  calculateStats() {
     this.calculateFunctionCounts();
     this.calculateCargosData();
     this.calculateResolucaoData();
-    this.calculateVinculoGroups();
     this.calculateAreaVinculoStats();
-
-    this.apoioCounts[0] = {
-      label: 'ÁREA ADMINISTRATIVA DO TJAC',
-      count: this.resolucaoData[8].value,
-    };
-    this.apoioCounts[1] = {
-      label: 'ÁREA JUDICIÁRIA DE 1º GRAU',
-      count: this.resolucaoData[7].value,
-    };
-    this.apoioCounts[2] = {
-      label: 'ÁREA JUDICIÁRIA DE 2º GRAU',
-      count: this.resolucaoData[6].value,
-    };
   }
 
   functionCounts: { label: string; count: number }[] = [];
@@ -354,71 +338,17 @@ export class ConsultaServidoresComponent {
     this.functionCounts = counts;
   }
 
-  vinculoGroups: {
-    category: string;
-    total: number;
-    items: { label: string; count: number }[];
-  }[] = [];
-
-  calculateVinculoGroups() {
-    const groupsDefinition = [
-      {
-        category: 'Efetivos',
-        matchers: [
-          'efetivo não comissionado',
-          'efetivo comissionado (resolução 03/2013)',
-          'transitório não comissionado',
-        ],
-      },
-      {
-        category: 'Requisitados',
-        matchers: [
-          'à disposição fprev',
-          'à disposição fps',
-          'comissionado (à disposição)',
-          'diversos (requisitados reg prev rgps)',
-          'diversos (requisitados reg prev rpps)',
-        ],
-      },
-      {
-        category: 'Comissionado s/ Vínculo',
-        matchers: ['ad nutum comissionado'],
-      },
-    ];
-
-    this.vinculoGroups = groupsDefinition.map((group) => {
-      let groupTotal = 0;
-      const items = group.matchers.map((matcher) => {
-        const count = this.dados.filter((d) => {
-          const v = (d.vinculo || '').toLowerCase().trim();
-          const a = (d.apoio || '').toLowerCase();
-          const matchVinculo = v === matcher;
-          const excludedApoio = a.includes('esjud') || a.includes('tecnologia');
-
-          return matchVinculo && !excludedApoio;
-        }).length;
-        groupTotal += count;
-        return { label: matcher, count };
-      });
-
-      return {
-        category: group.category,
-        total: groupTotal,
-        items: items,
-      };
-    });
-  }
-
-  areaVinculoStats: {
-    areaName: string;
-    groups: { category: string; count: number }[];
-  }[] = [];
+  areaVinculoStats: AreaVinculoStat[] = [];
 
   calculateAreaVinculoStats() {
     const areas = [
-      'área administrativa do tjac',
-      'área judiciária de 1º grau',
-      'área judiciária de 2º grau',
+      {
+        id: 'adm',
+        label: 'ÁREA ADMINISTRATIVA',
+        search: 'área administrativa do tjac',
+      },
+      { id: '1g', label: '1º GRAU', search: 'área judiciária de 1º grau' },
+      { id: '2g', label: '2º GRAU', search: 'área judiciária de 2º grau' },
     ];
 
     const groupsDefinition = [
@@ -446,27 +376,83 @@ export class ConsultaServidoresComponent {
       },
     ];
 
-    this.areaVinculoStats = areas.map((area) => {
+    // Helper to calculate stats for a subset of data
+    const calculateStatsForData = (dataSubset: Servidor[], name: string) => {
       const groups = groupsDefinition.map((group) => {
-        let count = 0;
-        count = this.dados.filter((d) => {
-          const v = (d.vinculo || '').toLowerCase().trim();
-          const a = (d.apoio || '').toLowerCase(); // Area is derived from 'apoio'
+        let groupTotal = 0;
+        const items = group.matchers.map((matcher) => {
+          const count = dataSubset.filter((d) => {
+            const v = (d.vinculo || '').toLowerCase().trim();
+            return v === matcher;
+          }).length;
+          groupTotal += count;
+          return { label: matcher, count };
+        });
 
-          if (!a.includes(area)) return false;
-          if (!group.matchers.includes(v)) return false;
-
-          return true;
-        }).length;
-
-        return { category: group.category, count };
+        // Add 'Total' item for the group header
+        return {
+          category: group.category,
+          total: groupTotal,
+          items: items,
+        };
       });
 
       return {
-        areaName: area.toUpperCase(),
+        areaName: name,
+        totalServidores: dataSubset.length, // Total filtered by this area/context
         groups,
       };
+    };
+
+    const isExcluded = (apoio: string) => {
+      const a = apoio.toLowerCase();
+      // Exclusion logic from previous implementation
+      return a.includes('esjud') || a.includes('tecnologia');
+    };
+
+    const isAllowedVinculo = (vinculo: string) => {
+      return this.allowedVinculos.includes(vinculo.toLowerCase().trim());
+    };
+
+    // 1. Calculate for each specific area
+    const areaStats = areas.map((areaRef) => {
+      // Filter data for this area
+      const subset = this.dados.filter((d) => {
+        const a = (d.apoio || '').toLowerCase();
+        const v = (d.vinculo || '').toLowerCase().trim();
+
+        // Basic inclusion check as per previous logic
+        if (!a.includes(areaRef.search)) return false;
+        // Exclusion check
+        if (isExcluded(a)) return false;
+        // Vinculo check
+        if (!isAllowedVinculo(v)) return false;
+
+        return true;
+      });
+      return calculateStatsForData(subset, areaRef.label);
     });
+
+    // 2. Calculate TOTAL column (Sum of the 3 areas, or Union of them)
+    // To be precise and consistent, we should use the union of the subsets we just created,
+    // rather than filtering the whole dataset again (which might include edge cases).
+    // Let's filter the whole dataset for any of the 3 keys to be the "Total"
+    const totalSubset = this.dados.filter((d) => {
+      const a = (d.apoio || '').toLowerCase();
+      const v = (d.vinculo || '').toLowerCase().trim();
+
+      const inAreas = areas.some((areaRef) => a.includes(areaRef.search));
+
+      if (!inAreas) return false;
+      if (isExcluded(a)) return false;
+      if (!isAllowedVinculo(v)) return false;
+
+      return true;
+    });
+
+    const totalStats = calculateStatsForData(totalSubset, 'TOTAIS');
+
+    this.areaVinculoStats = [...areaStats, totalStats];
   }
 
   calculateTlpData() {

@@ -1,61 +1,48 @@
-<div class="flex gap-3">
-  @for (item of apoioCounts; track item.label) {
-  <div
-    class="flex-1 bg-surface-50 p-2 flex flex-col items-center justify-center rounded-xl"
-  >
-    <span class="text-xl font-bold text-rose-800">
-      {{ item.count }}
-    </span>
-    <span
-      class="text-xs font-medium text-surface-500 uppercase tracking-wider text-center"
-    >
-      {{ item.label }}
-    </span>
-  </div>
-  }
-</div>
+<div class="h-full overflow-hidden flex flex-col">
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-1 h-full min-h-0">
+    @for (area of areaVinculoStats; track area.areaName) {
+    <div class="flex flex-col gap-3 h-full overflow-y-auto pr-2 pb-4">
+      <!-- Header -->
+      <div class="sticky top-0 bg-surface-0 z-10 py-2 rounded-xl">
+        <h3 class="font-bold text-rose-800 text-center text-sm uppercase">
+          {{ area.areaName }}
+        </h3>
+      </div>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 overflow-y-auto">
-  @for (area of areaVinculoStats; track area.areaName) {
-  <div class="bg-surface-50 p-4 rounded-xl flex flex-col gap-3">
-    <div
-      class="flex justify-between items-center border-b border-surface-200 pb-2"
-    >
-      <span class="font-bold text-rose-800 text-sm">{{ area.areaName }}</span>
-    </div>
-    <div class="flex flex-col gap-2">
+      <!-- Total Servidores Card -->
+      <div
+        class="bg-white p-4 rounded-xl flex flex-col items-center justify-center shrink-0"
+      >
+        <span class="text-3xl font-bold text-rose-800 block">
+          {{ area.totalServidores }}
+        </span>
+        <span class="text-xs text-surface-500"> Servidores </span>
+      </div>
+
+      <!-- Group Cards -->
       @for (group of area.groups; track group.category) {
-      <div class="flex justify-between items-center text-sm">
-        <span class="text-surface-600 capitalize text-left pr-2">{{
-          group.category
-        }}</span>
-        <span class="font-semibold">{{ group.count }}</span>
+      <div class="bg-white p-4 rounded-xl flex flex-col gap-3 shrink-0">
+        <div
+          class="flex justify-between items-center border-b border-surface-100 pb-2"
+        >
+          <span class="font-bold text-surface-700 text-sm">{{
+            group.category
+          }}</span>
+          <span class="font-bold text-rose-800">{{ group.total }}</span>
+        </div>
+        <div class="flex flex-col gap-2">
+          @for (item of group.items; track item.label) {
+          <div class="flex justify-between items-start text-xs group">
+            <span class="text-surface-600 capitalize leading-tight pr-2">{{
+              item.label
+            }}</span>
+            <span class="font-semibold text-surface-900">{{ item.count }}</span>
+          </div>
+          }
+        </div>
       </div>
       }
     </div>
+    }
   </div>
-  }
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 overflow-y-auto">
-  @for (group of vinculoGroups; track group.category) {
-  <div class="bg-surface-50 p-4 rounded-xl flex flex-col gap-3">
-    <div
-      class="flex justify-between items-center border-b border-surface-200 pb-2"
-    >
-      <span class="font-bold text-rose-800">{{ group.category }}</span>
-      <span class="text-lg font-bold">{{ group.total }}</span>
-    </div>
-    <div class="flex flex-col gap-2">
-      @for (item of group.items; track item.label) {
-      <div class="flex justify-between items-center text-sm">
-        <span class="text-surface-600 capitalize text-left pr-2">{{
-          item.label
-        }}</span>
-        <span class="font-semibold">{{ item.count }}</span>
-      </div>
-      }
-    </div>
-  </div>
-  }
 </div>

@@ -20,7 +20,7 @@
 
   <!-- Sidebar -->
   <div
-    class="flex flex-col bg-white border-r border-surface-200 transition-all duration-300"
+    class="flex flex-col bg-white border-r border-surface-100 transition-all duration-300"
     [class.w-64]="!sidebarCollapsed"
     [class.w-20]="sidebarCollapsed"
   >
@@ -70,7 +70,7 @@
   <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
     <!-- Header Area -->
     <div
-      class="p-4 border-b border-surface-200 bg-white flex justify-between items-center shrink-0 h-16"
+      class="p-4 border-b border-surface-100 bg-white flex justify-between items-center shrink-0 h-16"
     >
       <h2 class="text-xl font-semibold text-rose-800 truncate">
         {{ menuItems[activeTab].label }}
@@ -141,9 +141,7 @@
         ></app-tab-cargos-funcoes>
         } @if (activeTab === 2) {
         <app-tab-servidores
-          [apoioCounts]="apoioCounts"
           [areaVinculoStats]="areaVinculoStats"
-          [vinculoGroups]="vinculoGroups"
           class="h-full flex flex-col min-h-0"
         ></app-tab-servidores>
         } @if (activeTab === 3) {

@@ -55,7 +55,12 @@ export interface VinculoGroup {
 
 export interface AreaVinculoStat {
   areaName: string;
-  groups: { category: string; count: number }[];
+  totalServidores: number;
+  groups: {
+    category: string;
+    total: number;
+    items: { label: string; count: number }[];
+  }[];
 }
 
 export interface CalculoResolucao {
