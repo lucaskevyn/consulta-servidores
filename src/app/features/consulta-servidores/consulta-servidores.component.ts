@@ -1,4 +1,3 @@
-// src/app/consulta-servidores/consulta-servidores.component.ts
 import { Component, ViewChild } from '@angular/core';
 import { ExcelService, Servidor } from '../../services/excel.service';
 import { Table, TableModule } from 'primeng/table';
@@ -8,55 +7,25 @@ import { Button } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SortEvent } from 'primeng/api';
-import { TabsModule } from 'primeng/tabs';
 import { TooltipModule } from 'primeng/tooltip';
 import tlpList from '../../const/tlp.json';
-
-// ---- TIPO CORRIGIDO ----
-// PrimeNG não inclui "data" dentro do SortEvent.
-// Então criamos uma extensão segura:
-interface SortEventWithData extends SortEvent {
-  data: any[];
-}
-
-// ------------------------
-interface Column {
-  field: string;
-  header: string;
-}
-
-interface ExportColumn {
-  title: string;
-  dataKey: string;
-}
-
-export interface TlpRow {
-  grau: string;
-  tipo: string;
-  dsc_unidade: string;
-  uf: string;
-  municipio: number;
-  lp: number;
-  lr_efet: number;
-  lr_i: number;
-  lr_sv: number;
-  cj_1g_1: number;
-  cj_2g_1: number;
-  cj_2g_2: number;
-  cj_2g_3: number;
-  cj_2g_4: number;
-  cj_2g_5: number;
-  cj_2g_6: number;
-  cj_2g_7: number;
-  fc_1g_1: number;
-  fc_1g_2: number;
-  fc_2g_1: number;
-  fc_2g_2: number;
-  fc_2g_3: number;
-  fc_2g_4: number;
-  fc_2g_5: number;
-  fc_2g_6: number;
-}
+import {
+  ApoioCount,
+  AreaVinculoStat,
+  CalculoResolucao,
+  Column,
+  ExportColumn,
+  SortEventWithData,
+  TlpRow,
+  VinculoGroup,
+} from './models/consulta-servidores.models';
+import { TabGeralComponent } from './components/tab-geral/tab-geral.component';
+import { TabCargosFuncoesComponent } from './components/tab-cargos-funcoes/tab-cargos-funcoes.component';
+import { TabServidoresComponent } from './components/tab-servidores/tab-servidores.component';
+import { TabCalculosDistribuicaoComponent } from './components/tab-calculos-distribuicao/tab-calculos-distribuicao.component';
+import { TabPriorizacaoGrauComponent } from './components/tab-priorizacao-grau/tab-priorizacao-grau.component';
+import { TabPremioQualidadeComponent } from './components/tab-premio-qualidade/tab-premio-qualidade.component';
+import { TabTlpComponent } from './components/tab-tlp/tab-tlp.component';
 
 @Component({
   selector: 'app-consulta-servidores',
@@ -69,14 +38,42 @@ export interface TlpRow {
     InputText,
     Button,
     FormsModule,
-    TabsModule,
     TooltipModule,
+    TabGeralComponent,
+    TabCargosFuncoesComponent,
+    TabServidoresComponent,
+    TabCalculosDistribuicaoComponent,
+    TabPriorizacaoGrauComponent,
+    TabPremioQualidadeComponent,
+    TabTlpComponent,
   ],
 })
 export class ConsultaServidoresComponent {
-  @ViewChild('dt') dt!: Table;
-  @ViewChild('dt2') dt2!: Table;
-  @ViewChild('dtTlp') dtTlp!: Table;
+  @ViewChild(TabGeralComponent) tabGeral?: TabGeralComponent;
+  @ViewChild(TabCargosFuncoesComponent) tabCargos?: TabCargosFuncoesComponent;
+  @ViewChild(TabTlpComponent) tabTlp?: TabTlpComponent;
+
+  // Sidebar state
+  activeTab = 0;
+  sidebarCollapsed = false;
+
+  menuItems = [
+    { label: 'Geral', icon: 'pi pi-home', value: 0 },
+    { label: 'Cargos e Funções', icon: 'pi pi-list', value: 1 },
+    { label: 'Servidores', icon: 'pi pi-users', value: 2 },
+    { label: 'Cálculos', icon: 'pi pi-calculator', value: 3 },
+    { label: 'Priorização 1º Grau', icon: 'pi pi-sort-amount-up', value: 4 },
+    { label: 'Prêmio Qualidade', icon: 'pi pi-star', value: 5 },
+    { label: 'TLP', icon: 'pi pi-table', value: 6 },
+  ];
+
+  toggleSidebar() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
+
+  setActiveTab(idx: number) {
+    this.activeTab = idx;
+  }
 
   dados: Servidor[] = [];
   loading = false;
@@ -146,21 +143,9 @@ export class ConsultaServidoresComponent {
     'transitório não comissionado',
   ];
 
-  calculosResolucao: {
-    label: string;
-    value: any;
-    desc?: string;
-    bgColor?: string;
-    textColor?: string;
-  }[] = [];
+  calculosResolucao: CalculoResolucao[] = [];
 
-  situacaoPremio: {
-    label: string;
-    value: any;
-    desc?: string;
-    bgColor?: string;
-    textColor?: string;
-  }[] = [];
+  situacaoPremio: CalculoResolucao[] = [];
 
   totalPontos: number = 0;
 
@@ -1105,11 +1090,12 @@ export class ConsultaServidoresComponent {
     }, 0);
   }
 
-  clearTableFilters(table: Table) {
-    table.clear();
+  clearTableFilters() {
+    this.globalFilterValue = '';
     Object.keys(this.filterValues).forEach((key) => {
       this.filterValues[key] = [];
     });
+    this.buildUniqueValues();
   }
 
   getOptions(campo: string) {
@@ -1129,7 +1115,8 @@ export class ConsultaServidoresComponent {
       // Se não passar dados, tenta pegar da tabela principal (dt)
       const tableData =
         data ||
-        (this.dt && (this.dt.filteredValue ?? this.dt.value)) ||
+        (this.tabGeral?.dt &&
+          (this.tabGeral.dt.filteredValue ?? this.tabGeral.dt.value)) ||
         this.dados;
 
       // Se não passar colunas, usa as colunas principais
@@ -1271,7 +1258,7 @@ export class ConsultaServidoresComponent {
           (d) => (this.dados = d),
           this.initialValue,
           'main',
-          this.dt
+          this.tabGeral?.dt
         );
         break;
       case 'cargos':
@@ -1281,7 +1268,7 @@ export class ConsultaServidoresComponent {
           (d) => (this.cargosData = d),
           this.initialCargosData,
           'cargos',
-          this.dt2
+          this.tabCargos?.dt2
         );
         break;
       case 'tlp':
@@ -1291,7 +1278,7 @@ export class ConsultaServidoresComponent {
           (d) => (this.tlpData = d),
           this.initialTlpData,
           'tlp',
-          this.dtTlp
+          this.tabTlp?.dtTlp
         );
         break;
     }

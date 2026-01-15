@@ -1,1023 +1,157 @@
-<div class="mx-auto p-4 flex flex-col h-screen min-h-0">
-  <h2 class="text-2xl font-semibold text-rose-800 mb-3">
-    Res. CNJ Nº 219/2016 - Distribuição de Servidores, Cargos e Funções
-  </h2>
-
-  <input
-    pButton
-    title="input1"
-    type="file"
-    accept=".xlsx"
-    (change)="onFileSelected($event)"
-    class="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-rose-800 file:text-white hover:file:bg-rose-900 cursor-pointer"
-  />
-
-  @if (loading) {
-  <div class="text-center my-8">
+<div class="flex h-screen w-full bg-surface-50 overflow-hidden">
+  <!-- Sidebar -->
+  <div
+    class="flex flex-col bg-white border-r border-surface-200 transition-all duration-300"
+    [class.w-64]="!sidebarCollapsed"
+    [class.w-20]="sidebarCollapsed"
+  >
     <div
-      class="w-10 h-10 border-4 border-surface-300 border-t-rose-800 rounded-full animate-spin mx-auto"
-    ></div>
-    <p class="mt-3 font-semibold text-surface-800">Carregando dados...</p>
+      class="p-4 flex items-center justify-between border-b border-surface-200 h-16"
+    >
+      <span
+        class="font-bold text-rose-800 text-lg whitespace-nowrap overflow-hidden transition-all duration-300"
+        [class.opacity-0]="sidebarCollapsed"
+        [class.w-0]="sidebarCollapsed"
+      >
+        Consulta RH
+      </span>
+      <button
+        pButton
+        icon="pi pi-bars"
+        class="p-button-text p-button-rounded text-rose-800"
+        (click)="toggleSidebar()"
+      ></button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto py-2 flex flex-col gap-1 px-2">
+      @for (item of menuItems; track item.value) {
+      <button
+        class="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-surface-100 text-surface-600 font-medium"
+        [class.bg-rose-50]="activeTab === item.value"
+        [class.text-rose-800]="activeTab === item.value"
+        [class.justify-center]="sidebarCollapsed"
+        (click)="setActiveTab(item.value)"
+        [pTooltip]="sidebarCollapsed ? item.label : ''"
+        tooltipPosition="right"
+      >
+        <i [class]="item.icon" class="text-xl"></i>
+        <span
+          class="whitespace-nowrap overflow-hidden transition-all duration-300"
+          [class.opacity-0]="sidebarCollapsed"
+          [class.w-0]="sidebarCollapsed"
+        >
+          {{ item.label }}
+        </span>
+      </button>
+      }
+    </div>
   </div>
-  } @if (!loading && apoioCounts.length > 0) {
-  <p-tabs value="0" ngClass="grow flex flex-col min-h-0">
-    <p-tablist>
-      <p-tab value="0">Geral</p-tab>
-      <p-tab value="1">Cargos e Funções</p-tab>
-      <p-tab value="2">Servidores</p-tab>
-      <p-tab value="3">Cálculos da Distribuição</p-tab>
-      <p-tab value="4">Priorização do 1º Grau</p-tab>
-      <p-tab value="5">Prêmio de Qualidade (Art. 9, I, a-d)</p-tab>
-      <p-tab value="6"> Tabela de Lotação de Pessoal (TLP)</p-tab>
-    </p-tablist>
-    <p-tabpanels ngClass="flex flex-col grow p-0 pt-4 min-h-0">
-      <p-tabpanel value="0" ngClass="min-h-0 grow flex flex-col">
-        <p-table
-          #dt
-          [value]="dados"
-          [paginator]="true"
-          [rowsPerPageOptions]="[10, 25, 50]"
-          [columns]="cols"
-          [rows]="rows"
-          [globalFilterFields]="globalFields"
-          class="min-w-full text-xs flex flex-col h-full"
-          [exportHeader]="'header'"
-          (sortFunction)="customSort($event)"
-          [customSort]="true"
-          stripedRows
-          size="small"
-          [pt]="{
-            root: {
-              class: 'border border-surface-100 rounded-xl'
-            },
-            header: {
-              class: 'bg-surface-50 text-surface-700 rounded-t-xl'
-            },
-            pcPaginator: {
-              root: {
-                class:
-                  'border-t border-surface-200 text-surface-700 rounded-b-xl rounded-t-none'
-              }
-            },
-          }"
-        >
-          <ng-template #caption>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <i class="pi pi-search text-surface-500"></i>
-                <input
-                  pInputText
-                  type="text"
-                  placeholder="Filtro global..."
-                  [(ngModel)]="globalFilterValue"
-                  (input)="dt.filterGlobal(globalFilterValue, 'contains')"
-                  class="h-9 px-3 rounded border-0"
-                />
-              </div>
 
-              <div class="flex gap-3">
-                <p-button
-                  label="Limpar filtros"
-                  icon="pi pi-filter-slash"
-                  outlined="true"
-                  severity="contrast"
-                  (click)="clearTableFilters(dt)"
-                ></p-button>
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+    <!-- Header Area -->
+    <div
+      class="p-4 border-b border-surface-200 bg-white flex justify-between items-center shrink-0 h-16"
+    >
+      <h2 class="text-xl font-semibold text-rose-800 truncate">
+        {{ menuItems[activeTab].label }}
+      </h2>
 
-                <p-button
-                  icon="pi pi-external-link"
-                  label="Exportar"
-                  (click)="exportToCSV(null, null, 'geral')"
-                />
-              </div>
-            </div>
-          </ng-template>
+      <input
+        title="input1"
+        type="file"
+        accept=".xlsx"
+        (change)="onFileSelected($event)"
+        class="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-rose-800 file:text-white hover:file:bg-rose-900 cursor-pointer text-sm"
+      />
+    </div>
 
-          <ng-template #header let-columns>
-            <tr>
-              @for (col of columns; track col.field) {
-              <th
-                [pSortableColumn]="col.field"
-                class="text-sm py-2 px-4 whitespace-nowrap"
-              >
-                {{ col.header }} <p-sortIcon [field]="col.field" />
-              </th>
-              }
-            </tr>
-
-            <tr>
-              <th>
-                <p-columnFilter
-                  field="matricula"
-                  matchMode="contains"
-                  showMenu="false"
-                >
-                  <ng-template
-                    pTemplate="filter"
-                    let-value
-                    let-filter="filterCallback"
-                  >
-                    <input
-                      type="text"
-                      pInputText
-                      [value]="value"
-                      (input)="filter($event.target.value)"
-                      placeholder="Filtrar..."
-                      class="w-28"
-                      [pt]="inputPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-
-              <th>
-                <p-columnFilter field="apoio" matchMode="in" showMenu="false">
-                  <ng-template
-                    pTemplate="filter"
-                    let-filterCallback="filterCallback"
-                  >
-                    <p-multiSelect
-                      [options]="getOptions('apoio')"
-                      [(ngModel)]="filterValues['apoio']"
-                      (onChange)="filterCallback(filterValues['apoio'])"
-                      appendTo="body"
-                      class="w-28"
-                      [pt]="multiselectPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-
-              <th>
-                <p-columnFilter field="grau" matchMode="in" showMenu="false">
-                  <ng-template
-                    pTemplate="filter"
-                    let-filterCallback="filterCallback"
-                  >
-                    <p-multiSelect
-                      [options]="getOptions('grau')"
-                      [(ngModel)]="filterValues['grau']"
-                      (onChange)="filterCallback(filterValues['grau'])"
-                      appendTo="body"
-                      class="w-24"
-                      [pt]="multiselectPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-
-              <th>
-                <p-columnFilter
-                  field="nome"
-                  matchMode="contains"
-                  showMenu="false"
-                >
-                  <ng-template
-                    pTemplate="filter"
-                    let-value
-                    let-filter="filterCallback"
-                  >
-                    <input
-                      type="text"
-                      pInputText
-                      [value]="value"
-                      (input)="filter($event.target.value)"
-                      placeholder="Filtrar..."
-                      class="w-28"
-                      [pt]="inputPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter
-                  field="secretaria"
-                  matchMode="in"
-                  showMenu="false"
-                >
-                  <ng-template
-                    pTemplate="filter"
-                    let-filterCallback="filterCallback"
-                  >
-                    <p-multiSelect
-                      [options]="getOptions('secretaria')"
-                      [(ngModel)]="filterValues['secretaria']"
-                      (onChange)="
-                        filterCallback(filterValues['secretaria']);
-                        onSecretariaChange(filterValues['secretaria'])
-                      "
-                      appendTo="body"
-                      class="w-28"
-                      [pt]="multiselectPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter field="unidade" matchMode="in" showMenu="false">
-                  <ng-template
-                    pTemplate="filter"
-                    let-filterCallback="filterCallback"
-                  >
-                    <p-multiSelect
-                      [options]="getOptions('unidade')"
-                      [(ngModel)]="filterValues['unidade']"
-                      (onChange)="
-                        filterCallback(filterValues['unidade']);
-                        onUnidadeChange(filterValues['unidade'])
-                      "
-                      appendTo="body"
-                      class="w-28"
-                      [pt]="multiselectPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter field="setor" matchMode="in" showMenu="false">
-                  <ng-template
-                    pTemplate="filter"
-                    let-filterCallback="filterCallback"
-                  >
-                    <p-multiSelect
-                      [options]="getOptions('setor')"
-                      [(ngModel)]="filterValues['setor']"
-                      (onChange)="
-                        filterCallback(filterValues['setor']);
-                        onSetorChange(filterValues['setor'])
-                      "
-                      appendTo="body"
-                      class="w-28"
-                      [pt]="multiselectPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter field="centro" matchMode="in" showMenu="false">
-                  <ng-template
-                    pTemplate="filter"
-                    let-filterCallback="filterCallback"
-                  >
-                    <p-multiSelect
-                      [options]="getOptions('centro')"
-                      [(ngModel)]="filterValues['centro']"
-                      (onChange)="filterCallback(filterValues['centro'])"
-                      appendTo="body"
-                      class="w-28"
-                      [pt]="multiselectPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter field="vinculo" matchMode="in" showMenu="false">
-                  <ng-template
-                    pTemplate="filter"
-                    let-filterCallback="filterCallback"
-                  >
-                    <p-multiSelect
-                      [options]="getOptions('vinculo')"
-                      [(ngModel)]="filterValues['vinculo']"
-                      (onChange)="filterCallback(filterValues['vinculo'])"
-                      appendTo="body"
-                      class="w-28"
-                      [pt]="multiselectPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter field="cargo" matchMode="in" showMenu="false">
-                  <ng-template
-                    pTemplate="filter"
-                    let-filterCallback="filterCallback"
-                  >
-                    <p-multiSelect
-                      [options]="getOptions('cargo')"
-                      [(ngModel)]="filterValues['cargo']"
-                      (onChange)="filterCallback(filterValues['cargo'])"
-                      appendTo="body"
-                      class="w-28"
-                      [pt]="multiselectPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter
-                  field="funcao"
-                  matchMode="in"
-                  [showMenu]="false"
-                  showClearButton="false"
-                >
-                  <ng-template
-                    pTemplate="filter"
-                    let-filterCallback="filterCallback"
-                  >
-                    <p-multiSelect
-                      [options]="getOptions('funcao')"
-                      [(ngModel)]="filterValues['funcao']"
-                      (onChange)="filterCallback(filterValues['funcao'])"
-                      appendTo="body"
-                      class="w-28"
-                      [pt]="multiselectPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter
-                  field="jurisdicao"
-                  matchMode="in"
-                  showMenu="false"
-                >
-                  <ng-template
-                    pTemplate="filter"
-                    let-filterCallback="filterCallback"
-                  >
-                    <p-multiSelect
-                      [options]="getOptions('jurisdicao')"
-                      [(ngModel)]="filterValues['jurisdicao']"
-                      (onChange)="filterCallback(filterValues['jurisdicao'])"
-                      appendTo="body"
-                      class="w-28"
-                      [pt]="multiselectPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-
-              <th>
-                <p-columnFilter
-                  field="classificacao_tlp"
-                  matchMode="equals"
-                  showMenu="false"
-                >
-                  <ng-template
-                    pTemplate="filter"
-                    let-filterCallback="filterCallback"
-                  >
-                    <p-multiSelect
-                      [options]="getOptions('classificacao_tlp')"
-                      [(ngModel)]="filterValues['classificacao_tlp']"
-                      (onChange)="
-                        filterCallback(filterValues['classificacao_tlp'])
-                      "
-                      appendTo="body"
-                      class="w-28"
-                      [pt]="multiselectPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-              <th>
-                <p-columnFilter
-                  field="situacao"
-                  matchMode="in"
-                  showMenu="false"
-                >
-                  <ng-template
-                    pTemplate="filter"
-                    let-filterCallback="filterCallback"
-                  >
-                    <p-multiSelect
-                      [options]="getOptions('situacao')"
-                      [(ngModel)]="filterValues['situacao']"
-                      (onChange)="filterCallback(filterValues['situacao'])"
-                      appendTo="body"
-                      class="w-28"
-                      [pt]="multiselectPt"
-                    />
-                  </ng-template>
-                </p-columnFilter>
-              </th>
-            </tr>
-          </ng-template>
-
-          <ng-template #body let-row let-columns="columns">
-            <tr class="hover:bg-surface-50">
-              @for (col of columns; track col.field) {
-              <td>
-                {{ row[col.field] }}
-              </td>
-              }
-            </tr>
-          </ng-template>
-
-          <ng-template pTemplate="paginatorleft" let-state>
-            <div class="text-sm text-surface-600 flex gap-4 items-center">
-              <span>
-                Exibindo {{ state.first + 1 }} a
-                {{ state.first + state.rows }} de
-                {{ state.totalRecords }} registros
-              </span>
-            </div>
-          </ng-template>
-        </p-table>
-      </p-tabpanel>
-      <p-tabpanel value="1" ngClass="min-h-0 grow flex flex-col gap-3">
-        <div class="flex gap-3">
-          @for (item of functionCounts; track item.label) {
-          <div
-            class="flex-1 bg-surface-50 p-2 flex flex-col items-center justify-center rounded-xl"
-          >
-            <span class="text-xl font-bold text-rose-800">
-              {{ item.count }}
-            </span>
-            <span
-              class="text-xs font-medium uppercase tracking-wider text-center"
-            >
-              {{ item.label }}
-            </span>
-          </div>
-          }
-        </div>
-
-        <div class="grow min-h-0">
-          <p-table
-            #dt2
-            [value]="cargosData"
-            [columns]="cargosCols"
-            class="min-w-full text-xs flex flex-col h-full"
-            [exportHeader]="'header'"
-            stripedRows
-            size="small"
-            [pt]="{
-            root: {
-              class: 'border border-surface-100 rounded-xl'
-            },
-            header: {
-              class: 'bg-surface-50 text-surface-700 rounded-t-xl'
-            },
-            pcPaginator: {
-              root: {
-                class:
-                  'border-t border-surface-200 text-surface-700 rounded-b-xl rounded-t-none'
-              }
-            },
-          }"
-            [customSort]="true"
-            (sortFunction)="customSort($event, 'cargos')"
-          >
-            <ng-template #caption>
-              <div class="flex items-center justify-end">
-                <p-button
-                  icon="pi pi-external-link"
-                  label="Exportar"
-                  (click)="exportToCSV(cargosData, cargosCols, 'cargos')"
-                />
-              </div>
-            </ng-template>
-
-            <ng-template #header let-columns>
-              <tr>
-                @for (col of columns; track col.field) {
-                <th
-                  [pSortableColumn]="col.field"
-                  class="text-sm py-2 px-4 whitespace-nowrap"
-                >
-                  {{ col.header }} <p-sortIcon [field]="col.field" />
-                </th>
-                }
-              </tr>
-            </ng-template>
-
-            <ng-template #body let-row>
-              <tr class="hover:bg-surface-50">
-                <td>{{ row.funcao }}</td>
-                <td>{{ row.apoio }}</td>
-                <td>
-                  {{
-                    row.valorUnitario | currency : "BRL" : "symbol" : "1.2-2"
-                  }}
-                </td>
-                <td>{{ row.quantidade }}</td>
-                <td>
-                  {{ row.valorTotal | currency : "BRL" : "symbol" : "1.2-2" }}
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
-        </div>
-      </p-tabpanel>
-      <p-tabpanel value="2" ngClass="min-h-0 grow flex flex-col">
-        <div class="flex gap-3">
-          @for (item of apoioCounts; track item.label) {
-          <div
-            class="flex-1 bg-surface-50 p-2 flex flex-col items-center justify-center rounded-xl"
-          >
-            <span class="text-xl font-bold text-rose-800">
-              {{ item.count }}
-            </span>
-            <span
-              class="text-xs font-medium text-surface-500 uppercase tracking-wider text-center"
-            >
-              {{ item.label }}
-            </span>
-          </div>
-          }
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 overflow-y-auto">
-          @for (area of areaVinculoStats; track area.areaName) {
-          <div class="bg-surface-50 p-4 rounded-xl flex flex-col gap-3">
-            <div
-              class="flex justify-between items-center border-b border-surface-200 pb-2"
-            >
-              <span class="font-bold text-rose-800 text-sm">{{
-                area.areaName
-              }}</span>
-            </div>
-            <div class="flex flex-col gap-2">
-              @for (group of area.groups; track group.category) {
-              <div class="flex justify-between items-center text-sm">
-                <span class="text-surface-600 capitalize text-left pr-2">{{
-                  group.category
-                }}</span>
-                <span class="font-semibold">{{ group.count }}</span>
-              </div>
-              }
-            </div>
-          </div>
-          }
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 overflow-y-auto">
-          @for (group of vinculoGroups; track group.category) {
-          <div class="bg-surface-50 p-4 rounded-xl flex flex-col gap-3">
-            <div
-              class="flex justify-between items-center border-b border-surface-200 pb-2"
-            >
-              <span class="font-bold text-rose-800">{{ group.category }}</span>
-              <span class="text-lg font-bold">{{ group.total }}</span>
-            </div>
-            <div class="flex flex-col gap-2">
-              @for (item of group.items; track item.label) {
-              <div class="flex justify-between items-center text-sm">
-                <span class="text-surface-600 capitalize text-left pr-2">{{
-                  item.label
-                }}</span>
-                <span class="font-semibold">{{ item.count }}</span>
-              </div>
-              }
-            </div>
-          </div>
-          }
-        </div>
-      </p-tabpanel>
-      <p-tabpanel value="3" ngClass="min-h-0 grow flex flex-col gap-3">
-        <div class="grid grid-cols-5 gap-3">
-          <span class="font-medium -mb-1 text-surface-600 col-span-5"
-            >a) Distribuição de servidores por grau de jurisdição (91,5% -
-            Triênio 2024)</span
-          >
-          @for (item of calculosResolucao | slice:0:5; track item.label) {
-          <div
-            class="p-2 flex flex-col items-center justify-center rounded-xl"
-            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-50'"
-          >
-            <span
-              class="text-xs font-medium text-center"
-              [ngClass]="
-                item.textColor
-                  ? item.textColor + ' opacity-80'
-                  : 'text-surface-500'
-              "
-            >
-              {{ item.label }}
-            </span>
-            <span
-              class="text-xl font-bold"
-              [ngClass]="item.textColor ? item.textColor : 'text-rose-800'"
-            >
-              {{ item.value }}
-            </span>
-
-            <span
-              class="text-xs text-center"
-              [ngClass]="
-                item.textColor
-                  ? item.textColor + ' opacity-80'
-                  : 'text-surface-500'
-              "
-            >
-              {{ item.desc }}
-            </span>
-          </div>
-          }
-
-          <span class="font-medium -mb-1 text-surface-600 col-span-5"
-            >b) Distribuição de cargos e funções por grau de jurisdição
-          </span>
-          @for (item of calculosResolucao | slice:5:10; track item.label) {
-          <div
-            class="p-2 flex flex-col items-center justify-center rounded-xl"
-            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-50'"
-          >
-            <span
-              class="text-xs font-medium text-center"
-              [ngClass]="
-                item.textColor
-                  ? item.textColor + ' opacity-80'
-                  : 'text-surface-500'
-              "
-            >
-              {{ item.label }}
-            </span>
-            <span
-              class="text-xl font-bold"
-              [ngClass]="item.textColor ? item.textColor : 'text-rose-800'"
-            >
-              {{ item.value }}
-            </span>
-
-            <span
-              class="text-xs text-center"
-              [ngClass]="
-                item.textColor
-                  ? item.textColor + ' opacity-80'
-                  : 'text-surface-500'
-              "
-            >
-              {{ item.desc }}
-            </span>
-          </div>
-          }
-
-          <span class="font-medium -mb-1 text-surface-600 col-span-5"
-            >c) Limite de 30% de servidores na área de apoio indireto
-            (Administrativo)
-          </span>
-          @for (item of calculosResolucao | slice:10:15; track item.label) {
-          <div
-            class="p-2 flex flex-col items-center justify-center rounded-xl"
-            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-50'"
-          >
-            <span
-              class="text-xs font-medium text-center"
-              [ngClass]="
-                item.textColor
-                  ? item.textColor + ' opacity-80'
-                  : 'text-surface-500'
-              "
-            >
-              {{ item.label }}
-            </span>
-            <span
-              class="text-xl font-bold"
-              [ngClass]="item.textColor ? item.textColor : 'text-rose-800'"
-            >
-              {{ item.value }}
-            </span>
-
-            <span
-              class="text-xs text-center"
-              [ngClass]="
-                item.textColor
-                  ? item.textColor + ' opacity-80'
-                  : 'text-surface-500'
-              "
-            >
-              {{ item.desc }}
-            </span>
-          </div>
-          }
-
-          <span class="font-medium -mb-1 text-surface-600 col-span-5"
-            >d) Limite de 30% de cargos e funções na área de apoio indireto
-            (Administrativo)
-          </span>
-          @for (item of calculosResolucao | slice:15:20; track item.label) {
-          <div
-            class="p-2 flex flex-col items-center justify-center rounded-xl"
-            [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-50'"
-          >
-            <span
-              class="text-xs font-medium text-center"
-              [ngClass]="
-                item.textColor
-                  ? item.textColor + ' opacity-80'
-                  : 'text-surface-500'
-              "
-            >
-              {{ item.label }}
-            </span>
-            <span
-              class="text-xl font-bold"
-              [ngClass]="item.textColor ? item.textColor : 'text-rose-800'"
-            >
-              {{ item.value }}
-            </span>
-
-            <span
-              class="text-xs text-center"
-              [ngClass]="
-                item.textColor
-                  ? item.textColor + ' opacity-80'
-                  : 'text-surface-500'
-              "
-            >
-              {{ item.desc }}
-            </span>
-          </div>
-          }
-        </div>
-      </p-tabpanel>
-
-      <p-tabpanel value="4" ngClass="min-h-0 grow flex flex-col">
-        <p-table
-          [value]="resolucaoData"
-          class="min-w-full text-xs flex flex-col h-full"
-          [exportHeader]="'header'"
-          stripedRows
-          [pt]="{
-            root: {
-              class: 'border border-surface-100 rounded-xl'
-            },
-            header: {
-              class: 'bg-surface-50 text-surface-700 rounded-t-xl'
-            }
-          }"
-        >
-          <ng-template #caption>
-            <div class="flex items-center justify-end">
-              <p-button
-                icon="pi pi-external-link"
-                label="Exportar"
-                (click)="exportToCSV(resolucaoData, resolucaoCols, 'resolucao')"
-              />
-            </div>
-          </ng-template>
-
-          <ng-template #header>
-            <tr>
-              <th class="text-sm py-2 px-4 whitespace-nowrap">Descrição</th>
-              <th class="text-sm py-2 px-4 whitespace-nowrap">Pergunta</th>
-              <th class="text-sm py-2 px-4 whitespace-nowrap">Valor</th>
-            </tr>
-          </ng-template>
-
-          <ng-template #body let-row>
-            <tr
-              class="hover:bg-surface-50"
-              [pTooltip]="row.tooltip"
-              autoHide="false"
-            >
-              <td class="py-2 px-4 font-medium">{{ row.label }}</td>
-              <td class="py-2 px-4">{{ row.question }}</td>
-              <td class="py-2 px-4">
-                @if (row.isCurrency) {
-                {{ row.value | currency : "BRL" : "symbol" : "1.2-2" }}
-                } @else {
-                {{ row.value }}
-                }
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-tabpanel>
-
-      <p-tabpanel value="5" ngClass="min-h-0 grow flex flex-col">
-        <div class="grid grid-cols-4 gap-3">
-          <div class="col-span-4 flex gap-3">
-            <div
-              class="flex-1 p-2 flex flex-col items-center justify-center rounded-xl bg-surface-50"
-            >
-              <span class="text-xs font-medium text-center text-surface-500">
-                Obtido
-              </span>
-              <span class="text-xl font-bold text-rose-800">
-                {{ totalPontos }}pts
-              </span>
-            </div>
-            <div
-              class="flex-1 p-2 flex flex-col items-center justify-center rounded-xl bg-surface-50"
-            >
-              <span class="text-xs font-medium text-center text-surface-500">
-                Máximo
-              </span>
-              <span class="text-xl font-bold text-rose-800"> 70pts </span>
-            </div>
-            <div
-              class="flex-1 p-2 flex flex-col items-center justify-center rounded-xl bg-surface-50"
-            >
-              <span class="text-xs font-medium text-center text-surface-500">
-                Percentual
-              </span>
-              <span class="text-xl font-bold text-rose-800">
-                {{ (this.totalPontos / 70) * 100 }}%
-              </span>
-            </div>
-          </div>
-
-          <span class="font-medium -mb-1 text-surface-600 col-span-2"
-            >a) Distribuição de servidores por grau de jurisdição (91,5% -
-            Triênio 2024 / 90,4% Margem de Tolerância)</span
-          >
-          <span class="font-medium -mb-1 text-surface-600 col-span-2"
-            >b) Distribuição de cargos e funções por grau de jurisdição (91,5% -
-            Triênio 2024 / 90,4% Margem de Tolerância)</span
-          >
-          @for (item of situacaoPremio | slice:0:4; track item.label) {
-          <div class="flex flex-col gap-3">
-            <div
-              class="p-2 flex flex-col items-center justify-center rounded-xl"
-              [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-50'"
-            >
-              <span
-                class="text-xs font-medium text-center"
-                [ngClass]="
-                  item.textColor
-                    ? item.textColor + ' opacity-80'
-                    : 'text-surface-500'
-                "
-              >
-                {{ item.label }}
-              </span>
-              <span
-                class="text-xl font-bold"
-                [ngClass]="item.textColor ? item.textColor : 'text-rose-800'"
-              >
-                {{ item.value }}
-              </span>
-
-              <span
-                class="text-xs text-center"
-                [ngClass]="
-                  item.textColor
-                    ? item.textColor + ' opacity-80'
-                    : 'text-surface-500'
-                "
-              >
-                {{ item.desc }}
-              </span>
-            </div>
-          </div>
-          }
-
-          <span class="font-medium -mb-1 text-surface-600 col-span-2"
-            >c) Limite de 30% de servidores na área de apoio indireto
-            (Administrativo)</span
-          >
-          <span class="font-medium -mb-1 text-surface-600 col-span-2"
-            >d) Limite de 30% de cargos e funções na área de apoio indireto
-            (Administrativo)</span
-          >
-          @for (item of situacaoPremio | slice:4:8; track item.label) {
-          <div class="flex flex-col gap-3">
-            <div
-              class="p-2 flex flex-col items-center justify-center rounded-xl"
-              [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-50'"
-            >
-              <span
-                class="text-xs font-medium text-center"
-                [ngClass]="
-                  item.textColor
-                    ? item.textColor + ' opacity-80'
-                    : 'text-surface-500'
-                "
-              >
-                {{ item.label }}
-              </span>
-              <span
-                class="text-xl font-bold"
-                [ngClass]="item.textColor ? item.textColor : 'text-rose-800'"
-              >
-                {{ item.value }}
-              </span>
-
-              <span
-                class="text-xs text-center"
-                [ngClass]="
-                  item.textColor
-                    ? item.textColor + ' opacity-80'
-                    : 'text-surface-500'
-                "
-              >
-                {{ item.desc }}
-              </span>
-            </div>
-          </div>
-          }
-        </div>
-      </p-tabpanel>
-
-      <p-tabpanel value="6" ngClass="min-h-0 grow flex flex-col">
-        <p-table
-          #dtTlp
-          [value]="tlpData"
-          class="min-w-full text-xs flex flex-col h-full"
-          [exportHeader]="'header'"
-          stripedRows
-          [columns]="tlpCols"
-          (sortFunction)="customSort($event, 'tlp')"
-          [customSort]="true"
-          size="small"
-          [pt]="{
-            root: {
-              class: 'border border-surface-100 rounded-xl'
-            },
-            header: {
-              class: 'bg-surface-50 text-surface-700 rounded-t-xl'
-            }
-          }"
-        >
-          <ng-template #caption>
-            <div class="flex items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <p-multiSelect
-                  [options]="getOptions('tlp_lp')"
-                  [(ngModel)]="filterValues['tlp_lp']"
-                  (onChange)="dtTlp.filter($event.value, 'lp', 'in')"
-                  optionLabel="label"
-                  optionValue="value"
-                  placeholder="Filtrar por LP"
-                  class="min-w-40"
-                  appendTo="body"
-                  [maxSelectedLabels]="1"
-                  selectedItemsLabel="{0} itens selecionados"
-                />
-                <p-multiSelect
-                  [options]="getOptions('tlp_unidade')"
-                  [(ngModel)]="filterValues['tlp_unidade']"
-                  (onChange)="dtTlp.filter($event.value, 'dsc_unidade', 'in')"
-                  optionLabel="label"
-                  optionValue="value"
-                  placeholder="Filtrar por Unidade"
-                  class="min-w-64"
-                  appendTo="body"
-                  [maxSelectedLabels]="1"
-                  selectedItemsLabel="{0} itens selecionados"
-                />
-              </div>
-              <div class="flex items-center gap-2">
-                <p-button
-                  label="Limpar filtros"
-                  icon="pi pi-filter-slash"
-                  outlined="true"
-                  severity="contrast"
-                  (click)="clearTableFilters(dtTlp)"
-                ></p-button>
-                <p-button
-                  icon="pi pi-external-link"
-                  label="Exportar"
-                  (click)="exportToCSV(tlpData, tlpCols, 'tlp')"
-                />
-              </div>
-            </div>
-          </ng-template>
-
-          <ng-template #header let-columns>
-            <tr>
-              @for (col of columns; track col.field) {
-              <th
-                [pSortableColumn]="col.field"
-                class="text-sm py-2 px-4 whitespace-nowrap"
-              >
-                {{ col.header }} <p-sortIcon [field]="col.field" />
-              </th>
-              }
-            </tr>
-          </ng-template>
-
-          <ng-template #body let-row>
-            <tr class="hover:bg-surface-50">
-              <td class="py-2 px-4">{{ row.grau }}</td>
-              <td class="py-2 px-4">{{ row.tipo }}</td>
-              <td class="py-2 px-4 font-medium">{{ row.dsc_unidade }}</td>
-              <td class="py-2 px-4">{{ row.uf }}</td>
-              <td class="py-2 px-4">{{ row.municipio }}</td>
-              <td class="py-2 px-4"></td>
-              <td class="py-2 px-4">{{ row.lr_efet }}</td>
-              <td class="py-2 px-4">{{ row.lr_i }}</td>
-              <td class="py-2 px-4">{{ row.lr_sv }}</td>
-              <td class="py-2 px-4">{{ row.cj_1g_1 }}</td>
-              <td class="py-2 px-4">{{ row.cj_2g_1 }}</td>
-              <td class="py-2 px-4">{{ row.cj_2g_2 }}</td>
-              <td class="py-2 px-4">{{ row.cj_2g_3 }}</td>
-              <td class="py-2 px-4">{{ row.cj_2g_4 }}</td>
-              <td class="py-2 px-4">{{ row.cj_2g_5 }}</td>
-              <td class="py-2 px-4">{{ row.cj_2g_6 }}</td>
-              <td class="py-2 px-4">{{ row.cj_2g_7 }}</td>
-              <td class="py-2 px-4">{{ row.fc_1g_1 }}</td>
-              <td class="py-2 px-4">{{ row.fc_1g_2 }}</td>
-              <td class="py-2 px-4">{{ row.fc_2g_1 }}</td>
-              <td class="py-2 px-4">{{ row.fc_2g_2 }}</td>
-              <td class="py-2 px-4">{{ row.fc_2g_3 }}</td>
-              <td class="py-2 px-4">{{ row.fc_2g_4 }}</td>
-              <td class="py-2 px-4">{{ row.fc_2g_5 }}</td>
-              <td class="py-2 px-4">{{ row.fc_2g_6 }}</td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-tabpanel>
-    </p-tabpanels>
-  </p-tabs>
-
-  } @else if (!loading && (!dados || dados.length === 0)) {
-  <div class="text-surface-600">
-    Faça o upload do arquivo .xlsx para exibir os dados.
+    <!-- Content Area -->
+    <div class="flex-1 p-4 overflow-auto bg-surface-50 relative">
+      @if (loading) {
+      <div
+        class="absolute inset-0 flex flex-col items-center justify-center bg-white/50 z-50"
+      >
+        <div
+          class="w-10 h-10 border-4 border-surface-300 border-t-rose-800 rounded-full animate-spin"
+        ></div>
+        <p class="mt-3 font-semibold text-surface-800">Carregando dados...</p>
+      </div>
+      } @if (!loading && (!dados || dados.length === 0)) {
+      <div
+        class="flex flex-col items-center justify-center h-full text-surface-500"
+      >
+        <i class="pi pi-upload text-4xl mb-4"></i>
+        <p>Faça o upload do arquivo .xlsx para exibir os dados.</p>
+      </div>
+      } @else if (!loading && dados.length > 0) {
+      <div class="h-full flex flex-col max-h-full">
+        @if (activeTab === 0) {
+        <app-tab-geral
+          [dados]="dados"
+          [cols]="cols"
+          [uniqueValues]="uniqueValues"
+          [filterValues]="filterValues"
+          [inputPt]="inputPt"
+          [multiselectPt]="multiselectPt"
+          (sortRequest)="customSort($event.event, $event.key)"
+          (exportRequest)="exportToCSV(null, null, 'geral')"
+          (secretariaChange)="onSecretariaChange($event)"
+          (unidadeChange)="onUnidadeChange($event)"
+          (setorChange)="onSetorChange($event)"
+          (clearFiltersRequest)="clearTableFilters()"
+          class="h-full flex flex-col min-h-0"
+        ></app-tab-geral>
+        } @if (activeTab === 1) {
+        <app-tab-cargos-funcoes
+          [functionCounts]="functionCounts"
+          [cargosData]="cargosData"
+          [cargosCols]="cargosCols"
+          (sortRequest)="customSort($event.event, $event.key)"
+          (exportRequest)="exportToCSV(cargosData, cargosCols, 'cargos')"
+          class="h-full flex flex-col min-h-0"
+        ></app-tab-cargos-funcoes>
+        } @if (activeTab === 2) {
+        <app-tab-servidores
+          [apoioCounts]="apoioCounts"
+          [areaVinculoStats]="areaVinculoStats"
+          [vinculoGroups]="vinculoGroups"
+          class="h-full flex flex-col min-h-0"
+        ></app-tab-servidores>
+        } @if (activeTab === 3) {
+        <app-tab-calculos-distribuicao
+          [calculosResolucao]="calculosResolucao"
+          class="h-full flex flex-col min-h-0"
+        ></app-tab-calculos-distribuicao>
+        } @if (activeTab === 4) {
+        <app-tab-priorizacao-grau
+          [resolucaoData]="resolucaoData"
+          [resolucaoCols]="resolucaoCols"
+          (exportRequest)="
+            exportToCSV(resolucaoData, resolucaoCols, 'resolucao')
+          "
+          class="h-full flex flex-col min-h-0"
+        ></app-tab-priorizacao-grau>
+        } @if (activeTab === 5) {
+        <app-tab-premio-qualidade
+          [totalPontos]="totalPontos"
+          [situacaoPremio]="situacaoPremio"
+          class="h-full flex flex-col min-h-0"
+        ></app-tab-premio-qualidade>
+        } @if (activeTab === 6) {
+        <app-tab-tlp
+          [tlpData]="tlpData"
+          [tlpCols]="tlpCols"
+          [lpOptions]="getOptions('tlp_lp')"
+          [unidadeOptions]="getOptions('tlp_unidade')"
+          [filterValues]="filterValues"
+          (sortRequest)="customSort($event.event, $event.key)"
+          (exportRequest)="exportToCSV(tlpData, tlpCols, 'tlp')"
+          class="h-full flex flex-col min-h-0"
+        ></app-tab-tlp>
+        }
+      </div>
+      }
+    </div>
   </div>
-  }
 </div>

@@ -1,0 +1,316 @@
+<p-table
+  #dt
+  [value]="dados"
+  [paginator]="true"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [columns]="cols"
+  [rows]="rows"
+  [globalFilterFields]="['matricula', 'nome', 'cargo', 'funcao', 'lotacao']"
+  class="min-w-full text-xs flex flex-col h-full"
+  [exportHeader]="'header'"
+  (sortFunction)="onCustomSort($event)"
+  [customSort]="true"
+  stripedRows
+  size="small"
+  [pt]="{
+    root: {
+      class: 'border border-surface-100 rounded-xl'
+    },
+    header: {
+      class: 'bg-surface-50 text-surface-700 rounded-t-xl'
+    },
+    pcPaginator: {
+      root: {
+        class:
+          'border-t border-surface-200 text-surface-700 rounded-b-xl rounded-t-none'
+      }
+    },
+  }"
+>
+  <ng-template #caption>
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i class="pi pi-search text-surface-500"></i>
+        <input
+          pInputText
+          type="text"
+          placeholder="Filtro global..."
+          [(ngModel)]="globalFilterValue"
+          (input)="dt.filterGlobal(globalFilterValue, 'contains')"
+          class="h-9 px-3 rounded border-0"
+        />
+      </div>
+
+      <div class="flex gap-3">
+        <p-button
+          label="Limpar filtros"
+          icon="pi pi-filter-slash"
+          outlined="true"
+          severity="contrast"
+          (click)="clearTableFilters()"
+        ></p-button>
+
+        <p-button
+          icon="pi pi-external-link"
+          label="Exportar"
+          (click)="onExport()"
+        />
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #header let-columns>
+    <tr>
+      @for (col of columns; track col.field) {
+      <th
+        [pSortableColumn]="col.field"
+        class="text-sm py-2 px-4 whitespace-nowrap"
+      >
+        {{ col.header }} <p-sortIcon [field]="col.field" />
+      </th>
+      }
+    </tr>
+
+    <tr>
+      <th>
+        <p-columnFilter field="matricula" matchMode="contains" showMenu="false">
+          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+            <input
+              type="text"
+              pInputText
+              [value]="value"
+              (input)="filter($event.target.value)"
+              placeholder="Filtrar..."
+              class="w-28"
+              [pt]="inputPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+
+      <th>
+        <p-columnFilter field="apoio" matchMode="in" showMenu="false">
+          <ng-template pTemplate="filter" let-filterCallback="filterCallback">
+            <p-multiSelect
+              [options]="getOptions('apoio')"
+              [(ngModel)]="filterValues['apoio']"
+              (onChange)="filterCallback(filterValues['apoio'])"
+              appendTo="body"
+              class="w-28"
+              [pt]="multiselectPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+
+      <th>
+        <p-columnFilter field="grau" matchMode="in" showMenu="false">
+          <ng-template pTemplate="filter" let-filterCallback="filterCallback">
+            <p-multiSelect
+              [options]="getOptions('grau')"
+              [(ngModel)]="filterValues['grau']"
+              (onChange)="filterCallback(filterValues['grau'])"
+              appendTo="body"
+              class="w-24"
+              [pt]="multiselectPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+
+      <th>
+        <p-columnFilter field="nome" matchMode="contains" showMenu="false">
+          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+            <input
+              type="text"
+              pInputText
+              [value]="value"
+              (input)="filter($event.target.value)"
+              placeholder="Filtrar..."
+              class="w-28"
+              [pt]="inputPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter field="secretaria" matchMode="in" showMenu="false">
+          <ng-template pTemplate="filter" let-filterCallback="filterCallback">
+            <p-multiSelect
+              [options]="getOptions('secretaria')"
+              [(ngModel)]="filterValues['secretaria']"
+              (onChange)="
+                filterCallback(filterValues['secretaria']);
+                onSecretariaChangeHandler(filterValues['secretaria'])
+              "
+              appendTo="body"
+              class="w-28"
+              [pt]="multiselectPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter field="unidade" matchMode="in" showMenu="false">
+          <ng-template pTemplate="filter" let-filterCallback="filterCallback">
+            <p-multiSelect
+              [options]="getOptions('unidade')"
+              [(ngModel)]="filterValues['unidade']"
+              (onChange)="
+                filterCallback(filterValues['unidade']);
+                onUnidadeChangeHandler(filterValues['unidade'])
+              "
+              appendTo="body"
+              class="w-28"
+              [pt]="multiselectPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter field="setor" matchMode="in" showMenu="false">
+          <ng-template pTemplate="filter" let-filterCallback="filterCallback">
+            <p-multiSelect
+              [options]="getOptions('setor')"
+              [(ngModel)]="filterValues['setor']"
+              (onChange)="
+                filterCallback(filterValues['setor']);
+                onSetorChangeHandler(filterValues['setor'])
+              "
+              appendTo="body"
+              class="w-28"
+              [pt]="multiselectPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter field="centro" matchMode="in" showMenu="false">
+          <ng-template pTemplate="filter" let-filterCallback="filterCallback">
+            <p-multiSelect
+              [options]="getOptions('centro')"
+              [(ngModel)]="filterValues['centro']"
+              (onChange)="filterCallback(filterValues['centro'])"
+              appendTo="body"
+              class="w-28"
+              [pt]="multiselectPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter field="vinculo" matchMode="in" showMenu="false">
+          <ng-template pTemplate="filter" let-filterCallback="filterCallback">
+            <p-multiSelect
+              [options]="getOptions('vinculo')"
+              [(ngModel)]="filterValues['vinculo']"
+              (onChange)="filterCallback(filterValues['vinculo'])"
+              appendTo="body"
+              class="w-28"
+              [pt]="multiselectPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter field="cargo" matchMode="in" showMenu="false">
+          <ng-template pTemplate="filter" let-filterCallback="filterCallback">
+            <p-multiSelect
+              [options]="getOptions('cargo')"
+              [(ngModel)]="filterValues['cargo']"
+              (onChange)="filterCallback(filterValues['cargo'])"
+              appendTo="body"
+              class="w-28"
+              [pt]="multiselectPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter
+          field="funcao"
+          matchMode="in"
+          [showMenu]="false"
+          showClearButton="false"
+        >
+          <ng-template pTemplate="filter" let-filterCallback="filterCallback">
+            <p-multiSelect
+              [options]="getOptions('funcao')"
+              [(ngModel)]="filterValues['funcao']"
+              (onChange)="filterCallback(filterValues['funcao'])"
+              appendTo="body"
+              class="w-28"
+              [pt]="multiselectPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter field="jurisdicao" matchMode="in" showMenu="false">
+          <ng-template pTemplate="filter" let-filterCallback="filterCallback">
+            <p-multiSelect
+              [options]="getOptions('jurisdicao')"
+              [(ngModel)]="filterValues['jurisdicao']"
+              (onChange)="filterCallback(filterValues['jurisdicao'])"
+              appendTo="body"
+              class="w-28"
+              [pt]="multiselectPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+
+      <th>
+        <p-columnFilter
+          field="classificacao_tlp"
+          matchMode="equals"
+          showMenu="false"
+        >
+          <ng-template pTemplate="filter" let-filterCallback="filterCallback">
+            <p-multiSelect
+              [options]="getOptions('classificacao_tlp')"
+              [(ngModel)]="filterValues['classificacao_tlp']"
+              (onChange)="filterCallback(filterValues['classificacao_tlp'])"
+              appendTo="body"
+              class="w-28"
+              [pt]="multiselectPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter field="situacao" matchMode="in" showMenu="false">
+          <ng-template pTemplate="filter" let-filterCallback="filterCallback">
+            <p-multiSelect
+              [options]="getOptions('situacao')"
+              [(ngModel)]="filterValues['situacao']"
+              (onChange)="filterCallback(filterValues['situacao'])"
+              appendTo="body"
+              class="w-28"
+              [pt]="multiselectPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-row let-columns="columns">
+    <tr class="hover:bg-surface-50">
+      @for (col of columns; track col.field) {
+      <td>
+        {{ row[col.field] }}
+      </td>
+      }
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="paginatorleft" let-state>
+    <div class="text-sm text-surface-600 flex gap-4 items-center">
+      <span>
+        Exibindo {{ state.first + 1 }} a {{ state.first + state.rows }} de
+        {{ state.totalRecords }} registros
+      </span>
+    </div>
+  </ng-template>
+</p-table>
