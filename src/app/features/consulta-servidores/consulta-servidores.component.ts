@@ -27,6 +27,8 @@ import { TabPriorizacaoGrauComponent } from './components/tab-priorizacao-grau/t
 import { TabPremioQualidadeComponent } from './components/tab-premio-qualidade/tab-premio-qualidade.component';
 import { TabTlpComponent } from './components/tab-tlp/tab-tlp.component';
 
+import { DragDropDirective } from '../../core/directives/drag-drop.directive';
+
 @Component({
   selector: 'app-consulta-servidores',
   templateUrl: './consulta-servidores.component.html',
@@ -39,6 +41,7 @@ import { TabTlpComponent } from './components/tab-tlp/tab-tlp.component';
     Button,
     FormsModule,
     TooltipModule,
+    DragDropDirective,
     TabGeralComponent,
     TabCargosFuncoesComponent,
     TabServidoresComponent,
@@ -223,10 +226,27 @@ export class ConsultaServidoresComponent {
   resolucaoCols!: Column[];
   tlpCols!: Column[];
 
-  onFileSelected(event: Event) {
+  // Drag state
+  isDragging = false;
+
+  handleDragOver(isOver: boolean) {
+    this.isDragging = isOver;
+  }
+
+  handleFileDrop(file: File) {
+    this.processFile(file);
+  }
+
+  onFileSelected(event: any) {
+    // Input file standard event
     const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
-    const file = input.files[0];
+    if (input.files && input.files[0]) {
+      this.processFile(input.files[0]);
+    }
+  }
+
+  processFile(file: File) {
+    if (!file) return;
 
     this.loading = true;
 
@@ -234,7 +254,7 @@ export class ConsultaServidoresComponent {
       .readFile(file)
       .then((res) => {
         this.dados = res;
-        this.initialValue = [...res]; // <--- garante cópia segura
+        this.initialValue = [...res];
         this.buildUniqueValues();
         this.loading = false;
       })
