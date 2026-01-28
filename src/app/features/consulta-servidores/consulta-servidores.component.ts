@@ -627,7 +627,7 @@ export class ConsultaServidoresComponent {
 
     const unidades = this.tlpData.map((d) => d.dsc_unidade).filter((v) => !!v);
     this.uniqueValues['tlp_unidade'] = Array.from(new Set(unidades)).sort(
-      (a, b) => a.localeCompare(b)
+      (a, b) => a.localeCompare(b),
     );
   }
 
@@ -667,7 +667,7 @@ export class ConsultaServidoresComponent {
     this.references.forEach((ref) => {
       // 1. Filtra registros que correspondem à função
       const matchingRows = this.dados.filter((d) =>
-        (d.funcao || '').toUpperCase().includes(ref.funcao.toUpperCase())
+        (d.funcao || '').toUpperCase().includes(ref.funcao.toUpperCase()),
       );
 
       // 2. Agrupa por Apoio
@@ -1006,13 +1006,13 @@ export class ConsultaServidoresComponent {
             'pt-BR',
             {
               maximumFractionDigits: 2,
-            }
+            },
           ) + '%',
         desc: 'Referência 91,5%',
       },
       {
         // item: 'a) Distribuição de servidores por grau de jurisdição (91,5% - Triênio 2024)',
-        label: 'Situação Item',
+        label: 'Situação (Tolerância)',
         value:
           this.resolucaoData[7].value / totalJud >= 0.905 ? '20pts' : '0pts',
         desc:
@@ -1025,6 +1025,23 @@ export class ConsultaServidoresComponent {
             : 'bg-rose-100',
         textColor:
           this.resolucaoData[7].value / totalJud >= 0.905
+            ? 'text-green-800'
+            : 'text-rose-800',
+      },
+      {
+        label: 'Situação (91,5%)',
+        value:
+          this.resolucaoData[7].value / totalJud >= 0.915 ? '20pts' : '0pts',
+        desc:
+          this.resolucaoData[7].value / totalJud >= 0.915
+            ? 'Cumprido'
+            : 'Não cumprido',
+        bgColor:
+          this.resolucaoData[7].value / totalJud >= 0.915
+            ? 'bg-green-100'
+            : 'bg-rose-100',
+        textColor:
+          this.resolucaoData[7].value / totalJud >= 0.915
             ? 'text-green-800'
             : 'text-rose-800',
       },
@@ -1042,7 +1059,7 @@ export class ConsultaServidoresComponent {
       },
       {
         // item: 'b) Distribuição de cargos e funções por grau de jurisdição',
-        label: 'Situação Item',
+        label: 'Situação (Tolerância)',
         value:
           (this.resolucaoData[1].value + this.resolucaoData[4].value) /
             totalJudValor >=
@@ -1057,14 +1074,43 @@ export class ConsultaServidoresComponent {
             : 'Não cumprido',
         bgColor:
           (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-          totalJudValor
-            ? 'bg-rose-100'
-            : 'bg-green-100',
+            totalJudValor >=
+          0.905
+            ? 'bg-green-100'
+            : 'bg-rose-100',
         textColor:
           (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-          totalJudValor
-            ? 'text-rose-800'
-            : 'text-green-800',
+            totalJudValor >=
+          0.905
+            ? 'text-green-800'
+            : 'text-rose-800',
+      },
+      {
+        label: 'Situação (91,5%)',
+        value:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+            totalJudValor >=
+          0.915
+            ? '20pts'
+            : '0pts',
+        desc:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+            totalJudValor >=
+          0.915
+            ? 'Cumprido'
+            : 'Não cumprido',
+        bgColor:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+            totalJudValor >=
+          0.915
+            ? 'bg-green-100'
+            : 'bg-rose-100',
+        textColor:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+            totalJudValor >=
+          0.915
+            ? 'text-green-800'
+            : 'text-rose-800',
       },
 
       {
@@ -1074,7 +1120,7 @@ export class ConsultaServidoresComponent {
             'pt-BR',
             {
               maximumFractionDigits: 2,
-            }
+            },
           ) + '%',
         desc: 'Referência 30%',
       },
@@ -1116,7 +1162,7 @@ export class ConsultaServidoresComponent {
       },
     ];
 
-    const indices = [1, 3, 5, 7];
+    const indices = [1, 4, 7, 9];
     this.totalPontos = indices.reduce((acc, index) => {
       const item = this.situacaoPremio[index];
       if (item && item.value) {
@@ -1147,7 +1193,7 @@ export class ConsultaServidoresComponent {
   exportToCSV(
     data: any[] | null = null,
     columns: Column[] | null = null,
-    filename: string = 'consulta-servidores'
+    filename: string = 'consulta-servidores',
   ) {
     try {
       // Se não passar dados, tenta pegar da tabela principal (dt)
@@ -1250,7 +1296,7 @@ export class ConsultaServidoresComponent {
    * Se um filtro estiver vazio, ele não restringe (passa tudo do nível anterior).
    */
   private getFilteredData(
-    level: 'secretaria' | 'unidade' | 'setor'
+    level: 'secretaria' | 'unidade' | 'setor',
   ): Servidor[] {
     let data = this.initialValue;
 
@@ -1296,7 +1342,7 @@ export class ConsultaServidoresComponent {
           (d) => (this.dados = d),
           this.initialValue,
           'main',
-          this.tabGeral?.dt
+          this.tabGeral?.dt,
         );
         break;
       case 'cargos':
@@ -1306,7 +1352,7 @@ export class ConsultaServidoresComponent {
           (d) => (this.cargosData = d),
           this.initialCargosData,
           'cargos',
-          this.tabCargos?.dt2
+          this.tabCargos?.dt2,
         );
         break;
       case 'tlp':
@@ -1316,7 +1362,7 @@ export class ConsultaServidoresComponent {
           (d) => (this.tlpData = d),
           this.initialTlpData,
           'tlp',
-          this.tabTlp?.dtTlp
+          this.tabTlp?.dtTlp,
         );
         break;
     }
@@ -1328,7 +1374,7 @@ export class ConsultaServidoresComponent {
     setData: (data: any[]) => void,
     initialData: any[],
     key: string,
-    table?: Table
+    table?: Table,
   ) {
     const eventWithData: SortEventWithData = {
       ...event,
