@@ -2,8 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { ExcelService, Servidor } from '../../services/excel.service';
 import { Table, TableModule } from 'primeng/table';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { InputText } from 'primeng/inputtext';
-import { Button } from 'primeng/button';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SortEvent } from 'primeng/api';
@@ -37,8 +36,6 @@ import { DragDropDirective } from '../../core/directives/drag-drop.directive';
     CommonModule,
     TableModule,
     MultiSelectModule,
-    InputText,
-    Button,
     FormsModule,
     TooltipModule,
     DragDropDirective,
@@ -1010,24 +1007,8 @@ export class ConsultaServidoresComponent {
           ) + '%',
         desc: 'Referência 91,5%',
       },
-      {
-        // item: 'a) Distribuição de servidores por grau de jurisdição (91,5% - Triênio 2024)',
-        label: 'Situação (Tolerância)',
-        value:
-          this.resolucaoData[7].value / totalJud >= 0.905 ? '20pts' : '0pts',
-        desc:
-          this.resolucaoData[7].value / totalJud >= 0.905
-            ? 'Cumprido'
-            : 'Não cumprido',
-        bgColor:
-          this.resolucaoData[7].value / totalJud >= 0.905
-            ? 'bg-green-100'
-            : 'bg-rose-100',
-        textColor:
-          this.resolucaoData[7].value / totalJud >= 0.905
-            ? 'text-green-800'
-            : 'text-rose-800',
-      },
+
+      // item: 'a) Distribuição de servidores por grau de jurisdição (91,5% - Triênio 2024)',
       {
         label: 'Situação (91,5%)',
         value:
@@ -1046,6 +1027,23 @@ export class ConsultaServidoresComponent {
             : 'text-rose-800',
       },
       {
+        label: 'Situação (Tolerância)',
+        value:
+          this.resolucaoData[7].value / totalJud >= 0.905 ? '20pts' : '0pts',
+        desc:
+          this.resolucaoData[7].value / totalJud >= 0.905
+            ? 'Cumprido'
+            : 'Não cumprido',
+        bgColor:
+          this.resolucaoData[7].value / totalJud >= 0.905
+            ? 'bg-green-100'
+            : 'bg-rose-100',
+        textColor:
+          this.resolucaoData[7].value / totalJud >= 0.905
+            ? 'text-green-800'
+            : 'text-rose-800',
+      },
+      {
         label: '1º Grau (%)',
         value:
           (
@@ -1057,34 +1055,7 @@ export class ConsultaServidoresComponent {
           }) + '%',
         desc: 'Referência 91,5%',
       },
-      {
-        // item: 'b) Distribuição de cargos e funções por grau de jurisdição',
-        label: 'Situação (Tolerância)',
-        value:
-          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-            totalJudValor >=
-          0.905
-            ? '20pts'
-            : '0pts',
-        desc:
-          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-            totalJudValor >=
-          0.905
-            ? 'Cumprido'
-            : 'Não cumprido',
-        bgColor:
-          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-            totalJudValor >=
-          0.905
-            ? 'bg-green-100'
-            : 'bg-rose-100',
-        textColor:
-          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-            totalJudValor >=
-          0.905
-            ? 'text-green-800'
-            : 'text-rose-800',
-      },
+      // item: 'b) Distribuição de cargos e funções por grau de jurisdição',
       {
         label: 'Situação (91,5%)',
         value:
@@ -1109,6 +1080,33 @@ export class ConsultaServidoresComponent {
           (this.resolucaoData[1].value + this.resolucaoData[4].value) /
             totalJudValor >=
           0.915
+            ? 'text-green-800'
+            : 'text-rose-800',
+      },
+      {
+        label: 'Situação (Tolerância)',
+        value:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+            totalJudValor >=
+          0.905
+            ? '20pts'
+            : '0pts',
+        desc:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+            totalJudValor >=
+          0.905
+            ? 'Cumprido'
+            : 'Não cumprido',
+        bgColor:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+            totalJudValor >=
+          0.905
+            ? 'bg-green-100'
+            : 'bg-rose-100',
+        textColor:
+          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
+            totalJudValor >=
+          0.905
             ? 'text-green-800'
             : 'text-rose-800',
       },
@@ -1162,7 +1160,7 @@ export class ConsultaServidoresComponent {
       },
     ];
 
-    const indices = [1, 4, 7, 9];
+    const indices = [2, 5, 7, 9];
     this.totalPontos = indices.reduce((acc, index) => {
       const item = this.situacaoPremio[index];
       if (item && item.value) {
