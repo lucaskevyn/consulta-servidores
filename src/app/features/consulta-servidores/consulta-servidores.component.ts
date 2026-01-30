@@ -25,6 +25,7 @@ import { TabCalculosDistribuicaoComponent } from './components/tab-calculos-dist
 import { TabPriorizacaoGrauComponent } from './components/tab-priorizacao-grau/tab-priorizacao-grau.component';
 import { TabPremioQualidadeComponent } from './components/tab-premio-qualidade/tab-premio-qualidade.component';
 import { TabTlpComponent } from './components/tab-tlp/tab-tlp.component';
+import { TabComissionadosComponent } from './components/tab-comissionados/tab-comissionados.component';
 
 import { DragDropDirective } from '../../core/directives/drag-drop.directive';
 
@@ -46,12 +47,15 @@ import { DragDropDirective } from '../../core/directives/drag-drop.directive';
     TabPriorizacaoGrauComponent,
     TabPremioQualidadeComponent,
     TabTlpComponent,
+    TabComissionadosComponent,
   ],
 })
 export class ConsultaServidoresComponent {
   @ViewChild(TabGeralComponent) tabGeral?: TabGeralComponent;
   @ViewChild(TabCargosFuncoesComponent) tabCargos?: TabCargosFuncoesComponent;
   @ViewChild(TabTlpComponent) tabTlp?: TabTlpComponent;
+  @ViewChild(TabComissionadosComponent)
+  tabComissionados?: TabComissionadosComponent;
 
   // Sidebar state
   activeTab = 0;
@@ -94,6 +98,12 @@ export class ConsultaServidoresComponent {
       labelHeader: 'Tabela de Lotação de Pessoal',
       icon: 'pi pi-table',
       value: 6,
+    },
+    {
+      label: 'Comissionados',
+      labelHeader: 'Percentual de Comissionados Não Efetivos',
+      icon: 'pi pi-chart-pie',
+      value: 7,
     },
   ];
 
@@ -143,12 +153,14 @@ export class ConsultaServidoresComponent {
   initialValue: Servidor[] = [];
   initialCargosData: any[] = [];
   initialTlpData: TlpRow[] = [];
+  initialComissionadosData: Servidor[] = [];
 
   // Estado de ordenação por tabela (null = padrão, true = asc, false = desc)
   sortStates: { [key: string]: boolean | null } = {
     main: null,
     cargos: null,
     tlp: null,
+    comissionados: null,
   };
 
   inputPt = {
@@ -307,6 +319,60 @@ export class ConsultaServidoresComponent {
 
     this.calculateStats();
     this.calculateTlpData();
+    this.calculateComissionadosStats();
+  }
+
+  comissionadosData: Servidor[] = [];
+  comissionadosStats = {
+    numerator: 0,
+    denominator: 0,
+    percentage: 0,
+    countAdNutum: 0,
+    countComissionadoDisp: 0,
+    countEfetivoComissionado: 0,
+  };
+
+  calculateComissionadosStats() {
+    const vinculosAdNutum = ['ad nutum comissionado'];
+    const vinculosComissDisp = ['comissionado (à disposição)'];
+    const vinculosEfetivoComiss = ['efetivo comissionado (resolução 03/2013)'];
+
+    // Filter lists
+    const adNutum = this.dados.filter((d) =>
+      vinculosAdNutum.includes((d.vinculo || '').toLowerCase().trim()),
+    );
+    const comissDisp = this.dados.filter((d) =>
+      vinculosComissDisp.includes((d.vinculo || '').toLowerCase().trim()),
+    );
+    const efetivoComiss = this.dados.filter((d) =>
+      vinculosEfetivoComiss.includes((d.vinculo || '').toLowerCase().trim()),
+    );
+
+    // Counts
+    this.comissionadosStats.countAdNutum = adNutum.length;
+    this.comissionadosStats.countComissionadoDisp = comissDisp.length;
+    this.comissionadosStats.countEfetivoComissionado = efetivoComiss.length;
+
+    // Totals
+    this.comissionadosStats.numerator =
+      this.comissionadosStats.countAdNutum +
+      this.comissionadosStats.countComissionadoDisp;
+    this.comissionadosStats.denominator =
+      this.comissionadosStats.numerator +
+      this.comissionadosStats.countEfetivoComissionado;
+
+    // Percentage
+    this.comissionadosStats.percentage =
+      this.comissionadosStats.denominator > 0
+        ? this.comissionadosStats.numerator /
+          this.comissionadosStats.denominator
+        : 0;
+
+    // Combined Data for Table
+    // The user wants a table with "servers that have the links cited above".
+    // I am including all 3 groups as they are the ones involved in the calculation.
+    this.comissionadosData = [...adNutum, ...comissDisp, ...efetivoComiss];
+    this.initialComissionadosData = [...this.comissionadosData];
   }
 
   calculateStats() {
@@ -1361,6 +1427,16 @@ export class ConsultaServidoresComponent {
           this.initialTlpData,
           'tlp',
           this.tabTlp?.dtTlp,
+        );
+        break;
+      case 'comissionados':
+        this.executeSort(
+          event,
+          this.comissionadosData,
+          (d) => (this.comissionadosData = d),
+          this.initialComissionadosData,
+          'comissionados',
+          this.tabComissionados?.tabGeral?.dt,
         );
         break;
     }

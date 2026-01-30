@@ -1,0 +1,99 @@
+<div class="flex flex-col h-full gap-3">
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-3 shrink-0">
+    <!-- <div class="bg-white p-3 rounded-xl shadow-sm/5 flex flex-col text-center">
+      <span class="text-xs font-medium text-surface-500">Ad Nutum</span>
+      <span class="text-3xl font-bold text-rose-800">{{
+        stats.countAdNutum
+      }}</span>
+
+      <span class="text-xs text-surface-500 flex flex-col">Servidores</span>
+    </div>
+
+    <div class="bg-white p-3 rounded-xl shadow-sm/5 flex flex-col text-center">
+      <span class="text-xs font-medium text-surface-500">À Disposição</span>
+      <span class="text-3xl font-bold text-rose-800">{{
+        stats.countComissionadoDisp
+      }}</span>
+
+      <span class="text-xs text-surface-500 flex flex-col">Servidor(es)</span>
+    </div> -->
+
+    <div class="bg-white p-3 rounded-xl shadow-sm/5 flex justify-center">
+      <div class="flex flex-col text-center">
+        <span class="text-xs font-medium text-surface-500">Não Efetivos</span>
+        <span class="text-3xl font-bold text-rose-800">{{
+          stats.numerator
+        }}</span>
+
+        <span class="text-xs text-surface-500 flex flex-col">Servidores</span>
+      </div>
+      <p-divider layout="vertical" class="px-4" />
+      <div class="flex flex-col justify-center">
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between items-start text-xs group">
+            <span class="text-surface-600 capitalize leading-tight pr-2"
+              >Ad Nutum</span
+            >
+            <span class="font-semibold text-surface-900">{{
+              stats.countAdNutum
+            }}</span>
+          </div>
+          <div class="flex justify-between items-start text-xs group">
+            <span class="text-surface-600 capitalize leading-tight pr-2"
+              >À Disposição</span
+            >
+            <span class="font-semibold text-surface-900">{{
+              stats.countComissionadoDisp
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white p-3 rounded-xl flex flex-col shadow-sm/5 text-center">
+      <span class="text-xs font-medium text-surface-500"
+        >Efetivo Comissionado</span
+      >
+      <span class="text-3xl font-bold text-rose-800">{{
+        stats.countEfetivoComissionado
+      }}</span>
+      <span class="text-xs text-surface-500 flex flex-col">Servidores</span>
+    </div>
+
+    <div class="bg-white p-3 rounded-xl shadow-sm/5 flex flex-col text-center">
+      <span class="text-xs font-medium text-surface-500">Total</span>
+      <span class="text-3xl font-bold text-rose-800">{{
+        stats.denominator
+      }}</span>
+      <span class="text-xs text-surface-500 flex flex-col">Servidores</span>
+    </div>
+
+    <div class="bg-white p-3 rounded-xl shadow-sm/5 flex flex-col text-center">
+      <span class="text-xs font-medium text-surface-500"
+        >Não Efetivos / Total</span
+      >
+      <span class="text-3xl font-bold text-rose-800">{{
+        stats.percentage | percent: "1.2-2"
+      }}</span>
+      <span class="text-xs text-surface-500 flex flex-col">Percentual</span>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <app-tab-geral
+    class="h-full"
+    [dados]="comissionadosData"
+    [cols]="cols"
+    [uniqueValues]="uniqueValues"
+    [filterValues]="filterValues"
+    [inputPt]="inputPt"
+    [multiselectPt]="multiselectPt"
+    (sortRequest)="onSortRequest($event)"
+    (exportRequest)="onExportRequest()"
+    (secretariaChange)="secretariaChange.emit($event)"
+    (unidadeChange)="unidadeChange.emit($event)"
+    (setorChange)="setorChange.emit($event)"
+    (clearFiltersRequest)="clearFiltersRequest.emit()"
+  ></app-tab-geral>
+</div>

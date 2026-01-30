@@ -14,16 +14,16 @@
   size="small"
   [pt]="{
     root: {
-      class: 'border border-surface-100 rounded-xl'
+      class: 'border border-surface-100 rounded-xl shadow-sm/5',
     },
     header: {
-      class: 'bg-surface-0 text-surface-700 rounded-t-xl'
+      class: 'bg-surface-0 text-surface-700 rounded-t-xl',
     },
     pcPaginator: {
       root: {
         class:
-          'border-t border-surface-200 text-surface-700 rounded-b-xl rounded-t-none'
-      }
+          'border-t border-surface-200 text-surface-700 rounded-b-xl rounded-t-none',
+      },
     },
   }"
 >
@@ -62,12 +62,12 @@
   <ng-template #header let-columns>
     <tr>
       @for (col of columns; track col.field) {
-      <th
-        [pSortableColumn]="col.field"
-        class="text-sm py-2 px-4 whitespace-nowrap"
-      >
-        {{ col.header }} <p-sortIcon [field]="col.field" />
-      </th>
+        <th
+          [pSortableColumn]="col.field"
+          class="text-sm py-2 px-4 whitespace-nowrap"
+        >
+          {{ col.header }} <p-sortIcon [field]="col.field" />
+        </th>
       }
     </tr>
 
@@ -298,9 +298,9 @@
   <ng-template #body let-row let-columns="columns">
     <tr class="hover:bg-surface-50">
       @for (col of columns; track col.field) {
-      <td>
-        {{ row[col.field] }}
-      </td>
+        <td>
+          {{ row[col.field] }}
+        </td>
       }
     </tr>
   </ng-template>
