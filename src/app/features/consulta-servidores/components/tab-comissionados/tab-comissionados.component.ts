@@ -53,7 +53,7 @@ export class TabComissionadosComponent {
 
   // Forwarding events from TabGeral
   onSortRequest(event: { event: SortEvent; key: string }) {
-    this.sortRequest.emit(event);
+    this.sortRequest.emit({ event: event.event, key: 'comissionados' });
   }
 
   onExportRequest() {
