@@ -1,24 +1,6 @@
 <div class="flex flex-col h-full gap-3">
   <!-- Stats Cards -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-3 shrink-0">
-    <!-- <div class="bg-white p-3 rounded-xl shadow-sm/5 flex flex-col text-center">
-      <span class="text-xs font-medium text-surface-500">Ad Nutum</span>
-      <span class="text-3xl font-bold text-rose-800">{{
-        stats.countAdNutum
-      }}</span>
-
-      <span class="text-xs text-surface-500 flex flex-col">Servidores</span>
-    </div>
-
-    <div class="bg-white p-3 rounded-xl shadow-sm/5 flex flex-col text-center">
-      <span class="text-xs font-medium text-surface-500">À Disposição</span>
-      <span class="text-3xl font-bold text-rose-800">{{
-        stats.countComissionadoDisp
-      }}</span>
-
-      <span class="text-xs text-surface-500 flex flex-col">Servidor(es)</span>
-    </div> -->
-
     <div class="bg-white p-3 rounded-xl shadow-sm/5 flex justify-center">
       <div class="flex flex-col text-center">
         <span class="text-xs font-medium text-surface-500">Não Efetivos</span>
@@ -69,14 +51,30 @@
       <span class="text-xs text-surface-500 flex flex-col">Servidores</span>
     </div>
 
-    <div class="bg-white p-3 rounded-xl shadow-sm/5 flex flex-col text-center">
-      <span class="text-xs font-medium text-surface-500"
+    <div
+      class="p-3 rounded-xl shadow-sm/5 flex flex-col text-center"
+      [ngClass]="
+        stats.percentage < 0.5
+          ? 'bg-green-100 shadow-green-950'
+          : 'bg-rose-100 shadow-rose-950'
+      "
+    >
+      <span
+        class="text-xs font-medium opacity-80"
+        [ngClass]="stats.percentage < 0.5 ? 'text-green-800' : 'text-rose-800'"
         >Não Efetivos / Total</span
       >
-      <span class="text-3xl font-bold text-rose-800">{{
-        stats.percentage | percent: "1.2-2"
-      }}</span>
-      <span class="text-xs text-surface-500 flex flex-col">Percentual</span>
+      <span
+        class="text-3xl font-bold"
+        [ngClass]="stats.percentage < 0.5 ? 'text-green-800' : 'text-rose-800'"
+      >
+        {{ stats.percentage | percent: "1.2-2" }}
+      </span>
+      <span
+        class="text-xs flex flex-col opacity-80"
+        [ngClass]="stats.percentage < 0.5 ? 'text-green-800' : 'text-rose-800'"
+        >Percentual</span
+      >
     </div>
   </div>
 
