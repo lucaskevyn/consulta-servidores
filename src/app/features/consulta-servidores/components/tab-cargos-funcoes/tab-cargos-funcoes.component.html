@@ -1,15 +1,15 @@
 <div class="flex gap-3">
   @for (item of functionCounts; track item.label) {
-  <div
-    class="flex-1 bg-surface-0 p-2 flex flex-col items-center justify-center rounded-xl"
-  >
-    <span class="text-xl font-bold text-rose-800">
-      {{ item.count }}
-    </span>
-    <span class="text-xs font-medium uppercase tracking-wider text-center">
-      {{ item.label }}
-    </span>
-  </div>
+    <div
+      class="flex-1 bg-surface-0 p-2 flex flex-col items-center justify-center rounded-xl shadow-sm/5"
+    >
+      <span class="text-xl font-bold text-rose-800">
+        {{ item.count }}
+      </span>
+      <span class="text-xs font-medium uppercase tracking-wider text-center">
+        {{ item.label }}
+      </span>
+    </div>
   }
 </div>
 
@@ -23,19 +23,19 @@
     stripedRows
     size="small"
     [pt]="{
-    root: {
-      class: 'border border-surface-100 rounded-xl'
-    },
-    header: {
-      class: 'bg-surface-0 text-surface-700 rounded-t-xl'
-    },
-    pcPaginator: {
       root: {
-        class:
-          'border-t border-surface-200 text-surface-700 rounded-b-xl rounded-t-none'
-      }
-    },
-  }"
+        class: 'border border-surface-100 rounded-xl shadow-sm/5',
+      },
+      header: {
+        class: 'bg-surface-0 text-surface-700 rounded-t-xl',
+      },
+      pcPaginator: {
+        root: {
+          class:
+            'border-t border-surface-200 text-surface-700 rounded-b-xl rounded-t-none',
+        },
+      },
+    }"
     [customSort]="true"
     (sortFunction)="onCustomSort($event)"
   >
@@ -52,12 +52,12 @@
     <ng-template #header let-columns>
       <tr>
         @for (col of columns; track col.field) {
-        <th
-          [pSortableColumn]="col.field"
-          class="text-sm py-2 px-4 whitespace-nowrap"
-        >
-          {{ col.header }} <p-sortIcon [field]="col.field" />
-        </th>
+          <th
+            [pSortableColumn]="col.field"
+            class="text-sm py-2 px-4 whitespace-nowrap"
+          >
+            {{ col.header }} <p-sortIcon [field]="col.field" />
+          </th>
         }
       </tr>
     </ng-template>
@@ -67,11 +67,11 @@
         <td>{{ row.funcao }}</td>
         <td>{{ row.apoio }}</td>
         <td>
-          {{ row.valorUnitario | currency : "BRL" : "symbol" : "1.2-2" }}
+          {{ row.valorUnitario | currency: "BRL" : "symbol" : "1.2-2" }}
         </td>
         <td>{{ row.quantidade }}</td>
         <td>
-          {{ row.valorTotal | currency : "BRL" : "symbol" : "1.2-2" }}
+          {{ row.valorTotal | currency: "BRL" : "symbol" : "1.2-2" }}
         </td>
       </tr>
     </ng-template>

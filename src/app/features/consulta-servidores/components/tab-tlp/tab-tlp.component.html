@@ -10,11 +10,11 @@
   size="small"
   [pt]="{
     root: {
-      class: 'border border-surface-100 rounded-xl'
+      class: 'border border-surface-100 rounded-xl shadow-sm/5',
     },
     header: {
-      class: 'bg-surface-0 text-surface-700 rounded-t-xl'
-    }
+      class: 'bg-surface-0 text-surface-700 rounded-t-xl',
+    },
   }"
 >
   <ng-template #caption>
@@ -65,12 +65,12 @@
   <ng-template #header let-columns>
     <tr>
       @for (col of columns; track col.field) {
-      <th
-        [pSortableColumn]="col.field"
-        class="text-sm py-2 px-4 whitespace-nowrap"
-      >
-        {{ col.header }} <p-sortIcon [field]="col.field" />
-      </th>
+        <th
+          [pSortableColumn]="col.field"
+          class="text-sm py-2 px-4 whitespace-nowrap"
+        >
+          {{ col.header }} <p-sortIcon [field]="col.field" />
+        </th>
       }
     </tr>
   </ng-template>

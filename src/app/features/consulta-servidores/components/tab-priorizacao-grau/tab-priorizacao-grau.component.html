@@ -5,11 +5,11 @@
   stripedRows
   [pt]="{
     root: {
-      class: 'border border-surface-100 rounded-xl'
+      class: 'border border-surface-100 rounded-xl shadow-sm/5',
     },
     header: {
-      class: 'bg-surface-0 text-surface-700 rounded-t-xl'
-    }
+      class: 'bg-surface-0 text-surface-700 rounded-t-xl',
+    },
   }"
 >
   <ng-template #caption>
@@ -36,9 +36,9 @@
       <td class="py-2 px-4">{{ row.question }}</td>
       <td class="py-2 px-4">
         @if (row.isCurrency) {
-        {{ row.value | currency : "BRL" : "symbol" : "1.2-2" }}
+          {{ row.value | currency: "BRL" : "symbol" : "1.2-2" }}
         } @else {
-        {{ row.value }}
+          {{ row.value }}
         }
       </td>
     </tr>
