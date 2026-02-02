@@ -1259,65 +1259,120 @@ export class ConsultaServidoresComponent {
     columns: Column[] | null = null,
     filename: string = 'consulta-servidores',
   ) {
-    try {
-      // Se não passar dados, tenta pegar da tabela principal (dt)
-      const tableData =
-        data ||
-        (this.tabGeral?.dt &&
-          (this.tabGeral.dt.filteredValue ?? this.tabGeral.dt.value)) ||
-        this.dados;
+    // Deprecated in favor of generic onTabExportRequest
+    // Kept just in case, but redirecting logic where possible
+  }
 
-      // Se não passar colunas, usa as colunas principais
-      const cols = columns || this.cols;
+  onTabExportRequest(tabName: string) {
+    let json: any[] = [];
+    let headerRows: any[][] = [];
+    const fileName = `export_${tabName}`;
 
-      if (!tableData || !tableData.length) return;
-
-      const fields = cols.map((c) => c.field);
-      const headers = cols.map((c) => c.header);
-
-      const escapeValue = (value: any): string => {
-        if (value == null) return '';
-
-        // Se for número, formata com vírgula (pt-BR)
-        if (typeof value === 'number') {
-          return value.toLocaleString('pt-BR', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          });
-        }
-
-        let s = String(value).replace(/\r\n/g, '\n').replace(/"/g, '""');
-        return /[;"\n\r]/.test(s) ? `"${s}"` : s;
-      };
-
-      const sep = ';';
-      const rows: string[] = [];
-      rows.push(headers.join(sep));
-
-      for (const row of tableData) {
-        rows.push(fields.map((f) => escapeValue((row as any)[f])).join(sep));
+    switch (tabName) {
+      case 'geral': {
+        const tableData =
+          (this.tabGeral?.dt &&
+            (this.tabGeral.dt.filteredValue ?? this.tabGeral.dt.value)) ||
+          this.dados;
+        if (!tableData) return;
+        json = tableData;
+        headerRows = [['Tabela Geral de Servidores']];
+        break;
       }
 
-      const bom = '\uFEFF';
-      const blob = new Blob([bom + rows.join('\n')], {
-        type: 'text/csv;charset=utf-8;',
-      });
+      case 'cargos': {
+        if (!this.cargosData) return;
+        json = this.cargosData;
 
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${filename}.csv`;
-      a.style.display = 'none';
-      document.body.appendChild(a);
-      a.click();
+        // Build header from functionCounts
+        headerRows.push(['Estatísticas de Cargos e Funções']);
+        this.functionCounts.forEach((item) => {
+          headerRows.push([item.label, item.count]);
+        });
+        headerRows.push(['']); // Spacer
+        headerRows.push(['Tabela Detalhada']);
+        break;
+      }
 
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 100);
-    } catch (err) {
-      console.error('exportToCSV erro:', err);
+      case 'servidores': {
+        // This tab is card-only, so we export the hierarchy as rows
+        headerRows.push(['Distribuição de Servidores']);
+
+        this.areaVinculoStats.forEach((area) => {
+          headerRows.push(['Area', area.areaName]);
+          headerRows.push(['Total', area.totalServidores]);
+
+          area.groups.forEach((group) => {
+            headerRows.push(['  Categoria', group.category, group.total]);
+            group.items.forEach((item) => {
+              headerRows.push(['    Item', item.label, item.count]);
+            });
+          });
+          headerRows.push(['']); // Spacer
+        });
+        // No json table data for this one, just the 'header' report
+        break;
+      }
+
+      case 'calculos': {
+        headerRows.push(['Cálculos da Distribuição (Resolução CNJ 219/2016)']);
+        this.calculosResolucao.forEach((item) => {
+          headerRows.push([item.label, item.value, item.desc]);
+        });
+        break;
+      }
+
+      case 'resolucao': {
+        // Priorização 1º Grau
+        if (!this.resolucaoData) return;
+        json = this.resolucaoData;
+        headerRows.push(['Priorização do 1º Grau']);
+        break;
+      }
+
+      case 'premio': {
+        headerRows.push(['Prêmio CNJ de Qualidade']);
+        headerRows.push(['Pontos Obtidos', this.totalPontos]);
+        headerRows.push(['Máximo', 70]);
+        headerRows.push(['Percentual', this.totalPontos / 70]);
+        headerRows.push(['']);
+
+        this.situacaoPremio.forEach((item) => {
+          headerRows.push([item.label, item.value, item.desc]);
+        });
+        break;
+      }
+
+      case 'tlp': {
+        if (!this.tlpData) return;
+        json = this.tlpData;
+        headerRows.push(['Taxa de Lotação Paradigma (TLP)']);
+        break;
+      }
+
+      case 'comissionados': {
+        if (!this.comissionadosData) return;
+        json = this.comissionadosData;
+
+        headerRows = [
+          ['Estatísticas de Comissionados'],
+          ['Não Efetivos (Numerador)', this.comissionadosStats.numerator],
+          [' - Ad Nutum', this.comissionadosStats.countAdNutum],
+          [' - À Disposição', this.comissionadosStats.countComissionadoDisp],
+          [
+            'Efetivo Comissionado',
+            this.comissionadosStats.countEfetivoComissionado,
+          ],
+          ['Total (Denominador)', this.comissionadosStats.denominator],
+          ['Percentual', this.comissionadosStats.percentage],
+          [],
+          ['Tabela de Comissionados'],
+        ];
+        break;
+      }
     }
+
+    this.excelService.exportAsExcelFile(json, fileName, headerRows);
   }
 
   // -----------------------

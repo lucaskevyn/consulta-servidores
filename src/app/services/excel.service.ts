@@ -71,7 +71,7 @@ export class ExcelService {
           const dados: Servidor[] = linhas.map((l) => {
             const obj: any = {};
             CAMPOS.forEach(
-              ([nome, col]) => (obj[nome] = this.getValueByColumn(l, col))
+              ([nome, col]) => (obj[nome] = this.getValueByColumn(l, col)),
             );
             return obj as Servidor;
           });
@@ -84,5 +84,55 @@ export class ExcelService {
       reader.onerror = (err) => reject(err);
       reader.readAsArrayBuffer(file);
     });
+  }
+
+  public exportAsExcelFile(
+    json: any[],
+    excelFileName: string,
+    headerRows?: any[][],
+  ): void {
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet([]);
+
+    // 1. Add Header Rows (Stats/Cards)
+    if (headerRows && headerRows.length > 0) {
+      XLSX.utils.sheet_add_aoa(worksheet, headerRows, { origin: 'A1' });
+    }
+
+    // 2. Add Data Table
+    // If we have headers, start data after them + 1 empty line
+    const dataOrigin =
+      headerRows && headerRows.length > 0
+        ? { r: headerRows.length + 1, c: 0 }
+        : { r: 0, c: 0 };
+
+    if (json && json.length > 0) {
+      XLSX.utils.sheet_add_json(worksheet, json, {
+        origin: dataOrigin,
+        skipHeader: false,
+      });
+    }
+
+    const workbook: XLSX.WorkBook = {
+      Sheets: { data: worksheet },
+      SheetNames: ['data'],
+    };
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+    this.saveAsExcelFile(excelBuffer, excelFileName);
+  }
+
+  private saveAsExcelFile(buffer: any, fileName: string): void {
+    const EXCEL_TYPE =
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const EXCEL_EXTENSION = '.xlsx';
+    const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
+    const url = window.URL.createObjectURL(data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION;
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 }

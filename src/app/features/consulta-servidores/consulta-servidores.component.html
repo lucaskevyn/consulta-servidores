@@ -124,7 +124,7 @@
               [inputPt]="inputPt"
               [multiselectPt]="multiselectPt"
               (sortRequest)="customSort($event.event, $event.key)"
-              (exportRequest)="exportToCSV(null, null, 'geral')"
+              (exportRequest)="onTabExportRequest('geral')"
               (secretariaChange)="onSecretariaChange($event)"
               (unidadeChange)="onUnidadeChange($event)"
               (setorChange)="onSetorChange($event)"
@@ -138,19 +138,21 @@
               [cargosData]="cargosData"
               [cargosCols]="cargosCols"
               (sortRequest)="customSort($event.event, $event.key)"
-              (exportRequest)="exportToCSV(cargosData, cargosCols, 'cargos')"
+              (exportRequest)="onTabExportRequest('cargos')"
               class="h-full flex flex-col min-h-0"
             ></app-tab-cargos-funcoes>
           }
           @if (activeTab === 2) {
             <app-tab-servidores
               [areaVinculoStats]="areaVinculoStats"
+              (exportRequest)="onTabExportRequest('servidores')"
               class="h-full flex flex-col min-h-0"
             ></app-tab-servidores>
           }
           @if (activeTab === 3) {
             <app-tab-calculos-distribuicao
               [calculosResolucao]="calculosResolucao"
+              (exportRequest)="onTabExportRequest('calculos')"
               class="h-full flex flex-col min-h-0"
             ></app-tab-calculos-distribuicao>
           }
@@ -158,9 +160,7 @@
             <app-tab-priorizacao-grau
               [resolucaoData]="resolucaoData"
               [resolucaoCols]="resolucaoCols"
-              (exportRequest)="
-                exportToCSV(resolucaoData, resolucaoCols, 'resolucao')
-              "
+              (exportRequest)="onTabExportRequest('resolucao')"
               class="h-full flex flex-col min-h-0"
             ></app-tab-priorizacao-grau>
           }
@@ -168,6 +168,7 @@
             <app-tab-premio-qualidade
               [totalPontos]="totalPontos"
               [situacaoPremio]="situacaoPremio"
+              (exportRequest)="onTabExportRequest('premio')"
               class="h-full flex flex-col min-h-0"
             ></app-tab-premio-qualidade>
           }
@@ -179,7 +180,7 @@
               [unidadeOptions]="getOptions('tlp_unidade')"
               [filterValues]="filterValues"
               (sortRequest)="customSort($event.event, $event.key)"
-              (exportRequest)="exportToCSV(tlpData, tlpCols, 'tlp')"
+              (exportRequest)="onTabExportRequest('tlp')"
               class="h-full flex flex-col min-h-0"
             ></app-tab-tlp>
           }
@@ -193,9 +194,7 @@
               [inputPt]="inputPt"
               [multiselectPt]="multiselectPt"
               (sortRequest)="customSort($event.event, $event.key)"
-              (exportRequest)="
-                exportToCSV(comissionadosData, cols, 'comissionados')
-              "
+              (exportRequest)="onTabExportRequest('comissionados')"
               (secretariaChange)="onSecretariaChange($event)"
               (unidadeChange)="onUnidadeChange($event)"
               (setorChange)="onSetorChange($event)"
