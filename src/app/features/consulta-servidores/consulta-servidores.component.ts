@@ -332,24 +332,36 @@ export class ConsultaServidoresComponent {
 
   calculateComissionadosStats() {
     const vinculosAdNutum = ['ad nutum comissionado'];
-    const vinculosComissDisp = ['comissionado (à disposição)'];
+    const vinculosComissDispBase = ['comissionado (à disposição)'];
+    const extraVinculosComissDisp = ['à disposição fprev', 'à disposição fps'];
     const vinculosEfetivoComiss = ['efetivo comissionado (resolução 03/2013)'];
+    const vinculosEfetivoComiss2 = ['efetivo comissionado'];
 
     // Filter lists
     const adNutum = this.dados.filter((d) =>
       vinculosAdNutum.includes((d.vinculo || '').toLowerCase().trim()),
     );
-    const comissDisp = this.dados.filter((d) =>
-      vinculosComissDisp.includes((d.vinculo || '').toLowerCase().trim()),
-    );
+    const comissDisp = this.dados.filter((d) => {
+      const v = (d.vinculo || '').toLowerCase().trim();
+      const c = (d.cargo || '').toLowerCase();
+      if (vinculosComissDispBase.includes(v)) return true;
+      if (extraVinculosComissDisp.includes(v)) {
+        return c.includes('cj');
+      }
+      return false;
+    });
     const efetivoComiss = this.dados.filter((d) =>
       vinculosEfetivoComiss.includes((d.vinculo || '').toLowerCase().trim()),
+    );
+    const efetivoComiss2 = this.dados.filter((d) =>
+      vinculosEfetivoComiss2.includes((d.vinculo || '').toLowerCase().trim()),
     );
 
     // Counts
     this.comissionadosStats.countAdNutum = adNutum.length;
     this.comissionadosStats.countComissionadoDisp = comissDisp.length;
-    this.comissionadosStats.countEfetivoComissionado = efetivoComiss.length;
+    this.comissionadosStats.countEfetivoComissionado =
+      efetivoComiss.length + efetivoComiss2.length;
 
     // Totals
     this.comissionadosStats.numerator =
