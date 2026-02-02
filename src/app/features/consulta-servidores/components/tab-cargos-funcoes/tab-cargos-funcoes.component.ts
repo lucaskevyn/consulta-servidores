@@ -11,10 +11,12 @@ import { Button } from 'primeng/button';
 import { SortEvent } from 'primeng/api';
 import { Column } from '../../models/consulta-servidores.models';
 
+import { CardComponent } from '../../../../shared/components/card/card.component';
+
 @Component({
   selector: 'app-tab-cargos-funcoes',
   standalone: true,
-  imports: [CommonModule, TableModule, Button],
+  imports: [CommonModule, TableModule, Button, CardComponent],
   templateUrl: './tab-cargos-funcoes.component.html',
   styleUrls: ['./tab-cargos-funcoes.component.css'],
 })

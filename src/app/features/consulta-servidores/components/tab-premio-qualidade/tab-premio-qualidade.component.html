@@ -9,34 +9,28 @@
   </div>
   <div class="grid grid-cols-12 gap-3">
     <div class="col-span-12 flex gap-3">
-      <div
-        class="flex-1 p-2 flex flex-col items-center justify-center rounded-xl bg-surface-0 shadow-sm/5"
-      >
+      <app-card class="flex-1">
         <span class="text-xs font-medium text-center text-surface-500">
           Obtido
         </span>
         <span class="text-xl font-bold text-rose-800">
           {{ totalPontos }}pts
         </span>
-      </div>
-      <div
-        class="flex-1 p-2 flex flex-col items-center justify-center rounded-xl bg-surface-0 shadow-sm/5"
-      >
+      </app-card>
+      <app-card class="flex-1">
         <span class="text-xs font-medium text-center text-surface-500">
           Máximo
         </span>
         <span class="text-xl font-bold text-rose-800"> 70pts </span>
-      </div>
-      <div
-        class="flex-1 p-2 flex flex-col items-center justify-center rounded-xl bg-surface-0 shadow-sm/5"
-      >
+      </app-card>
+      <app-card class="flex-1">
         <span class="text-xs font-medium text-center text-surface-500">
           Percentual
         </span>
         <span class="text-xl font-bold text-rose-800">
           {{ (this.totalPontos / 70) * 100 }}%
         </span>
-      </div>
+      </app-card>
     </div>
 
     <span class="font-medium -mb-1 text-surface-600 col-span-6"
@@ -49,14 +43,13 @@
     >
     @for (item of situacaoPremio | slice: 0 : 6; track item.label) {
       <div class="flex flex-col gap-3 col-span-2">
-        <div
-          class="p-2 flex flex-col items-center justify-center rounded-xl h-full shadow-md/5"
-          [ngClass]="
+        <app-card
+          [mode]="
             item.desc === 'Cumprido'
-              ? 'bg-green-100 ring-green-500 ring-1 ring-inset'
+              ? 'success'
               : item.desc === 'Não cumprido'
-                ? 'bg-rose-100 ring-rose-500 ring-1 ring-inset'
-                : 'bg-surface-0 ring-surface-200 ring-1 ring-inset'
+                ? 'fail'
+                : 'default'
           "
         >
           <span
@@ -96,7 +89,7 @@
           >
             {{ item.desc }}
           </span>
-        </div>
+        </app-card>
       </div>
     }
 
@@ -110,14 +103,13 @@
     >
     @for (item of situacaoPremio | slice: 6 : 10; track item.label) {
       <div class="flex flex-col gap-3 col-span-3">
-        <div
-          class="p-2 flex flex-col items-center justify-center rounded-xl h-full shadow-sm/5"
-          [ngClass]="
+        <app-card
+          [mode]="
             item.desc === 'Cumprido'
-              ? 'bg-green-100 ring-green-500 ring-1 ring-inset'
+              ? 'success'
               : item.desc === 'Não cumprido'
-                ? 'bg-rose-100 ring-rose-500 ring-1 ring-inset'
-                : 'bg-surface-0'
+                ? 'fail'
+                : 'default'
           "
         >
           <span
@@ -157,7 +149,7 @@
           >
             {{ item.desc }}
           </span>
-        </div>
+        </app-card>
       </div>
     }
   </div>

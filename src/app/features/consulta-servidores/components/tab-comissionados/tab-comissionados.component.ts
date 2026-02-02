@@ -7,15 +7,15 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TabGeralComponent } from '../tab-geral/tab-geral.component';
-import { CardModule } from 'primeng/card';
 import { Column } from '../../models/consulta-servidores.models';
 import { SortEvent } from 'primeng/api';
 import { DividerModule } from 'primeng/divider';
+import { CardComponent } from '../../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-tab-comissionados',
   standalone: true,
-  imports: [CommonModule, TabGeralComponent, CardModule, DividerModule],
+  imports: [CommonModule, TabGeralComponent, DividerModule, CardComponent],
   templateUrl: './tab-comissionados.component.html',
 })
 export class TabComissionadosComponent {

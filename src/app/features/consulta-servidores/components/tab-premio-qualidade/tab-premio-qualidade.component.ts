@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { CalculoResolucao } from '../../models/consulta-servidores.models';
 
 import { Button } from 'primeng/button';
+import { CardComponent } from '../../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-tab-premio-qualidade',
   standalone: true,
-  imports: [CommonModule, Button],
+  imports: [CommonModule, Button, CardComponent],
   templateUrl: './tab-premio-qualidade.component.html',
   styleUrls: ['./tab-premio-qualidade.component.css'],
 })

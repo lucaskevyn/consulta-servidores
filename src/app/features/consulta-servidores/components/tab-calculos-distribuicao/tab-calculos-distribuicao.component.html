@@ -13,10 +13,7 @@
       2024)</span
     >
     @for (item of calculosResolucao | slice: 0 : 5; track item.label) {
-      <div
-        class="p-2 flex flex-col items-center justify-center rounded-xl shadow-sm/5"
-        [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-0'"
-      >
+      <app-card [styleClass]="item.bgColor || ''">
         <span
           class="text-xs font-medium text-center"
           [ngClass]="
@@ -40,17 +37,14 @@
         >
           {{ item.desc }}
         </span>
-      </div>
+      </app-card>
     }
 
     <span class="font-medium -mb-1 text-surface-600 col-span-5"
       >b) Distribuição de cargos e funções por grau de jurisdição
     </span>
     @for (item of calculosResolucao | slice: 5 : 10; track item.label) {
-      <div
-        class="p-2 flex flex-col items-center justify-center rounded-xl shadow-sm/5"
-        [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-0'"
-      >
+      <app-card [styleClass]="item.bgColor || ''">
         <span
           class="text-xs font-medium text-center"
           [ngClass]="
@@ -74,17 +68,14 @@
         >
           {{ item.desc }}
         </span>
-      </div>
+      </app-card>
     }
 
     <span class="font-medium -mb-1 text-surface-600 col-span-5"
       >c) Limite de 30% de servidores na área de apoio indireto (Administrativo)
     </span>
     @for (item of calculosResolucao | slice: 10 : 15; track item.label) {
-      <div
-        class="p-2 flex flex-col items-center justify-center rounded-xl shadow-sm/5"
-        [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-0'"
-      >
+      <app-card [styleClass]="item.bgColor || ''">
         <span
           class="text-xs font-medium text-center"
           [ngClass]="
@@ -108,7 +99,7 @@
         >
           {{ item.desc }}
         </span>
-      </div>
+      </app-card>
     }
 
     <span class="font-medium -mb-1 text-surface-600 col-span-5"
@@ -116,10 +107,7 @@
       (Administrativo)
     </span>
     @for (item of calculosResolucao | slice: 15 : 20; track item.label) {
-      <div
-        class="p-2 flex flex-col items-center justify-center rounded-xl shadow-sm/5"
-        [ngClass]="item.bgColor ? item.bgColor : 'bg-surface-0'"
-      >
+      <app-card [styleClass]="item.bgColor || ''">
         <span
           class="text-xs font-medium text-center"
           [ngClass]="
@@ -143,7 +131,7 @@
         >
           {{ item.desc }}
         </span>
-      </div>
+      </app-card>
     }
   </div>
 </div>

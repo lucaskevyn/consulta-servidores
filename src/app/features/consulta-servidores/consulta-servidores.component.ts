@@ -1081,7 +1081,6 @@ export class ConsultaServidoresComponent {
           this.resolucaoData[7].value / totalJud >= 0.915
             ? 'Cumprido'
             : 'Não cumprido',
-       
       },
       {
         label: 'Situação (Tolerância)',
@@ -1091,7 +1090,6 @@ export class ConsultaServidoresComponent {
           this.resolucaoData[7].value / totalJud >= 0.905
             ? 'Cumprido'
             : 'Não cumprido',
- 
       },
       {
         label: '1º Grau (%)',
@@ -1120,7 +1118,6 @@ export class ConsultaServidoresComponent {
           0.915
             ? 'Cumprido'
             : 'Não cumprido',
-   
       },
       {
         label: 'Situação (Tolerância)',
@@ -1136,7 +1133,6 @@ export class ConsultaServidoresComponent {
           0.905
             ? 'Cumprido'
             : 'Não cumprido',
-       
       },
 
       {
@@ -1155,7 +1151,6 @@ export class ConsultaServidoresComponent {
         label: 'Situação Item',
         value: totalJud / totalApoio >= 0.7 ? '15pts' : '0pts',
         desc: totalJud / totalApoio >= 0.7 ? 'Cumprido' : 'Não cumprido',
-     
       },
 
       {
@@ -1175,7 +1170,6 @@ export class ConsultaServidoresComponent {
         value: totalJudValor / totalApoioValor >= 0.7 ? '15pts' : '0pts',
         desc:
           totalJudValor / totalApoioValor >= 0.7 ? 'Cumprido' : 'Não cumprido',
-     
       },
     ];
 
