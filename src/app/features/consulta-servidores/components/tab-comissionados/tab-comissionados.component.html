@@ -52,11 +52,11 @@
     </div>
 
     <div
-      class="p-3 rounded-xl shadow-sm/5 flex flex-col text-center"
+      class="p-3 rounded-xl flex flex-col text-center"
       [ngClass]="
         stats.percentage < 0.5
-          ? 'bg-green-100 shadow-green-950'
-          : 'bg-rose-100 shadow-rose-950'
+          ? 'bg-green-100 ring-green-500 ring-1 ring-inset'
+          : 'bg-rose-100 ring-rose-500 ring-1 ring-inset'
       "
     >
       <span

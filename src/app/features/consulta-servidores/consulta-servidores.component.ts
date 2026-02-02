@@ -9,14 +9,12 @@ import { SortEvent } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import tlpList from '../../const/tlp.json';
 import {
-  ApoioCount,
   AreaVinculoStat,
   CalculoResolucao,
   Column,
   ExportColumn,
   SortEventWithData,
   TlpRow,
-  VinculoGroup,
 } from './models/consulta-servidores.models';
 import { TabGeralComponent } from './components/tab-geral/tab-geral.component';
 import { TabCargosFuncoesComponent } from './components/tab-cargos-funcoes/tab-cargos-funcoes.component';
@@ -165,7 +163,7 @@ export class ConsultaServidoresComponent {
 
   inputPt = {
     root: {
-      class: 'border border-surface-300 rounded px-2 py-1  h-7',
+      class: 'border border-surface-300 rounded px-2 py-1 h-7',
     },
   };
 
@@ -1083,14 +1081,7 @@ export class ConsultaServidoresComponent {
           this.resolucaoData[7].value / totalJud >= 0.915
             ? 'Cumprido'
             : 'Não cumprido',
-        bgColor:
-          this.resolucaoData[7].value / totalJud >= 0.915
-            ? 'bg-green-100'
-            : 'bg-rose-100',
-        textColor:
-          this.resolucaoData[7].value / totalJud >= 0.915
-            ? 'text-green-800'
-            : 'text-rose-800',
+       
       },
       {
         label: 'Situação (Tolerância)',
@@ -1100,14 +1091,7 @@ export class ConsultaServidoresComponent {
           this.resolucaoData[7].value / totalJud >= 0.905
             ? 'Cumprido'
             : 'Não cumprido',
-        bgColor:
-          this.resolucaoData[7].value / totalJud >= 0.905
-            ? 'bg-green-100'
-            : 'bg-rose-100',
-        textColor:
-          this.resolucaoData[7].value / totalJud >= 0.905
-            ? 'text-green-800'
-            : 'text-rose-800',
+ 
       },
       {
         label: '1º Grau (%)',
@@ -1136,18 +1120,7 @@ export class ConsultaServidoresComponent {
           0.915
             ? 'Cumprido'
             : 'Não cumprido',
-        bgColor:
-          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-            totalJudValor >=
-          0.915
-            ? 'bg-green-100'
-            : 'bg-rose-100',
-        textColor:
-          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-            totalJudValor >=
-          0.915
-            ? 'text-green-800'
-            : 'text-rose-800',
+   
       },
       {
         label: 'Situação (Tolerância)',
@@ -1163,18 +1136,7 @@ export class ConsultaServidoresComponent {
           0.905
             ? 'Cumprido'
             : 'Não cumprido',
-        bgColor:
-          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-            totalJudValor >=
-          0.905
-            ? 'bg-green-100'
-            : 'bg-rose-100',
-        textColor:
-          (this.resolucaoData[1].value + this.resolucaoData[4].value) /
-            totalJudValor >=
-          0.905
-            ? 'text-green-800'
-            : 'text-rose-800',
+       
       },
 
       {
@@ -1193,9 +1155,7 @@ export class ConsultaServidoresComponent {
         label: 'Situação Item',
         value: totalJud / totalApoio >= 0.7 ? '15pts' : '0pts',
         desc: totalJud / totalApoio >= 0.7 ? 'Cumprido' : 'Não cumprido',
-        bgColor: totalJud / totalApoio >= 0.7 ? 'bg-green-100' : 'bg-rose-100',
-        textColor:
-          totalJud / totalApoio >= 0.7 ? 'text-green-800' : 'text-rose-800',
+     
       },
 
       {
@@ -1215,14 +1175,7 @@ export class ConsultaServidoresComponent {
         value: totalJudValor / totalApoioValor >= 0.7 ? '15pts' : '0pts',
         desc:
           totalJudValor / totalApoioValor >= 0.7 ? 'Cumprido' : 'Não cumprido',
-        bgColor:
-          totalJudValor / totalApoioValor >= 0.7
-            ? 'bg-green-100'
-            : 'bg-rose-100',
-        textColor:
-          totalJudValor / totalApoioValor >= 0.7
-            ? 'text-green-800'
-            : 'text-rose-800',
+     
       },
     ];
 
