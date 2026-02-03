@@ -332,6 +332,7 @@ export class ConsultaServidoresComponent {
     denominator: 0,
     percentage: 0,
     countAdNutum: 0,
+    countFp: 0,
     countComissionadoDisp: 0,
     countEfetivoComissionado: 0,
   };
@@ -339,7 +340,7 @@ export class ConsultaServidoresComponent {
   calculateComissionadosStats() {
     const vinculosAdNutum = ['ad nutum comissionado'];
     const vinculosComissDispBase = ['comissionado (à disposição)'];
-    const extraVinculosComissDisp = ['à disposição fprev', 'à disposição fps'];
+    const vinculosComissDispFp = ['à disposição fprev', 'à disposição fps'];
     const vinculosEfetivoComiss = ['efetivo comissionado (resolução 03/2013)'];
     const vinculosEfetivoComiss2 = ['efetivo comissionado'];
 
@@ -349,11 +350,17 @@ export class ConsultaServidoresComponent {
     );
     const comissDisp = this.dados.filter((d) => {
       const v = (d.vinculo || '').toLowerCase().trim();
-      const c = (d.cargo || '').toLowerCase();
+      const f = (d.funcao || '').toLowerCase();
       if (vinculosComissDispBase.includes(v)) return true;
-      if (extraVinculosComissDisp.includes(v)) {
-        return c.includes('cj');
+      return false;
+    });
+    const comissFp = this.dados.filter((d) => {
+      const v = (d.vinculo || '').toLowerCase().trim();
+      const f = (d.funcao || '').toLowerCase();
+      if (vinculosComissDispFp.includes(v)) {
+        return f.includes('cj');
       }
+
       return false;
     });
     const efetivoComiss = this.dados.filter((d) =>
@@ -366,13 +373,15 @@ export class ConsultaServidoresComponent {
     // Counts
     this.comissionadosStats.countAdNutum = adNutum.length;
     this.comissionadosStats.countComissionadoDisp = comissDisp.length;
+    this.comissionadosStats.countFp = comissFp.length;
     this.comissionadosStats.countEfetivoComissionado =
       efetivoComiss.length + efetivoComiss2.length;
 
     // Totals
     this.comissionadosStats.numerator =
       this.comissionadosStats.countAdNutum +
-      this.comissionadosStats.countComissionadoDisp;
+      this.comissionadosStats.countComissionadoDisp +
+      this.comissionadosStats.countFp;
     this.comissionadosStats.denominator =
       this.comissionadosStats.numerator +
       this.comissionadosStats.countEfetivoComissionado;
@@ -387,7 +396,12 @@ export class ConsultaServidoresComponent {
     // Combined Data for Table
     // The user wants a table with "servers that have the links cited above".
     // I am including all 3 groups as they are the ones involved in the calculation.
-    this.comissionadosData = [...adNutum, ...comissDisp, ...efetivoComiss];
+    this.comissionadosData = [
+      ...adNutum,
+      ...comissFp,
+      ...comissDisp,
+      ...efetivoComiss,
+    ];
     this.initialComissionadosData = [...this.comissionadosData];
   }
 
@@ -1331,7 +1345,11 @@ export class ConsultaServidoresComponent {
           ['Estatísticas de Comissionados'],
           ['Não Efetivos (Numerador)', this.comissionadosStats.numerator],
           [' - Ad Nutum', this.comissionadosStats.countAdNutum],
-          [' - À Disposição', this.comissionadosStats.countComissionadoDisp],
+          [' - À Disposição', this.comissionadosStats.countFp],
+          [
+            ' - Comissionado (À Disposição)',
+            this.comissionadosStats.countComissionadoDisp,
+          ],
           [
             'Efetivo Comissionado',
             this.comissionadosStats.countEfetivoComissionado,

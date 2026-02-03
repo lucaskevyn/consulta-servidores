@@ -34,12 +34,14 @@ export class TabComissionadosComponent {
     percentage: number;
     countAdNutum: number;
     countComissionadoDisp: number;
+    countFp: number;
     countEfetivoComissionado: number;
   } = {
     numerator: 0,
     denominator: 0,
     percentage: 0,
     countAdNutum: 0,
+    countFp: 0,
     countComissionadoDisp: 0,
     countEfetivoComissionado: 0,
   };

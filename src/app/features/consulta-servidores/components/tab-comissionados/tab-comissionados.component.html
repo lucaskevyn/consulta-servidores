@@ -1,7 +1,7 @@
 <div class="flex flex-col h-full gap-3">
   <!-- Stats Cards -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-3 shrink-0">
-    <app-card styleClass="bg-white justify-center">
+    <app-card styleClass="bg-white justify-center p-3">
       <div class="flex">
         <div class="flex flex-col text-center">
           <span class="text-xs font-medium text-surface-500">Não Efetivos</span>
@@ -11,7 +11,7 @@
 
           <span class="text-xs text-surface-500 flex flex-col">Servidores</span>
         </div>
-        <p-divider layout="vertical" class="px-4" />
+        <p-divider layout="vertical" class="" />
         <div class="flex flex-col justify-center">
           <div class="flex flex-col gap-2">
             <div class="flex justify-between items-start text-xs group">
@@ -25,6 +25,14 @@
             <div class="flex justify-between items-start text-xs group">
               <span class="text-surface-600 capitalize leading-tight pr-2"
                 >À Disposição</span
+              >
+              <span class="font-semibold text-surface-900">{{
+                stats.countFp
+              }}</span>
+            </div>
+            <div class="flex justify-between items-start text-xs group">
+              <span class="text-surface-600 capitalize leading-tight pr-2"
+                >Comissionado (À Disposição)</span
               >
               <span class="font-semibold text-surface-900">{{
                 stats.countComissionadoDisp
@@ -77,19 +85,21 @@
   </div>
 
   <!-- Table Section -->
-  <app-tab-geral
-    class="h-full"
-    [dados]="comissionadosData"
-    [cols]="cols"
-    [uniqueValues]="uniqueValues"
-    [filterValues]="filterValues"
-    [inputPt]="inputPt"
-    [multiselectPt]="multiselectPt"
-    (sortRequest)="onSortRequest($event)"
-    (exportRequest)="onExportRequest()"
-    (secretariaChange)="secretariaChange.emit($event)"
-    (unidadeChange)="unidadeChange.emit($event)"
-    (setorChange)="setorChange.emit($event)"
-    (clearFiltersRequest)="clearFiltersRequest.emit()"
-  ></app-tab-geral>
+  <div class="grow min-h-0">
+    <app-tab-geral
+      class="h-full"
+      [dados]="comissionadosData"
+      [cols]="cols"
+      [uniqueValues]="uniqueValues"
+      [filterValues]="filterValues"
+      [inputPt]="inputPt"
+      [multiselectPt]="multiselectPt"
+      (sortRequest)="onSortRequest($event)"
+      (exportRequest)="onExportRequest()"
+      (secretariaChange)="secretariaChange.emit($event)"
+      (unidadeChange)="unidadeChange.emit($event)"
+      (setorChange)="setorChange.emit($event)"
+      (clearFiltersRequest)="clearFiltersRequest.emit()"
+    ></app-tab-geral>
+  </div>
 </div>
