@@ -20,6 +20,7 @@ export interface TlpRow {
   dsc_unidade: string;
   uf: string;
   municipio: number;
+  tlp?: string | number;
   lp: number;
   lr_efet: number;
   lr_i: number;

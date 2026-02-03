@@ -8,6 +8,9 @@
   (sortFunction)="onCustomSort($event)"
   [customSort]="true"
   size="small"
+  [paginator]="true"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [rows]="10"
   [pt]="{
     root: {
       class: 'border border-surface-100 rounded-xl shadow-sm/5',
@@ -22,11 +25,11 @@
       <div class="flex items-center gap-2">
         <p-multiSelect
           [options]="lpOptions"
-          [(ngModel)]="filterValues['tlp_lp']"
-          (onChange)="dtTlp.filter($event.value, 'lp', 'in')"
+          [(ngModel)]="filterValues['tlp_tlp']"
+          (onChange)="dtTlp.filter($event.value, 'tlp', 'in')"
           optionLabel="label"
           optionValue="value"
-          placeholder="Filtrar por LP"
+          placeholder="Filtrar por TLP"
           class="min-w-40"
           appendTo="body"
           [maxSelectedLabels]="1"
@@ -82,7 +85,6 @@
       <td class="py-2 px-4 font-medium">{{ row.dsc_unidade }}</td>
       <td class="py-2 px-4">{{ row.uf }}</td>
       <td class="py-2 px-4">{{ row.municipio }}</td>
-      <td class="py-2 px-4"></td>
       <td class="py-2 px-4">{{ row.lr_efet }}</td>
       <td class="py-2 px-4">{{ row.lr_i }}</td>
       <td class="py-2 px-4">{{ row.lr_sv }}</td>
@@ -103,5 +105,13 @@
       <td class="py-2 px-4">{{ row.fc_2g_5 }}</td>
       <td class="py-2 px-4">{{ row.fc_2g_6 }}</td>
     </tr>
+  </ng-template>
+  <ng-template pTemplate="paginatorleft" let-state>
+    <div class="text-sm text-surface-600 flex gap-4 items-center">
+      <span>
+        Exibindo {{ state.first + 1 }} a {{ state.first + state.rows }} de
+        {{ state.totalRecords }} registros
+      </span>
+    </div>
   </ng-template>
 </p-table>

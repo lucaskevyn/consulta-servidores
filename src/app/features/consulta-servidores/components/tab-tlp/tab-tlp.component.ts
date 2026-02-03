@@ -42,7 +42,7 @@ export class TabTlpComponent {
 
   clearFilters() {
     this.dtTlp.clear();
-    this.filterValues['tlp_lp'] = [];
+    this.filterValues['tlp_tlp'] = [];
     this.filterValues['tlp_unidade'] = [];
   }
 }

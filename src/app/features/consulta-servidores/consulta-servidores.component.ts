@@ -135,6 +135,7 @@ export class ConsultaServidoresComponent {
     funcao: [],
     // padrao_funcao: [],
     jurisdicao: [],
+    classificacao_tlp: [],
   };
 
   tlpList: any[] = tlpList;
@@ -144,8 +145,9 @@ export class ConsultaServidoresComponent {
   fullUniqueValues: { [key: string]: string[] } = {};
 
   filterValues: { [key: string]: any[] } = {
-    tlp_lp: [],
+    tlp_tlp: [],
     tlp_unidade: [],
+    classificacao_tlp: [],
   };
 
   initialValue: Servidor[] = [];
@@ -236,7 +238,6 @@ export class ConsultaServidoresComponent {
       { field: 'dsc_unidade', header: 'Unidade' },
       { field: 'uf', header: 'UF' },
       { field: 'municipio', header: 'Município' },
-      { field: 'lp', header: 'LP' },
       { field: 'lr_efet', header: 'LR-EFET' },
       { field: 'lr_i', header: 'LR-I' },
       { field: 'lr_sv', header: 'LR-SV' },
@@ -290,8 +291,13 @@ export class ConsultaServidoresComponent {
     this.excelService
       .readFile(file)
       .then((res) => {
-        this.dados = res;
-        this.initialValue = [...res];
+        this.dados = res.map((d) => ({
+          ...d,
+          classificacao_tlp: d.classificacao_tlp
+            ? String(d.classificacao_tlp).trim()
+            : '',
+        }));
+        this.initialValue = [...this.dados];
         this.buildUniqueValues();
         this.loading = false;
       })
@@ -563,11 +569,11 @@ export class ConsultaServidoresComponent {
 
     this.tlpList.forEach((item: any) => {
       // Normaliza o nome da unidade do TLP para comparação
-      const unidadeTlp = (item.unidade || '').trim().toUpperCase();
+      const unidadeTlp = this.normalizeString(item.unidade);
 
       // Filtra os dados (servidores) que pertencem a essa unidade
       const matchingServidores = this.dados.filter((d) => {
-        const unidadeDados = (d.unidade || '').trim().toUpperCase();
+        const unidadeDados = this.normalizeString(d.unidade);
         return unidadeDados === unidadeTlp;
       });
 
@@ -578,6 +584,7 @@ export class ConsultaServidoresComponent {
       const grau = first ? first.grau || '' : '';
       const tipo = first ? first.jurisdicao || '' : ''; // tipo = campo jurisdicao
       const dsc_unidade = first ? first.unidade : item.unidade;
+      const tlp = first ? String(first.classificacao_tlp || '').trim() : '';
 
       let lr_efet = 0;
       let lr_i = 0;
@@ -663,7 +670,8 @@ export class ConsultaServidoresComponent {
         dsc_unidade,
         uf: 'AC',
         municipio: item.municipio,
-        lp: item.tlp,
+        tlp,
+        lp: 0,
         lr_efet,
         lr_i,
         lr_sv,
@@ -689,10 +697,8 @@ export class ConsultaServidoresComponent {
     this.initialTlpData = [...this.tlpData];
 
     // Popula filtros TLP
-    const lps = this.tlpData
-      .map((d) => d.lp)
-      .filter((v) => v !== null && v !== undefined);
-    this.uniqueValues['tlp_lp'] = Array.from(new Set(lps)).sort((a, b) => {
+    const tlps = this.tlpData.map((d) => String(d.tlp || '').trim());
+    this.uniqueValues['tlp_tlp'] = Array.from(new Set(tlps)).sort((a, b) => {
       // Sort numérico ou string
       if (typeof a === 'number' && typeof b === 'number') return a - b;
       return String(a).localeCompare(String(b));
@@ -1211,6 +1217,14 @@ export class ConsultaServidoresComponent {
       label: v || '<vazio>',
       value: v,
     }));
+  }
+
+  private normalizeString(val: string): string {
+    return (val || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .toUpperCase();
   }
 
   exportToCSV(
