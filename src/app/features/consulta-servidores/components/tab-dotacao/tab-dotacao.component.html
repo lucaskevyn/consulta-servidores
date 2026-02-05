@@ -1,0 +1,189 @@
+<div class="flex flex-col gap-4 h-full">
+  <!-- Filters -->
+  <!-- Filters -->
+  <div
+    class="p-4 bg-white rounded-xl shadow-sm border border-surface-200 flex flex-wrap gap-4 items-end"
+  >
+    <div class="flex flex-col gap-2 flex-1 min-w-[200px]">
+      <label class="font-medium text-sm text-surface-600">Secretaria</label>
+      <p-multiSelect
+        [options]="secretariaOptions"
+        [(ngModel)]="selectedSecretaria"
+        (onChange)="onSecretariaChange()"
+        placeholder="Selecione..."
+        [style]="{ width: '100%' }"
+        [showClear]="true"
+        [filter]="true"
+      >
+      </p-multiSelect>
+    </div>
+
+    <div class="flex flex-col gap-2 flex-1 min-w-[200px]">
+      <label class="font-medium text-sm text-surface-600">Unidade</label>
+      <p-multiSelect
+        [options]="unidadeOptions"
+        [(ngModel)]="selectedUnidade"
+        (onChange)="onUnidadeChange()"
+        placeholder="Selecione..."
+        [style]="{ width: '100%' }"
+        [disabled]="!selectedSecretaria || selectedSecretaria.length === 0"
+        [showClear]="true"
+        [filter]="true"
+      >
+      </p-multiSelect>
+    </div>
+
+    <div class="flex flex-col gap-2 flex-1 min-w-[200px]">
+      <label class="font-medium text-sm text-surface-600">Setor</label>
+      <p-multiSelect
+        [options]="setorOptions"
+        [(ngModel)]="selectedSetor"
+        (onChange)="onSetorChange()"
+        placeholder="Selecione..."
+        [style]="{ width: '100%' }"
+        [disabled]="!selectedUnidade || selectedUnidade.length === 0"
+        [showClear]="true"
+        [filter]="true"
+      >
+      </p-multiSelect>
+    </div>
+  </div>
+
+  <!-- Cards Section -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Sem Estagiário -->
+    <div
+      class="bg-white p-4 rounded-xl shadow-sm border border-surface-200 flex flex-col justify-between"
+    >
+      <div class="text-surface-500 font-medium text-sm">Total Servidores</div>
+      <div class="flex justify-between items-end mt-2">
+        <div class="flex flex-col">
+          <span class="text-xs text-surface-400">Servidores</span>
+          <span class="text-2xl font-bold text-rose-800">{{
+            stats.servidoresSemEstagiario
+          }}</span>
+        </div>
+        <div class="flex flex-col items-end">
+          <span class="text-xs text-surface-400">Dotação</span>
+          <span class="text-xl font-semibold text-blue-800">{{
+            stats.cargosSemEstagiario
+          }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Com CJ -->
+    <div
+      class="bg-white p-4 rounded-xl shadow-sm border border-surface-200 flex flex-col justify-between"
+    >
+      <div class="text-surface-500 font-medium text-sm">Com CJ</div>
+      <div class="flex justify-between items-end mt-2">
+        <div class="flex flex-col">
+          <span class="text-xs text-surface-400">Servidores</span>
+          <span class="text-2xl font-bold text-rose-800">{{
+            stats.servidoresCJ
+          }}</span>
+        </div>
+        <div class="flex flex-col items-end">
+          <span class="text-xs text-surface-400">Dotação</span>
+          <span class="text-xl font-semibold text-blue-800">{{
+            stats.cargosCJ
+          }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Com FC -->
+    <div
+      class="bg-white p-4 rounded-xl shadow-sm border border-surface-200 flex flex-col justify-between"
+    >
+      <div class="text-surface-500 font-medium text-sm">Com FC</div>
+      <div class="flex justify-between items-end mt-2">
+        <div class="flex flex-col">
+          <span class="text-xs text-surface-400">Servidores</span>
+          <span class="text-2xl font-bold text-rose-800">{{
+            stats.servidoresFC
+          }}</span>
+        </div>
+        <div class="flex flex-col items-end">
+          <span class="text-xs text-surface-400">Dotação</span>
+          <span class="text-xl font-semibold text-blue-800">{{
+            stats.cargosFC
+          }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estagiários -->
+    <div
+      class="bg-white p-4 rounded-xl shadow-sm border border-surface-200 flex flex-col justify-between"
+    >
+      <div class="text-surface-500 font-medium text-sm">Estagiários</div>
+      <div class="flex justify-between items-end mt-2">
+        <div class="flex flex-col">
+          <span class="text-xs text-surface-400">Servidores</span>
+          <span class="text-2xl font-bold text-rose-800">{{
+            stats.servidoresEstagiario
+          }}</span>
+        </div>
+        <div class="flex flex-col items-end">
+          <span class="text-xs text-surface-400">Dotação</span>
+          <span class="text-xl font-semibold text-blue-800">{{
+            stats.cargosEstagiario
+          }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div
+    class="flex-1 bg-white rounded-xl shadow-sm border border-surface-200 overflow-hidden flex flex-col min-h-0"
+  >
+    <p-table
+      [value]="filteredServidores"
+      [columns]="cols"
+      styleClass="p-datatable-sm"
+      [scrollable]="true"
+      scrollHeight="flex"
+      [rowHover]="true"
+    >
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          @for (col of columns; track col.field) {
+            <th
+              [pSortableColumn]="col.field"
+              class="whitespace-nowrap bg-surface-50 text-surface-700 font-semibold text-xs uppercase tracking-wider"
+            >
+              {{ col.header }}
+              <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+          }
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr
+          class="hover:bg-rose-50/50 transition-colors border-b border-surface-100 last:border-0 text-sm"
+        >
+          @for (col of columns; track col.field) {
+            <td class="whitespace-nowrap text-surface-600 px-4 py-3">
+              {{ rowData[col.field] }}
+            </td>
+          }
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td
+            [attr.colspan]="cols.length"
+            class="text-center p-8 text-surface-500"
+          >
+            Nenhum servidor encontrado com os filtros selecionados.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

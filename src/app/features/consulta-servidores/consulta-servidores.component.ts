@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { SortEvent } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import tlpList from '../../const/tlp.json';
+import dotacaoList from '../../const/dotacao.json';
 import {
   AreaVinculoStat,
   CalculoResolucao,
@@ -23,7 +24,9 @@ import { TabCalculosDistribuicaoComponent } from './components/tab-calculos-dist
 import { TabPriorizacaoGrauComponent } from './components/tab-priorizacao-grau/tab-priorizacao-grau.component';
 import { TabPremioQualidadeComponent } from './components/tab-premio-qualidade/tab-premio-qualidade.component';
 import { TabTlpComponent } from './components/tab-tlp/tab-tlp.component';
+
 import { TabComissionadosComponent } from './components/tab-comissionados/tab-comissionados.component';
+import { TabDotacaoComponent } from './components/tab-dotacao/tab-dotacao.component';
 
 import { DragDropDirective } from '../../core/directives/drag-drop.directive';
 
@@ -45,7 +48,9 @@ import { DragDropDirective } from '../../core/directives/drag-drop.directive';
     TabPriorizacaoGrauComponent,
     TabPremioQualidadeComponent,
     TabTlpComponent,
+
     TabComissionadosComponent,
+    TabDotacaoComponent,
   ],
 })
 export class ConsultaServidoresComponent {
@@ -103,6 +108,12 @@ export class ConsultaServidoresComponent {
       icon: 'pi pi-chart-pie',
       value: 7,
     },
+    {
+      label: 'Dotação',
+      labelHeader: 'Dotação TJAC_Resoluções Nº 108 e 331',
+      icon: 'pi pi-server',
+      value: 8,
+    },
   ];
 
   toggleSidebar() {
@@ -139,6 +150,7 @@ export class ConsultaServidoresComponent {
   };
 
   tlpList: any[] = tlpList;
+  dotacaoList: any[] = dotacaoList;
   tlpData: TlpRow[] = [];
 
   // Armazena todas as opções originais para restaurar quando necessário

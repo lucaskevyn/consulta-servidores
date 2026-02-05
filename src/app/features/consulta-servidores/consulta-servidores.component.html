@@ -202,6 +202,13 @@
               class="h-full flex flex-col min-h-0"
             ></app-tab-comissionados>
           }
+          @if (activeTab === 8) {
+            <app-tab-dotacao
+              [dados]="dados"
+              [dotacaoData]="dotacaoList"
+              class="h-full flex flex-col min-h-0"
+            ></app-tab-dotacao>
+          }
         </div>
       }
     </div>
