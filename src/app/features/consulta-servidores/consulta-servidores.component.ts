@@ -59,6 +59,7 @@ export class ConsultaServidoresComponent {
   @ViewChild(TabTlpComponent) tabTlp?: TabTlpComponent;
   @ViewChild(TabComissionadosComponent)
   tabComissionados?: TabComissionadosComponent;
+  @ViewChild(TabDotacaoComponent) tabDotacao?: TabDotacaoComponent;
 
   // Sidebar state
   activeTab = 0;
@@ -1373,6 +1374,43 @@ export class ConsultaServidoresComponent {
         ];
         break;
       }
+
+      case 'dotacao': {
+        if (!this.tabDotacao) return;
+        json = this.tabDotacao.filteredServidores;
+
+        if (this.tabDotacao.stats) {
+          const s = this.tabDotacao.stats;
+          headerRows = [
+            ['Estatísticas de Dotação'],
+            ['Categoria', 'Providos', 'Dotação', 'Vagas'],
+            ['Total', s.total.providos, s.total.dotacao, s.total.vagas],
+            [
+              'Servidores',
+              s.servidores.providos,
+              s.servidores.dotacao,
+              s.servidores.vagas,
+            ],
+            [
+              'Colaboradores',
+              s.colaboradores.providos,
+              s.colaboradores.dotacao,
+              s.colaboradores.vagas,
+            ],
+            [
+              'Estagiários',
+              s.estagiarios.providos,
+              s.estagiarios.dotacao,
+              s.estagiarios.vagas,
+            ],
+            ['Com CJ', s.cj.providos, s.cj.dotacao, s.cj.vagas],
+            ['Com FC', s.fc.providos, s.fc.dotacao, s.fc.vagas],
+            [''],
+            ['Lista de Servidores Filtrados'],
+          ];
+        }
+        break;
+      }
     }
 
     this.excelService.exportAsExcelFile(json, fileName, headerRows);
@@ -1495,6 +1533,18 @@ export class ConsultaServidoresComponent {
           this.initialComissionadosData,
           'comissionados',
           this.tabComissionados?.tabGeral?.dt,
+        );
+        break;
+      case 'dotacao':
+        this.executeSort(
+          event,
+          this.tabDotacao?.filteredServidores || [],
+          (d) => {
+            if (this.tabDotacao) this.tabDotacao.filteredServidores = d;
+          },
+          this.initialValue, // Or appropriate initial value for dotacao
+          'dotacao',
+          this.tabDotacao?.tabGeral?.dt,
         );
         break;
     }

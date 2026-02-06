@@ -1,9 +1,20 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { SortEvent } from 'primeng/api';
 import { TableModule } from 'primeng/table';
 import { Servidor } from '../../../../services/excel.service';
+import { Column } from '../../models/consulta-servidores.models';
+import { TabGeralComponent } from '../tab-geral/tab-geral.component';
 
 interface DotacaoRow {
   Resolução: string;
@@ -12,28 +23,61 @@ interface DotacaoRow {
   Setor: string;
   'Cargos Criados': string;
   Descrição: string;
+  Apoio: string;
+}
+
+interface StatsGroup {
+  providos: number;
+  dotacao: number;
+  vagas: number;
 }
 
 interface DotacaoCardStats {
-  servidoresSemEstagiario: number;
-  cargosSemEstagiario: number;
-  servidoresCJ: number;
-  cargosCJ: number;
-  servidoresFC: number;
-  cargosFC: number;
-  servidoresEstagiario: number;
-  cargosEstagiario: number;
+  total: StatsGroup;
+  servidores: StatsGroup;
+  colaboradores: StatsGroup;
+  estagiarios: StatsGroup;
+  cj: StatsGroup;
+  fc: StatsGroup;
 }
+
+const EXCLUDED_VINCULOS = [
+  'inativos',
+  'pensão alimento',
+  'pensionista',
+  'policial militar',
+  'residente tecnologico',
+  'voluntários',
+];
 
 @Component({
   selector: 'app-tab-dotacao',
   standalone: true,
-  imports: [CommonModule, FormsModule, MultiSelectModule, TableModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MultiSelectModule,
+    TableModule,
+    TabGeralComponent,
+  ],
   templateUrl: './tab-dotacao.component.html',
 })
 export class TabDotacaoComponent implements OnChanges {
+  @ViewChild(TabGeralComponent) tabGeral?: TabGeralComponent;
   @Input() dados: Servidor[] = [];
   @Input() dotacaoData: DotacaoRow[] = [];
+
+  // Inputs for TabGeral
+  @Input() cols: Column[] = [];
+  @Input() uniqueValues: { [key: string]: any[] } = {};
+  @Input() filterValues: { [key: string]: any[] } = {};
+  @Input() inputPt: any;
+  @Input() multiselectPt: any;
+
+  // Outputs for TabGeral
+  @Output() sortRequest = new EventEmitter<{ event: SortEvent; key: string }>();
+  @Output() exportRequest = new EventEmitter<void>();
+  @Output() clearFiltersRequest = new EventEmitter<void>();
 
   // Dropdown options
   secretariaOptions: any[] = [];
@@ -51,26 +95,13 @@ export class TabDotacaoComponent implements OnChanges {
 
   // Stats
   stats: DotacaoCardStats = {
-    servidoresSemEstagiario: 0,
-    cargosSemEstagiario: 0,
-    servidoresCJ: 0,
-    cargosCJ: 0,
-    servidoresFC: 0,
-    cargosFC: 0,
-    servidoresEstagiario: 0,
-    cargosEstagiario: 0,
+    total: { providos: 0, dotacao: 0, vagas: 0 },
+    servidores: { providos: 0, dotacao: 0, vagas: 0 },
+    colaboradores: { providos: 0, dotacao: 0, vagas: 0 },
+    estagiarios: { providos: 0, dotacao: 0, vagas: 0 },
+    cj: { providos: 0, dotacao: 0, vagas: 0 },
+    fc: { providos: 0, dotacao: 0, vagas: 0 },
   };
-
-  cols = [
-    { field: 'matricula', header: 'Matrícula' },
-    { field: 'nome', header: 'Nome' },
-    { field: 'secretaria', header: 'Secretaria' },
-    { field: 'unidade', header: 'Unidade' },
-    { field: 'setor', header: 'Setor' },
-    { field: 'cargo', header: 'Cargo' },
-    { field: 'funcao', header: 'Função' },
-    { field: 'vinculo', header: 'Vínculo' },
-  ];
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['dotacaoData'] && this.dotacaoData.length > 0) {
@@ -100,16 +131,12 @@ export class TabDotacaoComponent implements OnChanges {
   }
 
   onSecretariaChange() {
-    // When secretariat changes, we might need to filter selected units if they don't belong to the new set of secretarias?
-    // Or just clear them? Usually safer to clear dependent children or re-validate them.
-    // Let's clear for simplicity to ensure consistency.
     this.selectedUnidade = [];
     this.selectedSetor = [];
     this.unidadeOptions = [];
     this.setorOptions = [];
 
     if (this.selectedSecretaria && this.selectedSecretaria.length > 0) {
-      // Get all units that belong to ANY of the selected secretarias
       const unidades = new Set(
         this.dotacaoData
           .filter((d) => this.selectedSecretaria.includes(d.Secretaria))
@@ -128,9 +155,6 @@ export class TabDotacaoComponent implements OnChanges {
     this.setorOptions = [];
 
     if (this.selectedUnidade && this.selectedUnidade.length > 0) {
-      // Logic: It must be in one of the selected Secretarias AND one of the selected Unidades.
-      // But practically, if we follow the flow, checking Units is enough since Units are filtered by Secretarias.
-      // However, to be strict:
       const setores = new Set(
         this.dotacaoData
           .filter(
@@ -155,62 +179,67 @@ export class TabDotacaoComponent implements OnChanges {
   updateResults() {
     // 1. Filter Dotacao
     this.filteredDotacao = this.dotacaoData.filter((row) => {
-      let match = true;
+      // Logic for Globla Exclusion on Dotacao
+      const desc = this.normalize(row.Descrição);
       if (
-        this.selectedSecretaria &&
-        this.selectedSecretaria.length > 0 &&
+        EXCLUDED_VINCULOS.some((excluded) => desc.includes(excluded)) ||
+        desc.includes('inativo')
+      ) {
+        return false;
+      }
+
+      if (
+        this.selectedSecretaria?.length &&
         !this.selectedSecretaria.includes(row.Secretaria)
       )
-        match = false;
-
+        return false;
       if (
-        this.selectedUnidade &&
-        this.selectedUnidade.length > 0 &&
+        this.selectedUnidade?.length &&
         !this.selectedUnidade.includes(row.Unidade)
       )
-        match = false;
-
-      if (
-        this.selectedSetor &&
-        this.selectedSetor.length > 0 &&
-        !this.selectedSetor.includes(row.Setor)
-      )
-        match = false;
-      return match;
+        return false;
+      if (this.selectedSetor?.length && !this.selectedSetor.includes(row.Setor))
+        return false;
+      return true;
     });
 
     // 2. Filter Servidores
     this.filteredServidores = this.dados.filter((serv) => {
-      let match = true;
+      // Global Exclusion
+      const vinculo = this.normalize(serv.vinculo || '');
+      if (
+        EXCLUDED_VINCULOS.some((excluded) => vinculo.includes(excluded)) ||
+        vinculo.includes('inativo') // Extra safety
+      ) {
+        return false;
+      }
 
       const servSec = this.normalize(serv.secretaria);
       const servUni = this.normalize(serv.unidade);
       const servSet = this.normalize(serv.setor);
 
-      // Normalize selected values for comparison
-      // We can pre-normalize selected arrays for performance, but array size is small.
-      if (this.selectedSecretaria && this.selectedSecretaria.length > 0) {
+      if (this.selectedSecretaria?.length) {
         const normalizedSelection = this.selectedSecretaria.map((s) =>
           this.normalize(s),
         );
-        if (!normalizedSelection.includes(servSec)) match = false;
+        if (!normalizedSelection.includes(servSec)) return false;
       }
 
-      if (this.selectedUnidade && this.selectedUnidade.length > 0) {
+      if (this.selectedUnidade?.length) {
         const normalizedSelection = this.selectedUnidade.map((u) =>
           this.normalize(u),
         );
-        if (!normalizedSelection.includes(servUni)) match = false;
+        if (!normalizedSelection.includes(servUni)) return false;
       }
 
-      if (this.selectedSetor && this.selectedSetor.length > 0) {
+      if (this.selectedSetor?.length) {
         const normalizedSelection = this.selectedSetor.map((s) =>
           this.normalize(s),
         );
-        if (!normalizedSelection.includes(servSet)) match = false;
+        if (!normalizedSelection.includes(servSet)) return false;
       }
 
-      return match;
+      return true;
     });
 
     // 3. Calculate Stats
@@ -218,57 +247,118 @@ export class TabDotacaoComponent implements OnChanges {
   }
 
   calculateStats() {
-    // Initialize
-    let s_semEstagiario = 0;
-    let s_cj = 0;
-    let s_fc = 0;
-    let s_estagiario = 0;
+    // Reset Stats
+    const emptyGroup = () => ({ providos: 0, dotacao: 0, vagas: 0 });
+    const stats: DotacaoCardStats = {
+      total: emptyGroup(),
+      servidores: emptyGroup(),
+      colaboradores: emptyGroup(),
+      estagiarios: emptyGroup(),
+      cj: emptyGroup(),
+      fc: emptyGroup(),
+    };
 
-    let c_semEstagiario = 0;
-    let c_cj = 0;
-    let c_fc = 0;
-    let c_estagiario = 0;
-
-    // Servidores Stats
+    // --- Servidores (Providos) Counting ---
     this.filteredServidores.forEach((s) => {
+      const vinculo = this.normalize(s.vinculo || '');
       const func = this.normalize(s.funcao || '');
-      // const vinculo = this.normalize(s.vinculo || ''); // If needed
+      // Global exclusions already applied in filter
 
-      // Estagiário check
-      if (func.includes('estagiário') || func.includes('estagiario')) {
-        s_estagiario++;
-      } else {
-        s_semEstagiario++;
+      // 1. TOTAL PROVIDOS
+      // Contar todos os registros sem exclusão (exceto os globais já filtrados)
+      stats.total.providos++;
+
+      // 2. ESTAGIÁRIOS
+      if (func.includes('estagiario')) {
+        stats.estagiarios.providos++;
       }
 
-      if (func.includes('cj')) s_cj++;
-      if (func.includes('fc')) s_fc++;
+      // 3. COLABORADORES
+      if (vinculo.includes('colaborador')) {
+        stats.colaboradores.providos++;
+      }
+
+      // 4. SERVIDORES
+      // Contar tudo que NÃO tenha "estagiários" ou "colaboradores"
+      if (!func.includes('estagiario') && !vinculo.includes('colaborador')) {
+        stats.servidores.providos++;
+      }
+
+      // 5. CJ
+      if (func.includes('cj')) {
+        stats.cj.providos++;
+      }
+
+      // 6. FC
+      if (func.includes('fc')) {
+        stats.fc.providos++;
+      }
     });
 
-    // Cargos Criados (Dotacao) Stats
+    // --- Dotação Counting ---
     this.filteredDotacao.forEach((d) => {
       const qtd = parseInt(d['Cargos Criados'], 10) || 0;
       const desc = this.normalize(d.Descrição);
+      const apoio = this.normalize(d.Apoio || '');
+      const isJudicial =
+        apoio.includes('judiciaria de 1') || apoio.includes('judiciaria de 2');
 
-      if (desc.includes('estagiário') || desc.includes('estagiario')) {
-        c_estagiario += qtd;
-      } else {
-        c_semEstagiario += qtd;
+      const isEstagiario = desc.includes('estagiario');
+      const isColaborador =
+        desc.includes('colaborador') || desc.includes('colaboradores');
+      const isCJ = desc.includes('cj');
+      const isFC = desc.includes('fc');
+
+      // 1. ESTAGIÁRIOS
+      if (isEstagiario) {
+        stats.estagiarios.dotacao += qtd;
       }
 
-      if (desc.includes('cj')) c_cj += qtd;
-      if (desc.includes('fc')) c_fc += qtd;
+      // 2. COLABORADORES
+      if (isColaborador) {
+        stats.colaboradores.dotacao += qtd;
+      }
+
+      // 3. CJ
+      if (isCJ) {
+        stats.cj.dotacao += qtd;
+      }
+
+      // 4. FC
+      if (isFC) {
+        stats.fc.dotacao += qtd;
+      }
+
+      // 6. TOTAL
+      // "contar para a dotação do total, tudo sem exclusão" -> This likely means "everything that is a valid record in dotacao".
+      // BUT override: "a dotação do fc deve ser contada no total ... somente quando o apoio conter..."
+      // So TOTAL = (Everything EXCEPT FC) + (FC IF Judicial)
+      if (!isFC) {
+        stats.total.dotacao += qtd;
+      } else if (isFC && isJudicial) {
+        stats.total.dotacao += qtd;
+      }
     });
 
-    this.stats = {
-      servidoresSemEstagiario: s_semEstagiario,
-      cargosSemEstagiario: c_semEstagiario,
-      servidoresCJ: s_cj,
-      cargosCJ: c_cj,
-      servidoresFC: s_fc,
-      cargosFC: c_fc,
-      servidoresEstagiario: s_estagiario,
-      cargosEstagiario: c_estagiario,
+    // 5. SERVIDORES (Residual Calculation)
+    // Ensures Servidores + Estagiarios + Colaboradores = Total
+    stats.servidores.dotacao =
+      stats.total.dotacao -
+      stats.estagiarios.dotacao -
+      stats.colaboradores.dotacao;
+
+    // --- Vagas Calculation ---
+    const calcVagas = (group: StatsGroup) => {
+      group.vagas = group.dotacao - group.providos;
     };
+
+    calcVagas(stats.total);
+    calcVagas(stats.servidores);
+    calcVagas(stats.colaboradores);
+    calcVagas(stats.estagiarios);
+    calcVagas(stats.cj);
+    calcVagas(stats.fc);
+
+    this.stats = stats;
   }
 }

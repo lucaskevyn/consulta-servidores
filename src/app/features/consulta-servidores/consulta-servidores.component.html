@@ -206,6 +206,14 @@
             <app-tab-dotacao
               [dados]="dados"
               [dotacaoData]="dotacaoList"
+              [cols]="cols"
+              [uniqueValues]="uniqueValues"
+              [filterValues]="filterValues"
+              [inputPt]="inputPt"
+              [multiselectPt]="multiselectPt"
+              (sortRequest)="customSort($event.event, $event.key)"
+              (exportRequest)="onTabExportRequest('dotacao')"
+              (clearFiltersRequest)="clearTableFilters()"
               class="h-full flex flex-col min-h-0"
             ></app-tab-dotacao>
           }
