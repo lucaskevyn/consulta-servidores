@@ -30,6 +30,10 @@ import { TabComissionadosComponent } from './components/tab-comissionados/tab-co
 import { TabDotacaoComponent } from './components/tab-dotacao/tab-dotacao.component';
 
 import { DragDropDirective } from '../../core/directives/drag-drop.directive';
+import { StatisticsService } from './services/statistics.service';
+import { ExportBuilderService } from './services/export-builder.service';
+import { DataFilterService } from './services/data-filter.service';
+import { ALLOWED_VINCULOS } from './constants/consulta-servidores.constants';
 
 @Component({
   selector: 'app-consulta-servidores',
@@ -187,17 +191,7 @@ export class ConsultaServidoresComponent {
     root: { class: 'h-7 min-h-7' },
   };
 
-  allowedVinculos = [
-    'à disposição fprev',
-    'à disposição fps',
-    'ad nutum comissionado',
-    'comissionado (à disposição)',
-    'diversos (requisitados reg prev rgps)',
-    'diversos (requisitados reg prev rpps)',
-    'efetivo comissionado (resolução 03/2013)',
-    'efetivo não comissionado',
-    'transitório não comissionado',
-  ];
+  allowedVinculos = ALLOWED_VINCULOS as unknown as string[];
 
   calculosResolucao: CalculoResolucao[] = [];
 
@@ -205,7 +199,12 @@ export class ConsultaServidoresComponent {
 
   totalPontos: number = 0;
 
-  constructor(private excelService: ExcelService) {}
+  constructor(
+    private excelService: ExcelService,
+    private statisticsService: StatisticsService,
+    private exportBuilderService: ExportBuilderService,
+    private filterService: DataFilterService,
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -480,214 +479,17 @@ export class ConsultaServidoresComponent {
   areaCargoStats: AreaCargoStat[] = [];
 
   calculateAreaVinculoStats() {
-    const areas = [
-      {
-        id: 'adm',
-        label: 'ÁREA ADMINISTRATIVA',
-        search: 'área administrativa do tjac',
-      },
-      { id: '1g', label: '1º GRAU', search: 'área judiciária de 1º grau' },
-      { id: '2g', label: '2º GRAU', search: 'área judiciária de 2º grau' },
-    ];
-
-    const groupsDefinition = [
-      {
-        category: 'Efetivos',
-        matchers: [
-          'efetivo não comissionado',
-          'efetivo comissionado (resolução 03/2013)',
-          'transitório não comissionado',
-        ],
-      },
-      {
-        category: 'Requisitados',
-        matchers: [
-          'à disposição fprev',
-          'à disposição fps',
-          'comissionado (à disposição)',
-          'diversos (requisitados reg prev rgps)',
-          'diversos (requisitados reg prev rpps)',
-        ],
-      },
-      {
-        category: 'Comissionado s/ Vínculo',
-        matchers: ['ad nutum comissionado'],
-      },
-    ];
-
-    // Helper to calculate stats for a subset of data
-    const calculateStatsForData = (dataSubset: Servidor[], name: string) => {
-      const groups = groupsDefinition.map((group) => {
-        let groupTotal = 0;
-        const items = group.matchers.map((matcher) => {
-          const count = dataSubset.filter((d) => {
-            const v = (d.vinculo || '').toLowerCase().trim();
-            return v === matcher;
-          }).length;
-          groupTotal += count;
-          return { label: matcher, count };
-        });
-
-        // Add 'Total' item for the group header
-        return {
-          category: group.category,
-          total: groupTotal,
-          items: items,
-        };
-      });
-
-      return {
-        areaName: name,
-        totalServidores: dataSubset.length, // Total filtered by this area/context
-        groups,
-      };
-    };
-
-    const isExcluded = (apoio: string) => {
-      const a = apoio.toLowerCase();
-      // Exclusion logic from previous implementation
-      return a.includes('esjud') || a.includes('tecnologia');
-    };
-
-    const isAllowedVinculo = (vinculo: string) => {
-      return this.allowedVinculos.includes(vinculo.toLowerCase().trim());
-    };
-
-    // 1. Calculate for each specific area
-    const areaStats = areas.map((areaRef) => {
-      // Filter data for this area
-      const subset = this.dados.filter((d) => {
-        const a = (d.apoio || '').toLowerCase();
-        const v = (d.vinculo || '').toLowerCase().trim();
-
-        // Basic inclusion check as per previous logic
-        if (!a.includes(areaRef.search)) return false;
-        // Exclusion check
-        if (isExcluded(a)) return false;
-        // Vinculo check
-        if (!isAllowedVinculo(v)) return false;
-
-        return true;
-      });
-      return calculateStatsForData(subset, areaRef.label);
-    });
-
-    // 2. Calculate TOTAL column (Sum of the 3 areas, or Union of them)
-    // To be precise and consistent, we should use the union of the subsets we just created,
-    // rather than filtering the whole dataset again (which might include edge cases).
-    // Let's filter the whole dataset for any of the 3 keys to be the "Total"
-    const totalSubset = this.dados.filter((d) => {
-      const a = (d.apoio || '').toLowerCase();
-      const v = (d.vinculo || '').toLowerCase().trim();
-
-      const inAreas = areas.some((areaRef) => a.includes(areaRef.search));
-
-      if (!inAreas) return false;
-      if (isExcluded(a)) return false;
-      if (!isAllowedVinculo(v)) return false;
-
-      return true;
-    });
-
-    const totalStats = calculateStatsForData(totalSubset, 'TOTAIS');
-
-    this.areaVinculoStats = [...areaStats, totalStats];
+    this.areaVinculoStats = this.statisticsService.calculateAreaVinculoStats(
+      this.dados,
+      this.allowedVinculos,
+    );
   }
 
   calculateAreaCargoStats() {
-    const areas = [
-      {
-        id: 'adm',
-        label: 'ÁREA ADMINISTRATIVA',
-        search: 'área administrativa do tjac',
-      },
-      { id: '1g', label: '1º GRAU', search: 'área judiciária de 1º grau' },
-      { id: '2g', label: '2º GRAU', search: 'área judiciária de 2º grau' },
-    ];
-
-    const isExcluded = (apoio: string) => {
-      const a = apoio.toLowerCase();
-      return a.includes('esjud') || a.includes('tecnologia');
-    };
-
-    const calculateStatsForData = (dataSubset: Servidor[], name: string) => {
-      const groupsDefinition = [
-        { category: 'CJ', prefix: 'CJ' },
-        { category: 'FC', prefix: 'FC' },
-      ];
-
-      const counts: { label: string; count: number }[] = [];
-
-      const groups = groupsDefinition.map((group) => {
-        let groupTotalValue = 0;
-        let groupCount = 0;
-        const itemsMap = new Map<string, { count: number; value: number }>();
-
-        this.references
-          .filter((ref) => ref.funcao.startsWith(group.prefix))
-          .forEach((ref) => {
-            const count = dataSubset.filter((d) =>
-              (d.funcao || '').toUpperCase().includes(ref.funcao.toUpperCase()),
-            ).length;
-
-            if (count > 0) {
-              const total = count * ref.valor;
-              groupTotalValue += total;
-              groupCount += count;
-              itemsMap.set(ref.funcao, { count, value: total });
-            }
-          });
-
-        counts.push({ label: group.category, count: groupCount });
-
-        const items = Array.from(itemsMap.entries())
-          .map(([label, data]) => ({
-            label,
-            count: data.count,
-            value: data.value,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label));
-
-        return {
-          category: group.category,
-          totalValue: groupTotalValue,
-          items,
-        };
-      });
-
-      const totalAreaValue = groups.reduce((acc, g) => acc + g.totalValue, 0);
-
-      return {
-        areaName: name,
-        totalValue: totalAreaValue,
-        counts,
-        groups,
-      };
-    };
-
-    // 1. Calculate for each specific area
-    const areaStats = areas.map((areaRef) => {
-      const subset = this.dados.filter((d) => {
-        const a = (d.apoio || '').toLowerCase();
-        if (!a.includes(areaRef.search)) return false;
-        if (isExcluded(a)) return false;
-        return true;
-      });
-      return calculateStatsForData(subset, areaRef.label);
-    });
-
-    // 2. Calculate TOTAL column
-    const totalSubset = this.dados.filter((d) => {
-      const a = (d.apoio || '').toLowerCase();
-      const inAreas = areas.some((areaRef) => a.includes(areaRef.search));
-      if (!inAreas) return false;
-      if (isExcluded(a)) return false;
-      return true;
-    });
-
-    const totalStats = calculateStatsForData(totalSubset, 'TOTAIS');
-
-    this.areaCargoStats = [...areaStats, totalStats];
+    this.areaCargoStats = this.statisticsService.calculateAreaCargoStats(
+      this.dados,
+      this.references,
+    );
   }
 
   calculateTlpData() {
@@ -695,11 +497,11 @@ export class ConsultaServidoresComponent {
 
     this.tlpList.forEach((item: any) => {
       // Normaliza o nome da unidade do TLP para comparação
-      const unidadeTlp = this.normalizeString(item.unidade);
+      const unidadeTlp = this.filterService.normalizeString(item.unidade);
 
       // Filtra os dados (servidores) que pertencem a essa unidade
       const matchingServidores = this.dados.filter((d) => {
-        const unidadeDados = this.normalizeString(d.unidade);
+        const unidadeDados = this.filterService.normalizeString(d.unidade);
         return unidadeDados === unidadeTlp;
       });
 
@@ -1345,14 +1147,6 @@ export class ConsultaServidoresComponent {
     }));
   }
 
-  private normalizeString(val: string): string {
-    return (val || '')
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .trim()
-      .toUpperCase();
-  }
-
   exportToCSV(
     data: any[] | null = null,
     columns: Column[] | null = null,
@@ -1375,7 +1169,9 @@ export class ConsultaServidoresComponent {
           this.dados;
         if (!tableData) return;
         json = tableData;
-        headerRows = [['Tabela Geral de Servidores']];
+        headerRows = this.exportBuilderService.buildSimpleHeader(
+          'Tabela Geral de Servidores',
+        );
         break;
       }
 
@@ -1383,60 +1179,23 @@ export class ConsultaServidoresComponent {
         if (!this.cargosData) return;
         json = this.cargosData;
 
-        headerRows.push(['Estatísticas de Cargos e Funções por Área']);
-
-        this.areaCargoStats.forEach((area) => {
-          headerRows.push(['Área', area.areaName]);
-          headerRows.push(['  Valor Total da Área', area.totalValue]);
-
-          // Summary counts for CJ and FC
-          area.counts.forEach((c) => {
-            headerRows.push([`  Total de ${c.label}`, c.count]);
-          });
-
-          // Detailed groups
-          area.groups.forEach((group) => {
-            headerRows.push([`  Detalhes ${group.category}`, group.totalValue]);
-            group.items.forEach((item) => {
-              headerRows.push([
-                `    ${item.label}`,
-                `${item.count} un.`,
-                item.value,
-              ]);
-            });
-          });
-          headerRows.push(['']); // Spacer
-        });
-
-        headerRows.push(['Tabela Detalhada de Cargos']);
+        headerRows = this.exportBuilderService.buildCargosExport(
+          this.areaCargoStats,
+        );
         break;
       }
 
       case 'servidores': {
-        // This tab is card-only, so we export the hierarchy as rows
-        headerRows.push(['Distribuição de Servidores']);
-
-        this.areaVinculoStats.forEach((area) => {
-          headerRows.push(['Area', area.areaName]);
-          headerRows.push(['Total', area.totalServidores]);
-
-          area.groups.forEach((group) => {
-            headerRows.push(['  Categoria', group.category, group.total]);
-            group.items.forEach((item) => {
-              headerRows.push(['    Item', item.label, item.count]);
-            });
-          });
-          headerRows.push(['']); // Spacer
-        });
-        // No json table data for this one, just the 'header' report
+        headerRows = this.exportBuilderService.buildServidoresExport(
+          this.areaVinculoStats,
+        );
         break;
       }
 
       case 'calculos': {
-        headerRows.push(['Cálculos da Distribuição (Resolução CNJ 219/2016)']);
-        this.calculosResolucao.forEach((item) => {
-          headerRows.push([item.label, item.value, item.desc]);
-        });
+        headerRows = this.exportBuilderService.buildCalculosExport(
+          this.calculosResolucao,
+        );
         break;
       }
 
@@ -1449,22 +1208,19 @@ export class ConsultaServidoresComponent {
       }
 
       case 'premio': {
-        headerRows.push(['Prêmio CNJ de Qualidade']);
-        headerRows.push(['Pontos Obtidos', this.totalPontos]);
-        headerRows.push(['Máximo', 70]);
-        headerRows.push(['Percentual', this.totalPontos / 70]);
-        headerRows.push(['']);
-
-        this.situacaoPremio.forEach((item) => {
-          headerRows.push([item.label, item.value, item.desc]);
-        });
+        headerRows = this.exportBuilderService.buildPremioExport(
+          this.totalPontos,
+          this.situacaoPremio,
+        );
         break;
       }
 
       case 'tlp': {
         if (!this.tlpData) return;
         json = this.tlpData;
-        headerRows.push(['Taxa de Lotação Paradigma (TLP)']);
+        headerRows = this.exportBuilderService.buildSimpleHeader(
+          'Taxa de Lotação Paradigma (TLP)',
+        );
         break;
       }
 
@@ -1472,24 +1228,9 @@ export class ConsultaServidoresComponent {
         if (!this.comissionadosData) return;
         json = this.comissionadosData;
 
-        headerRows = [
-          ['Estatísticas de Comissionados'],
-          ['Não Efetivos (Numerador)', this.comissionadosStats.numerator],
-          [' - Ad Nutum', this.comissionadosStats.countAdNutum],
-          [' - À Disposição', this.comissionadosStats.countFp],
-          [
-            ' - Comissionado (À Disposição)',
-            this.comissionadosStats.countComissionadoDisp,
-          ],
-          [
-            'Efetivo Comissionado',
-            this.comissionadosStats.countEfetivoComissionado,
-          ],
-          ['Total (Denominador)', this.comissionadosStats.denominator],
-          ['Percentual', this.comissionadosStats.percentage],
-          [],
-          ['Tabela de Comissionados'],
-        ];
+        headerRows = this.exportBuilderService.buildComissionadosExport(
+          this.comissionadosStats,
+        );
         break;
       }
 
@@ -1498,34 +1239,9 @@ export class ConsultaServidoresComponent {
         json = this.tabDotacao.filteredServidores;
 
         if (this.tabDotacao.stats) {
-          const s = this.tabDotacao.stats;
-          headerRows = [
-            ['Estatísticas de Dotação'],
-            ['Categoria', 'Providos', 'Dotação', 'Vagas'],
-            ['Total', s.total.providos, s.total.dotacao, s.total.vagas],
-            [
-              'Servidores',
-              s.servidores.providos,
-              s.servidores.dotacao,
-              s.servidores.vagas,
-            ],
-            [
-              'Colaboradores',
-              s.colaboradores.providos,
-              s.colaboradores.dotacao,
-              s.colaboradores.vagas,
-            ],
-            [
-              'Estagiários',
-              s.estagiarios.providos,
-              s.estagiarios.dotacao,
-              s.estagiarios.vagas,
-            ],
-            ['Com CJ', s.cj.providos, s.cj.dotacao, s.cj.vagas],
-            ['Com FC', s.fc.providos, s.fc.dotacao, s.fc.vagas],
-            [''],
-            ['Lista de Servidores Filtrados'],
-          ];
+          headerRows = this.exportBuilderService.buildDotacaoExport(
+            this.tabDotacao.stats,
+          );
         }
         break;
       }
