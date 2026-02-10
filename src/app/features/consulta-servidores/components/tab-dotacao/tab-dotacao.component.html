@@ -1,8 +1,6 @@
 <div class="flex flex-col gap-3 h-full">
   <!-- Filters -->
-  <div
-    class="p-3 bg-white rounded-xl shadow-sm border border-surface-200 flex flex-wrap gap-3 items-end"
-  >
+  <app-card styleClass="flex flex-row flex-wrap gap-3 items-end p-3">
     <div class="flex flex-col gap-1 flex-1 min-w-[200px]">
       <label class="font-medium text-sm text-surface-600">Secretaria</label>
       <p-multiSelect
@@ -46,7 +44,7 @@
       >
       </p-multiSelect>
     </div>
-  </div>
+  </app-card>
 
   <!-- Cards Section -->
   <div
@@ -55,9 +53,8 @@
     <!-- Card Template Macro/Fragment concept (but inline for Angular) -->
 
     <!-- TOTAL -->
-    <div
-      class="bg-white p-3 rounded-xl shadow-sm border border-surface-200 flex flex-col justify-between gap-2"
-    >
+
+    <app-card styleClass="items-stretch gap-2 p-3">
       <div class="text-xs font-medium text-surface-500">Total</div>
       <div class="flex flex-col gap-1">
         <div class="flex justify-between items-center bg-rose-50 p-1.5 rounded">
@@ -81,12 +78,10 @@
           }}</span>
         </div>
       </div>
-    </div>
+    </app-card>
 
     <!-- SERVIDORES -->
-    <div
-      class="bg-white p-3 rounded-xl shadow-sm border border-surface-200 flex flex-col justify-between gap-2"
-    >
+    <app-card styleClass="items-stretch gap-2 p-3">
       <div class="text-xs font-medium text-surface-500">Servidores</div>
       <div class="flex flex-col gap-1">
         <div class="flex justify-between items-center bg-rose-50 p-1.5 rounded">
@@ -110,12 +105,10 @@
           }}</span>
         </div>
       </div>
-    </div>
+    </app-card>
 
     <!-- COLABORADORES -->
-    <div
-      class="bg-white p-3 rounded-xl shadow-sm border border-surface-200 flex flex-col justify-between gap-2"
-    >
+    <app-card styleClass="items-stretch gap-2 p-3">
       <div class="text-xs font-medium text-surface-500">Colaboradores</div>
       <div class="flex flex-col gap-1">
         <div class="flex justify-between items-center bg-rose-50 p-1.5 rounded">
@@ -139,12 +132,10 @@
           }}</span>
         </div>
       </div>
-    </div>
+    </app-card>
 
     <!-- ESTAGIÁRIOS -->
-    <div
-      class="bg-white p-3 rounded-xl shadow-sm border border-surface-200 flex flex-col justify-between gap-2"
-    >
+    <app-card styleClass="items-stretch gap-2 p-3">
       <div class="text-xs font-medium text-surface-500">Estagiários</div>
       <div class="flex flex-col gap-1">
         <div class="flex justify-between items-center bg-rose-50 p-1.5 rounded">
@@ -168,12 +159,10 @@
           }}</span>
         </div>
       </div>
-    </div>
+    </app-card>
 
     <!-- CJ -->
-    <div
-      class="bg-white p-3 rounded-xl shadow-sm border border-surface-200 flex flex-col justify-between gap-2"
-    >
+    <app-card styleClass="items-stretch gap-2 p-3">
       <div class="text-xs font-medium text-surface-500">Com CJ</div>
       <div class="flex flex-col gap-1">
         <div class="flex justify-between items-center bg-rose-50 p-1.5 rounded">
@@ -197,12 +186,10 @@
           }}</span>
         </div>
       </div>
-    </div>
+    </app-card>
 
     <!-- FC -->
-    <div
-      class="bg-white p-3 rounded-xl shadow-sm border border-surface-200 flex flex-col justify-between gap-2"
-    >
+    <app-card styleClass="items-stretch gap-2 p-3">
       <div class="text-xs font-medium text-surface-500">Com FC</div>
       <div class="flex flex-col gap-1">
         <div class="flex justify-between items-center bg-rose-50 p-1.5 rounded">
@@ -226,11 +213,12 @@
           }}</span>
         </div>
       </div>
-    </div>
+    </app-card>
   </div>
 
   <!-- Table -->
   <!-- Table -->
+
   <div class="flex-1 min-h-0 overflow-hidden">
     <app-tab-geral
       class="h-full flex flex-col"

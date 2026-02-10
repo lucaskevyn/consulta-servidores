@@ -15,6 +15,7 @@ import { TableModule } from 'primeng/table';
 import { Servidor } from '../../../../services/excel.service';
 import { Column } from '../../models/consulta-servidores.models';
 import { TabGeralComponent } from '../tab-geral/tab-geral.component';
+import { CardComponent } from '../../../../shared/components/card/card.component';
 
 interface DotacaoRow {
   Resolução: string;
@@ -59,6 +60,7 @@ const EXCLUDED_VINCULOS = [
     MultiSelectModule,
     TableModule,
     TabGeralComponent,
+    CardComponent,
   ],
   templateUrl: './tab-dotacao.component.html',
 })
