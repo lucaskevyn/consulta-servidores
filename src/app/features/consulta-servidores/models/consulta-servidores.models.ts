@@ -71,3 +71,14 @@ export interface CalculoResolucao {
   bgColor?: string;
   textColor?: string;
 }
+
+export interface AreaCargoStat {
+  areaName: string;
+  totalValue: number;
+  counts: { label: string; count: number }[];
+  groups: {
+    category: string;
+    totalValue: number;
+    items: { label: string; count: number; value: number }[];
+  }[];
+}

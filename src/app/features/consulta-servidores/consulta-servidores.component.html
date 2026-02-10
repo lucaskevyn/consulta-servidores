@@ -114,7 +114,7 @@
           <p>Faça o upload do arquivo .xlsx para exibir os dados.</p>
         </div>
       } @else if (!loading && dados.length > 0) {
-        <div class="h-full flex flex-col max-h-full">
+        <div class="flex flex-col">
           @if (activeTab === 0) {
             <app-tab-geral
               [dados]="dados"
@@ -136,6 +136,7 @@
             <app-tab-cargos-funcoes
               [functionCounts]="functionCounts"
               [cargosData]="cargosData"
+              [areaCargoStats]="areaCargoStats"
               [cargosCols]="cargosCols"
               (sortRequest)="customSort($event.event, $event.key)"
               (exportRequest)="onTabExportRequest('cargos')"

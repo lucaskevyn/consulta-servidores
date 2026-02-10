@@ -1,77 +1,133 @@
-<div class="flex gap-3">
-  @for (item of functionCounts; track item.label) {
-    <app-card class="flex-1">
-      <span class="text-xl font-bold text-rose-800">
-        {{ item.count }}
-      </span>
-      <span class="text-xs font-medium uppercase tracking-wider text-center">
-        {{ item.label }}
-      </span>
-    </app-card>
-  }
-</div>
+<div class="flex flex-col gap-2">
+  <!-- Detailed Stats Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-3 min-h-0">
+    @for (area of areaCargoStats; track area.areaName) {
+      <div class="flex flex-col gap-3">
+        <!-- Header -->
+        <div>
+          <app-card styleClass="bg-surface-0">
+            <h3 class="font-bold text-rose-800 text-center text-sm uppercase">
+              {{ area.areaName }}
+            </h3>
+          </app-card>
+        </div>
 
-<div class="grow min-h-0 pt-3">
-  <p-table
-    #dt2
-    [value]="cargosData"
-    [columns]="cargosCols"
-    class="min-w-full text-xs flex flex-col h-full"
-    [exportHeader]="'header'"
-    stripedRows
-    size="small"
-    [pt]="{
-      root: {
-        class: 'border border-surface-100 rounded-xl shadow-sm/5',
-      },
-      header: {
-        class: 'bg-surface-0 text-surface-700 rounded-t-xl',
-      },
-      pcPaginator: {
-        root: {
-          class:
-            'border-t border-surface-200 text-surface-700 rounded-b-xl rounded-t-none',
-        },
-      },
-    }"
-    [customSort]="true"
-    (sortFunction)="onCustomSort($event)"
-  >
-    <ng-template #caption>
-      <div class="flex items-center justify-end">
-        <p-button
-          icon="pi pi-external-link"
-          label="Exportar"
-          (click)="onExport()"
-        />
-      </div>
-    </ng-template>
+        <!-- Integrated Summary Cards (Counts) -->
+        <div class="flex gap-2 shrink-0">
+          @for (countItem of area.counts; track countItem.label) {
+            <app-card class="flex-1">
+              <span class="text-xl font-bold text-rose-800">
+                {{ countItem.count }}
+              </span>
+              <span class="text-xs text-surface-500">
+                {{ countItem.label }}
+              </span>
+            </app-card>
+          }
+        </div>
 
-    <ng-template #header let-columns>
-      <tr>
-        @for (col of columns; track col.field) {
-          <th
-            [pSortableColumn]="col.field"
-            class="text-sm py-2 px-4 whitespace-nowrap"
-          >
-            {{ col.header }} <p-sortIcon [field]="col.field" />
-          </th>
+        <!-- Total Value Card -->
+        <app-card class="shrink-0" styleClass="bg-white">
+          <span class="text-2xl font-bold text-rose-800 block">
+            {{ area.totalValue | currency: "BRL" : "symbol" : "1.2-2" }}
+          </span>
+          <span class="text-xs text-surface-500"> Valor Total </span>
+        </app-card>
+
+        <!-- Group Cards (FC/CJ) -->
+        @for (group of area.groups; track group.category) {
+          <app-card class="shrink-0" styleClass="bg-white p-3">
+            <div
+              class="flex justify-between items-center border-b border-surface-100 w-full"
+            >
+              <span class="font-bold text-surface-700 text-sm mb-1">{{
+                group.category
+              }}</span>
+              <span class="font-bold text-rose-800 mb-1">{{
+                group.totalValue | currency: "BRL" : "symbol" : "1.2-2"
+              }}</span>
+            </div>
+            <div class="flex flex-col gap-2 w-full mt-2">
+              @for (item of group.items; track item.label) {
+                <div class="flex justify-between items-start text-xs group">
+                  <span class="text-surface-600 capitalize leading-tight pr-2">
+                    {{ item.label }} ({{ item.count }})
+                  </span>
+                  <span class="font-semibold text-surface-900">
+                    {{ item.value | currency: "BRL" : "symbol" : "1.2-2" }}
+                  </span>
+                </div>
+              }
+            </div>
+          </app-card>
         }
-      </tr>
-    </ng-template>
+      </div>
+    }
+  </div>
 
-    <ng-template #body let-row>
-      <tr class="hover:bg-surface-50">
-        <td>{{ row.funcao }}</td>
-        <td>{{ row.apoio }}</td>
-        <td>
-          {{ row.valorUnitario | currency: "BRL" : "symbol" : "1.2-2" }}
-        </td>
-        <td>{{ row.quantidade }}</td>
-        <td>
-          {{ row.valorTotal | currency: "BRL" : "symbol" : "1.2-2" }}
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+  <!-- Table Container -->
+  <div class="pt-3">
+    <p-table
+      #dt2
+      [value]="cargosData"
+      [columns]="cargosCols"
+      class="min-w-full text-xs flex flex-col"
+      [exportHeader]="'header'"
+      stripedRows
+      size="small"
+      [pt]="{
+        root: {
+          class: 'border border-surface-100 rounded-xl shadow-sm/5',
+        },
+        header: {
+          class: 'bg-surface-0 text-surface-700 rounded-t-xl',
+        },
+        pcPaginator: {
+          root: {
+            class:
+              'border-t border-surface-200 text-surface-700 rounded-b-xl rounded-t-none',
+          },
+        },
+      }"
+      [customSort]="true"
+      (sortFunction)="onCustomSort($event)"
+    >
+      <ng-template #caption>
+        <div class="flex items-center justify-end">
+          <p-button
+            icon="pi pi-external-link"
+            label="Exportar"
+            (click)="onExport()"
+          />
+        </div>
+      </ng-template>
+
+      <ng-template #header let-columns>
+        <tr>
+          @for (col of columns; track col.field) {
+            <th
+              [pSortableColumn]="col.field"
+              class="text-sm py-2 px-4 whitespace-nowrap"
+            >
+              {{ col.header }} <p-sortIcon [field]="col.field" />
+            </th>
+          }
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-row>
+        <tr class="hover:bg-surface-50">
+          <td>{{ row.funcao }}</td>
+          <td>{{ row.apoio }}</td>
+          <td>
+            {{ row.valorUnitario | currency: "BRL" : "symbol" : "1.2-2" }}
+          </td>
+          <td>{{ row.quantidade }}</td>
+          <td>
+            {{ row.valorTotal | currency: "BRL" : "symbol" : "1.2-2" }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>

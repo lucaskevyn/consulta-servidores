@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { Table, TableModule } from 'primeng/table';
 import { Button } from 'primeng/button';
 import { SortEvent } from 'primeng/api';
-import { Column } from '../../models/consulta-servidores.models';
+import { AreaCargoStat, Column } from '../../models/consulta-servidores.models';
 
 import { CardComponent } from '../../../../shared/components/card/card.component';
 
@@ -23,6 +23,7 @@ import { CardComponent } from '../../../../shared/components/card/card.component
 export class TabCargosFuncoesComponent {
   @Input() functionCounts: { label: string; count: number }[] = [];
   @Input() cargosData: any[] = [];
+  @Input() areaCargoStats: AreaCargoStat[] = [];
   @Input() cargosCols: Column[] = [];
 
   @ViewChild('dt2') dt2!: Table;

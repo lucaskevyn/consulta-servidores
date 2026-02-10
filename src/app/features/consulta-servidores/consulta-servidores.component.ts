@@ -10,6 +10,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import tlpList from '../../const/tlp.json';
 import dotacaoList from '../../const/dotacao.json';
 import {
+  AreaCargoStat,
   AreaVinculoStat,
   CalculoResolucao,
   Column,
@@ -423,6 +424,7 @@ export class ConsultaServidoresComponent {
     this.calculateCargosData();
     this.calculateResolucaoData();
     this.calculateAreaVinculoStats();
+    this.calculateAreaCargoStats();
   }
 
   functionCounts: { label: string; count: number }[] = [];
@@ -475,6 +477,7 @@ export class ConsultaServidoresComponent {
   }
 
   areaVinculoStats: AreaVinculoStat[] = [];
+  areaCargoStats: AreaCargoStat[] = [];
 
   calculateAreaVinculoStats() {
     const areas = [
@@ -589,6 +592,102 @@ export class ConsultaServidoresComponent {
     const totalStats = calculateStatsForData(totalSubset, 'TOTAIS');
 
     this.areaVinculoStats = [...areaStats, totalStats];
+  }
+
+  calculateAreaCargoStats() {
+    const areas = [
+      {
+        id: 'adm',
+        label: 'ÁREA ADMINISTRATIVA',
+        search: 'área administrativa do tjac',
+      },
+      { id: '1g', label: '1º GRAU', search: 'área judiciária de 1º grau' },
+      { id: '2g', label: '2º GRAU', search: 'área judiciária de 2º grau' },
+    ];
+
+    const isExcluded = (apoio: string) => {
+      const a = apoio.toLowerCase();
+      return a.includes('esjud') || a.includes('tecnologia');
+    };
+
+    const calculateStatsForData = (dataSubset: Servidor[], name: string) => {
+      const groupsDefinition = [
+        { category: 'CJ', prefix: 'CJ' },
+        { category: 'FC', prefix: 'FC' },
+      ];
+
+      const counts: { label: string; count: number }[] = [];
+
+      const groups = groupsDefinition.map((group) => {
+        let groupTotalValue = 0;
+        let groupCount = 0;
+        const itemsMap = new Map<string, { count: number; value: number }>();
+
+        this.references
+          .filter((ref) => ref.funcao.startsWith(group.prefix))
+          .forEach((ref) => {
+            const count = dataSubset.filter((d) =>
+              (d.funcao || '').toUpperCase().includes(ref.funcao.toUpperCase()),
+            ).length;
+
+            if (count > 0) {
+              const total = count * ref.valor;
+              groupTotalValue += total;
+              groupCount += count;
+              itemsMap.set(ref.funcao, { count, value: total });
+            }
+          });
+
+        counts.push({ label: group.category, count: groupCount });
+
+        const items = Array.from(itemsMap.entries())
+          .map(([label, data]) => ({
+            label,
+            count: data.count,
+            value: data.value,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label));
+
+        return {
+          category: group.category,
+          totalValue: groupTotalValue,
+          items,
+        };
+      });
+
+      const totalAreaValue = groups.reduce((acc, g) => acc + g.totalValue, 0);
+
+      return {
+        areaName: name,
+        totalValue: totalAreaValue,
+        counts,
+        groups,
+      };
+    };
+
+    // 1. Calculate for each specific area
+    const areaStats = areas.map((areaRef) => {
+      const subset = this.dados.filter((d) => {
+        const a = (d.apoio || '').toLowerCase();
+        if (!a.includes(areaRef.search)) return false;
+        if (isExcluded(a)) return false;
+        return true;
+      });
+      return calculateStatsForData(subset, areaRef.label);
+    });
+
+    // 2. Calculate TOTAL column
+    const totalSubset = this.dados.filter((d) => {
+      const a = (d.apoio || '').toLowerCase();
+      const inAreas = areas.some((areaRef) => a.includes(areaRef.search));
+      if (!inAreas) return false;
+      if (isExcluded(a)) return false;
+      return true;
+    });
+
+    const totalStats = calculateStatsForData(totalSubset, 'TOTAIS');
+
+    this.areaCargoStats = [...areaStats, totalStats];
   }
 
   calculateTlpData() {
@@ -1284,13 +1383,32 @@ export class ConsultaServidoresComponent {
         if (!this.cargosData) return;
         json = this.cargosData;
 
-        // Build header from functionCounts
-        headerRows.push(['Estatísticas de Cargos e Funções']);
-        this.functionCounts.forEach((item) => {
-          headerRows.push([item.label, item.count]);
+        headerRows.push(['Estatísticas de Cargos e Funções por Área']);
+
+        this.areaCargoStats.forEach((area) => {
+          headerRows.push(['Área', area.areaName]);
+          headerRows.push(['  Valor Total da Área', area.totalValue]);
+
+          // Summary counts for CJ and FC
+          area.counts.forEach((c) => {
+            headerRows.push([`  Total de ${c.label}`, c.count]);
+          });
+
+          // Detailed groups
+          area.groups.forEach((group) => {
+            headerRows.push([`  Detalhes ${group.category}`, group.totalValue]);
+            group.items.forEach((item) => {
+              headerRows.push([
+                `    ${item.label}`,
+                `${item.count} un.`,
+                item.value,
+              ]);
+            });
+          });
+          headerRows.push(['']); // Spacer
         });
-        headerRows.push(['']); // Spacer
-        headerRows.push(['Tabela Detalhada']);
+
+        headerRows.push(['Tabela Detalhada de Cargos']);
         break;
       }
 
