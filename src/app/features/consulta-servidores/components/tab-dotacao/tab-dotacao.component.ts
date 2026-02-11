@@ -23,8 +23,9 @@ interface DotacaoRow {
   Unidade: string;
   Setor: string;
   'Cargos Criados': string;
-  Descrição: string;
+  'Descrição (Aldenice)': string;
   Apoio: string;
+  Admrh: string;
 }
 
 interface StatsGroup {
@@ -182,10 +183,10 @@ export class TabDotacaoComponent implements OnChanges {
     // 1. Filter Dotacao
     this.filteredDotacao = this.dotacaoData.filter((row) => {
       // Logic for Globla Exclusion on Dotacao
-      const desc = this.normalize(row.Descrição);
+      const admrh = this.normalize(row.Admrh || '');
       if (
-        EXCLUDED_VINCULOS.some((excluded) => desc.includes(excluded)) ||
-        desc.includes('inativo')
+        EXCLUDED_VINCULOS.some((excluded) => admrh.includes(excluded)) ||
+        admrh.includes('inativo')
       ) {
         return false;
       }
@@ -281,8 +282,13 @@ export class TabDotacaoComponent implements OnChanges {
       }
 
       // 4. SERVIDORES
-      // Contar tudo que NÃO tenha "estagiários" ou "colaboradores"
-      if (!func.includes('estagiario') && !vinculo.includes('colaborador')) {
+      // Contar tudo que NÃO tenha "estagiários", "colaboradores", "cj" ou "fc"
+      if (
+        !func.includes('estagiario') &&
+        !vinculo.includes('colaborador') &&
+        !func.includes('cj') &&
+        !func.includes('fc')
+      ) {
         stats.servidores.providos++;
       }
 
@@ -300,16 +306,14 @@ export class TabDotacaoComponent implements OnChanges {
     // --- Dotação Counting ---
     this.filteredDotacao.forEach((d) => {
       const qtd = parseInt(d['Cargos Criados'], 10) || 0;
-      const desc = this.normalize(d.Descrição);
-      const apoio = this.normalize(d.Apoio || '');
-      const isJudicial =
-        apoio.includes('judiciaria de 1') || apoio.includes('judiciaria de 2');
+      const admrh = this.normalize(d.Admrh || '');
+      const resolucao = d.Resolução;
 
-      const isEstagiario = desc.includes('estagiario');
-      const isColaborador =
-        desc.includes('colaborador') || desc.includes('colaboradores');
-      const isCJ = desc.includes('cj');
-      const isFC = desc.includes('fc');
+      const isEstagiario = admrh.includes('estagiario');
+      const isColaborador = admrh.includes('colaborador');
+      const isCJ = admrh.includes('cj');
+      const isFC = admrh.includes('fc');
+      const isServidor = admrh === 'servidor';
 
       // 1. ESTAGIÁRIOS
       if (isEstagiario) {
@@ -331,23 +335,19 @@ export class TabDotacaoComponent implements OnChanges {
         stats.fc.dotacao += qtd;
       }
 
+      // 5. SERVIDORES
+      if (isServidor) {
+        stats.servidores.dotacao += qtd;
+      }
+
       // 6. TOTAL
-      // "contar para a dotação do total, tudo sem exclusão" -> This likely means "everything that is a valid record in dotacao".
-      // BUT override: "a dotação do fc deve ser contada no total ... somente quando o apoio conter..."
-      // So TOTAL = (Everything EXCEPT FC) + (FC IF Judicial)
-      if (!isFC) {
+      // Regra: cj + servidor + colaborador + estagiário + fc (somente se resolução for 108)
+      if (isCJ || isServidor || isColaborador || isEstagiario) {
         stats.total.dotacao += qtd;
-      } else if (isFC && isJudicial) {
+      } else if (isFC && resolucao === '108') {
         stats.total.dotacao += qtd;
       }
     });
-
-    // 5. SERVIDORES (Residual Calculation)
-    // Ensures Servidores + Estagiarios + Colaboradores = Total
-    stats.servidores.dotacao =
-      stats.total.dotacao -
-      stats.estagiarios.dotacao -
-      stats.colaboradores.dotacao;
 
     // --- Vagas Calculation ---
     const calcVagas = (group: StatsGroup) => {
