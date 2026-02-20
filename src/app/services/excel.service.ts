@@ -9,7 +9,9 @@ export interface Servidor {
   nome: string;
   secretaria: string;
   unidade: string;
+  cod_unidade: string;
   setor: string;
+  cod_setor: string;
   centro: string;
   vinculo: string;
   cargo: string;
@@ -28,7 +30,9 @@ const CAMPOS: Array<[keyof Servidor, string]> = [
   ['nome', 'C'],
   ['secretaria', 'AO'],
   ['unidade', 'AN'],
+  ['cod_unidade', 'AM'],
   ['setor', 'AL'],
+  ['cod_setor', 'AK'],
   ['centro', 'AP'],
   ['vinculo', 'M'],
   ['cargo', 'AI'],
@@ -70,9 +74,10 @@ export class ExcelService {
 
           const dados: Servidor[] = linhas.map((l) => {
             const obj: any = {};
-            CAMPOS.forEach(
-              ([nome, col]) => (obj[nome] = this.getValueByColumn(l, col)),
-            );
+            CAMPOS.forEach(([nome, col]) => {
+              const val = this.getValueByColumn(l, col);
+              obj[nome] = typeof val === 'string' ? val.trim() : val;
+            });
             return obj as Servidor;
           });
 

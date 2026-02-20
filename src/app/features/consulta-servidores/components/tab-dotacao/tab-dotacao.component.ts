@@ -18,14 +18,19 @@ import { TabGeralComponent } from '../tab-geral/tab-geral.component';
 import { CardComponent } from '../../../../shared/components/card/card.component';
 
 interface DotacaoRow {
-  Resolução: string;
-  Secretaria: string;
-  Unidade: string;
-  Setor: string;
-  'Cargos Criados': string;
-  'Descrição (Aldenice)': string;
-  Apoio: string;
-  Admrh: string;
+  resolucao: string;
+  cod_secretaria: string;
+  secretaria: string;
+  cod_unidade: string;
+  unidade: string;
+  cod_setor: string;
+  setor: string;
+  cargos_criados: string;
+  desc_aldenice: string;
+  apoio: string;
+  desc_admrh: string;
+  cargo_admrh: string;
+  conta_dotacao: string;
 }
 
 interface StatsGroup {
@@ -127,7 +132,7 @@ export class TabDotacaoComponent implements OnChanges {
 
   initFilters() {
     // Populate Secretaria options from dotacaoData
-    const secretarias = new Set(this.dotacaoData.map((d) => d.Secretaria));
+    const secretarias = new Set(this.dotacaoData.map((d) => d.secretaria));
     this.secretariaOptions = Array.from(secretarias)
       .sort()
       .map((s) => ({ label: s, value: s }));
@@ -140,14 +145,14 @@ export class TabDotacaoComponent implements OnChanges {
     this.setorOptions = [];
 
     if (this.selectedSecretaria && this.selectedSecretaria.length > 0) {
-      const unidades = new Set(
-        this.dotacaoData
-          .filter((d) => this.selectedSecretaria.includes(d.Secretaria))
-          .map((d) => d.Unidade),
-      );
-      this.unidadeOptions = Array.from(unidades)
-        .sort()
-        .map((u) => ({ label: u, value: u }));
+      const uniqueUnits = new Map<string, string>(); // code -> name
+      this.dotacaoData
+        .filter((d) => this.selectedSecretaria.includes(d.secretaria))
+        .forEach((d) => uniqueUnits.set(d.cod_unidade, d.unidade));
+
+      this.unidadeOptions = Array.from(uniqueUnits.entries())
+        .sort((a, b) => a[1].localeCompare(b[1]))
+        .map(([code, name]) => ({ label: name, value: code }));
     }
 
     this.updateResults();
@@ -158,18 +163,18 @@ export class TabDotacaoComponent implements OnChanges {
     this.setorOptions = [];
 
     if (this.selectedUnidade && this.selectedUnidade.length > 0) {
-      const setores = new Set(
-        this.dotacaoData
-          .filter(
-            (d) =>
-              this.selectedSecretaria.includes(d.Secretaria) &&
-              this.selectedUnidade.includes(d.Unidade),
-          )
-          .map((d) => d.Setor),
-      );
-      this.setorOptions = Array.from(setores)
-        .sort()
-        .map((s) => ({ label: s, value: s }));
+      const uniqueSectors = new Map<string, string>(); // code -> name
+      this.dotacaoData
+        .filter(
+          (d) =>
+            this.selectedSecretaria.includes(d.secretaria) &&
+            this.selectedUnidade.includes(d.cod_unidade),
+        )
+        .forEach((d) => uniqueSectors.set(d.cod_setor, d.setor));
+
+      this.setorOptions = Array.from(uniqueSectors.entries())
+        .sort((a, b) => a[1].localeCompare(b[1]))
+        .map(([code, name]) => ({ label: name, value: code }));
     }
 
     this.updateResults();
@@ -183,25 +188,28 @@ export class TabDotacaoComponent implements OnChanges {
     // 1. Filter Dotacao
     this.filteredDotacao = this.dotacaoData.filter((row) => {
       // Logic for Globla Exclusion on Dotacao
-      const admrh = this.normalize(row.Admrh || '');
+      const cargo_admrh = this.normalize(row.cargo_admrh || '');
       if (
-        EXCLUDED_VINCULOS.some((excluded) => admrh.includes(excluded)) ||
-        admrh.includes('inativo')
+        EXCLUDED_VINCULOS.some((excluded) => cargo_admrh.includes(excluded)) ||
+        cargo_admrh.includes('inativo')
       ) {
         return false;
       }
 
       if (
         this.selectedSecretaria?.length &&
-        !this.selectedSecretaria.includes(row.Secretaria)
+        !this.selectedSecretaria.includes(row.secretaria)
       )
         return false;
       if (
         this.selectedUnidade?.length &&
-        !this.selectedUnidade.includes(row.Unidade)
+        !this.selectedUnidade.includes(row.cod_unidade)
       )
         return false;
-      if (this.selectedSetor?.length && !this.selectedSetor.includes(row.Setor))
+      if (
+        this.selectedSetor?.length &&
+        !this.selectedSetor.includes(row.cod_setor)
+      )
         return false;
       return true;
     });
@@ -218,8 +226,6 @@ export class TabDotacaoComponent implements OnChanges {
       }
 
       const servSec = this.normalize(serv.secretaria);
-      const servUni = this.normalize(serv.unidade);
-      const servSet = this.normalize(serv.setor);
 
       if (this.selectedSecretaria?.length) {
         const normalizedSelection = this.selectedSecretaria.map((s) =>
@@ -229,17 +235,13 @@ export class TabDotacaoComponent implements OnChanges {
       }
 
       if (this.selectedUnidade?.length) {
-        const normalizedSelection = this.selectedUnidade.map((u) =>
-          this.normalize(u),
-        );
-        if (!normalizedSelection.includes(servUni)) return false;
+        if (!this.selectedUnidade.includes(String(serv.cod_unidade).trim()))
+          return false;
       }
 
       if (this.selectedSetor?.length) {
-        const normalizedSelection = this.selectedSetor.map((s) =>
-          this.normalize(s),
-        );
-        if (!normalizedSelection.includes(servSet)) return false;
+        if (!this.selectedSetor.includes(String(serv.cod_setor).trim()))
+          return false;
       }
 
       return true;
@@ -305,15 +307,15 @@ export class TabDotacaoComponent implements OnChanges {
 
     // --- Dotação Counting ---
     this.filteredDotacao.forEach((d) => {
-      const qtd = parseInt(d['Cargos Criados'], 10) || 0;
-      const admrh = this.normalize(d.Admrh || '');
-      const resolucao = d.Resolução;
+      const qtd = parseInt(d.cargos_criados, 10) || 0;
+      const cargo_admrh = this.normalize(d.cargo_admrh || '');
+      const resolucao = d.resolucao;
 
-      const isEstagiario = admrh.includes('estagiario');
-      const isColaborador = admrh.includes('colaborador');
-      const isCJ = admrh.includes('cj');
-      const isFC = admrh.includes('fc');
-      const isServidor = admrh === 'servidor';
+      const isEstagiario = cargo_admrh.includes('estagiario');
+      const isColaborador = cargo_admrh.includes('colaborador');
+      const isCJ = cargo_admrh.includes('cj');
+      const isFC = cargo_admrh.includes('fc');
+      const isServidor = cargo_admrh === 'servidor';
 
       // 1. ESTAGIÁRIOS
       if (isEstagiario) {
