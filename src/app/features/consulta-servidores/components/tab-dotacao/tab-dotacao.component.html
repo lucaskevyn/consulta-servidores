@@ -48,7 +48,7 @@
 
   <!-- Cards Section -->
   <div
-    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3"
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-3"
   >
     <!-- Card Template Macro/Fragment concept (but inline for Angular) -->
 
@@ -189,6 +189,7 @@
     </app-card>
 
     <!-- FC -->
+    <!-- FC -->
     <app-card styleClass="items-stretch gap-2 p-3">
       <div class="text-xs font-medium text-surface-500">Com FC</div>
       <div class="flex flex-col gap-1">
@@ -210,6 +211,35 @@
           <span class="text-xs text-green-800">Vagas</span>
           <span class="text-base font-semibold text-green-800">{{
             stats.fc.vagas
+          }}</span>
+        </div>
+      </div>
+    </app-card>
+
+    <!-- OFICIAIS DE JUSTIÇA -->
+    <app-card styleClass="items-stretch gap-2 p-3">
+      <div class="text-xs font-medium text-surface-500">
+        Oficiais de Justiça
+      </div>
+      <div class="flex flex-col gap-1">
+        <div class="flex justify-between items-center bg-rose-50 p-1.5 rounded">
+          <span class="text-xs text-rose-800">Providos</span>
+          <span class="text-lg font-bold text-rose-800">{{
+            stats.oficiais_justica.providos
+          }}</span>
+        </div>
+        <div class="flex justify-between items-center bg-blue-50 p-1.5 rounded">
+          <span class="text-xs text-blue-800">Dotação</span>
+          <span class="text-base font-semibold text-blue-800">{{
+            stats.oficiais_justica.dotacao
+          }}</span>
+        </div>
+        <div
+          class="flex justify-between items-center bg-green-50 p-1.5 rounded"
+        >
+          <span class="text-xs text-green-800">Vagas</span>
+          <span class="text-base font-semibold text-green-800">{{
+            stats.oficiais_justica.vagas
           }}</span>
         </div>
       </div>

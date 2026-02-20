@@ -46,6 +46,7 @@ interface DotacaoCardStats {
   estagiarios: StatsGroup;
   cj: StatsGroup;
   fc: StatsGroup;
+  oficiais_justica: StatsGroup;
 }
 
 const EXCLUDED_VINCULOS = [
@@ -109,6 +110,7 @@ export class TabDotacaoComponent implements OnChanges {
     estagiarios: { providos: 0, dotacao: 0, vagas: 0 },
     cj: { providos: 0, dotacao: 0, vagas: 0 },
     fc: { providos: 0, dotacao: 0, vagas: 0 },
+    oficiais_justica: { providos: 0, dotacao: 0, vagas: 0 },
   };
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -261,6 +263,7 @@ export class TabDotacaoComponent implements OnChanges {
       estagiarios: emptyGroup(),
       cj: emptyGroup(),
       fc: emptyGroup(),
+      oficiais_justica: emptyGroup(),
     };
 
     // --- Servidores (Providos) Counting ---
@@ -284,12 +287,16 @@ export class TabDotacaoComponent implements OnChanges {
       }
 
       // 4. SERVIDORES
-      // Contar tudo que NÃO tenha "estagiários", "colaboradores", "cj" ou "fc"
+      // Contar tudo que NÃO tenha "estagiários", "colaboradores", "cj", "fc" ou "oficial de justiça"
+      const isOficialProvido =
+        s.cargo && this.normalize(s.cargo).includes('oficial de justica');
+
       if (
         !func.includes('estagiario') &&
         !vinculo.includes('colaborador') &&
         !func.includes('cj') &&
-        !func.includes('fc')
+        !func.includes('fc') &&
+        !isOficialProvido
       ) {
         stats.servidores.providos++;
       }
@@ -302,6 +309,11 @@ export class TabDotacaoComponent implements OnChanges {
       // 6. FC
       if (func.includes('fc')) {
         stats.fc.providos++;
+      }
+
+      // 7. OFICIAL DE JUSTIÇA
+      if (isOficialProvido) {
+        stats.oficiais_justica.providos++;
       }
     });
 
@@ -316,6 +328,7 @@ export class TabDotacaoComponent implements OnChanges {
       const isCJ = cargo_admrh.includes('cj');
       const isFC = cargo_admrh.includes('fc');
       const isServidor = cargo_admrh === 'servidor';
+      const isOficial = cargo_admrh === 'oficial de justica';
 
       // 1. ESTAGIÁRIOS
       if (isEstagiario) {
@@ -342,9 +355,14 @@ export class TabDotacaoComponent implements OnChanges {
         stats.servidores.dotacao += qtd;
       }
 
-      // 6. TOTAL
-      // Regra: cj + servidor + colaborador + estagiário + fc (somente se resolução for 108)
-      if (isCJ || isServidor || isColaborador || isEstagiario) {
+      // 6. OFICIAL DE JUSTIÇA
+      if (isOficial) {
+        stats.oficiais_justica.dotacao += qtd;
+      }
+
+      // 7. TOTAL
+      // Regra: cj + servidor + colaborador + estagiário + oficial + fc (somente se resolução for 108)
+      if (isCJ || isServidor || isColaborador || isEstagiario || isOficial) {
         stats.total.dotacao += qtd;
       } else if (isFC && resolucao === '108') {
         stats.total.dotacao += qtd;
@@ -362,6 +380,7 @@ export class TabDotacaoComponent implements OnChanges {
     calcVagas(stats.estagiarios);
     calcVagas(stats.cj);
     calcVagas(stats.fc);
+    calcVagas(stats.oficiais_justica);
 
     this.stats = stats;
   }
