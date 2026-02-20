@@ -47,6 +47,8 @@ interface DotacaoCardStats {
   cj: StatsGroup;
   fc: StatsGroup;
   oficiais_justica: StatsGroup;
+  cjDetails: { [key: string]: StatsGroup };
+  fcDetails: { [key: string]: StatsGroup };
 }
 
 const EXCLUDED_VINCULOS = [
@@ -111,6 +113,8 @@ export class TabDotacaoComponent implements OnChanges {
     cj: { providos: 0, dotacao: 0, vagas: 0 },
     fc: { providos: 0, dotacao: 0, vagas: 0 },
     oficiais_justica: { providos: 0, dotacao: 0, vagas: 0 },
+    cjDetails: {},
+    fcDetails: {},
   };
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -130,6 +134,10 @@ export class TabDotacaoComponent implements OnChanges {
           .toLowerCase()
           .trim()
       : '';
+  }
+
+  getObjectKeys(obj: any): string[] {
+    return Object.keys(obj || {}).sort();
   }
 
   initFilters() {
@@ -264,6 +272,8 @@ export class TabDotacaoComponent implements OnChanges {
       cj: emptyGroup(),
       fc: emptyGroup(),
       oficiais_justica: emptyGroup(),
+      cjDetails: {},
+      fcDetails: {},
     };
 
     // --- Servidores (Providos) Counting ---
@@ -304,11 +314,15 @@ export class TabDotacaoComponent implements OnChanges {
       // 5. CJ
       if (func.includes('cj')) {
         stats.cj.providos++;
+        if (!stats.cjDetails[func]) stats.cjDetails[func] = emptyGroup();
+        stats.cjDetails[func].providos++;
       }
 
       // 6. FC
       if (func.includes('fc')) {
         stats.fc.providos++;
+        if (!stats.fcDetails[func]) stats.fcDetails[func] = emptyGroup();
+        stats.fcDetails[func].providos++;
       }
 
       // 7. OFICIAL DE JUSTIÇA
@@ -321,6 +335,7 @@ export class TabDotacaoComponent implements OnChanges {
     this.filteredDotacao.forEach((d) => {
       const qtd = parseInt(d.cargos_criados, 10) || 0;
       const cargo_admrh = this.normalize(d.cargo_admrh || '');
+      const desc_admrh = this.normalize(d.desc_admrh || '');
       const resolucao = d.resolucao;
 
       const isEstagiario = cargo_admrh.includes('estagiario');
@@ -343,11 +358,17 @@ export class TabDotacaoComponent implements OnChanges {
       // 3. CJ
       if (isCJ) {
         stats.cj.dotacao += qtd;
+        if (!stats.cjDetails[desc_admrh])
+          stats.cjDetails[desc_admrh] = emptyGroup();
+        stats.cjDetails[desc_admrh].dotacao += qtd;
       }
 
       // 4. FC
       if (isFC) {
         stats.fc.dotacao += qtd;
+        if (!stats.fcDetails[desc_admrh])
+          stats.fcDetails[desc_admrh] = emptyGroup();
+        stats.fcDetails[desc_admrh].dotacao += qtd;
       }
 
       // 5. SERVIDORES
@@ -381,6 +402,9 @@ export class TabDotacaoComponent implements OnChanges {
     calcVagas(stats.cj);
     calcVagas(stats.fc);
     calcVagas(stats.oficiais_justica);
+
+    Object.values(stats.cjDetails).forEach(calcVagas);
+    Object.values(stats.fcDetails).forEach(calcVagas);
 
     this.stats = stats;
   }

@@ -45,9 +45,9 @@
     <div class="flex-1 overflow-y-auto py-2 flex flex-col gap-1 px-2">
       @for (item of menuItems; track item.value) {
         <button
-          class="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-surface-100 text-surface-600 font-medium"
+          class="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-surface-100 text-surface-600 font-medium cursor-pointer"
           [class.bg-rose-50]="activeTab === item.value"
-          [class.text-rose-800]="activeTab === item.value"
+          [class.text-surface-800]="activeTab === item.value"
           [class.justify-center]="sidebarCollapsed"
           (click)="setActiveTab(item.value)"
           [pTooltip]="sidebarCollapsed ? item.label : ''"
