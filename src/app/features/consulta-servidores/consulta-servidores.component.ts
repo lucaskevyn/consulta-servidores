@@ -855,19 +855,19 @@ export class ConsultaServidoresComponent {
       },
       {
         label: '1º Grau Ideal',
-        value: (totalJud * 0.915).toFixed(0),
+        value: (totalJud * 0.901).toFixed(0),
         desc: 'Servidores',
       },
       {
         label: '2º Grau Ideal',
-        value: (totalJud * 0.085).toFixed(0),
+        value: (totalJud * 0.099).toFixed(0),
         desc: 'Servidores',
       },
       {
         label: 'Diferença',
-        value: (totalJud * 0.915 - this.resolucaoData[7].value).toFixed(0),
+        value: (totalJud * 0.901 - this.resolucaoData[7].value).toFixed(0),
         desc:
-          totalJud * 0.915 - this.resolucaoData[7].value >= 0
+          totalJud * 0.901 - this.resolucaoData[7].value >= 0
             ? 'Migrar para o primeiro grau'
             : 'Não necessita migrar',
       },
@@ -896,7 +896,7 @@ export class ConsultaServidoresComponent {
 
       {
         label: '1º Grau  Ideal',
-        value: (totalJudValor * 0.915).toLocaleString('pt-BR', {
+        value: (totalJudValor * 0.901).toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL',
         }),
@@ -904,7 +904,7 @@ export class ConsultaServidoresComponent {
       },
       {
         label: '2º Grau Ideal',
-        value: (totalJudValor * 0.085).toLocaleString('pt-BR', {
+        value: (totalJudValor * 0.099).toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL',
         }),
@@ -913,14 +913,14 @@ export class ConsultaServidoresComponent {
       {
         label: 'Diferença',
         value: (
-          totalJudValor * 0.915 -
+          totalJudValor * 0.901 -
           (this.resolucaoData[1].value + this.resolucaoData[4].value)
         ).toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL',
         }),
         desc:
-          totalJudValor * 0.915 -
+          totalJudValor * 0.901 -
             (this.resolucaoData[1].value + this.resolucaoData[4].value) >=
           0
             ? 'Migrar para o primeiro grau'
@@ -1015,25 +1015,25 @@ export class ConsultaServidoresComponent {
               maximumFractionDigits: 2,
             },
           ) + '%',
-        desc: 'Referência 91,5%',
+        desc: 'Referência 90,1%',
       },
 
-      // item: 'a) Distribuição de servidores por grau de jurisdição (91,5% - Triênio 2024)',
+      // item: 'a) Distribuição de servidores por grau de jurisdição (90,1% - Triênio 2024)',
       {
-        label: 'Situação (91,5%)',
+        label: 'Situação (90,1%)',
         value:
-          this.resolucaoData[7].value / totalJud >= 0.915 ? '20pts' : '0pts',
+          this.resolucaoData[7].value / totalJud >= 0.901 ? '20pts' : '0pts',
         desc:
-          this.resolucaoData[7].value / totalJud >= 0.915
+          this.resolucaoData[7].value / totalJud >= 0.901
             ? 'Cumprido'
             : 'Não cumprido',
       },
       {
         label: 'Situação (Tolerância)',
         value:
-          this.resolucaoData[7].value / totalJud >= 0.905 ? '20pts' : '0pts',
+          this.resolucaoData[7].value / totalJud >= 0.89 ? '20pts' : '0pts',
         desc:
-          this.resolucaoData[7].value / totalJud >= 0.905
+          this.resolucaoData[7].value / totalJud >= 0.89
             ? 'Cumprido'
             : 'Não cumprido',
       },
@@ -1047,21 +1047,21 @@ export class ConsultaServidoresComponent {
           ).toLocaleString('pt-BR', {
             maximumFractionDigits: 2,
           }) + '%',
-        desc: 'Referência 91,5%',
+        desc: 'Referência 90,1%',
       },
       // item: 'b) Distribuição de cargos e funções por grau de jurisdição',
       {
-        label: 'Situação (91,5%)',
+        label: 'Situação (90,1%)',
         value:
           (this.resolucaoData[1].value + this.resolucaoData[4].value) /
             totalJudValor >=
-          0.915
+          0.901
             ? '20pts'
             : '0pts',
         desc:
           (this.resolucaoData[1].value + this.resolucaoData[4].value) /
             totalJudValor >=
-          0.915
+          0.901
             ? 'Cumprido'
             : 'Não cumprido',
       },
@@ -1070,13 +1070,13 @@ export class ConsultaServidoresComponent {
         value:
           (this.resolucaoData[1].value + this.resolucaoData[4].value) /
             totalJudValor >=
-          0.905
+          0.89
             ? '20pts'
             : '0pts',
         desc:
           (this.resolucaoData[1].value + this.resolucaoData[4].value) /
             totalJudValor >=
-          0.905
+          0.89
             ? 'Cumprido'
             : 'Não cumprido',
       },
