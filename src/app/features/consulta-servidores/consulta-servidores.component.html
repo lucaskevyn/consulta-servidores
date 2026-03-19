@@ -72,9 +72,17 @@
     <div
       class="p-4 border-b border-surface-100 bg-white flex justify-between items-center shrink-0 h-16"
     >
-      <h2 class="text-xl font-semibold text-rose-800 truncate">
-        {{ menuItems[activeTab].labelHeader }}
-      </h2>
+      <div class="flex gap-3 items-end">
+        <h2 class="text-xl font-semibold text-rose-800 truncate">
+          {{ menuItems[activeTab].labelHeader }}
+        </h2>
+        @if ([1, 2, 3, 4, 5].includes(menuItems[activeTab].value)) {
+          <span class="text-gray-600 text-sm"
+            >Para a área Administrativa não se contabilizou a ESJUD e SETIC,
+            conforme § 1º, Art. 11, da Res. 219/2016.</span
+          >
+        }
+      </div>
 
       <div class="flex items-center gap-2">
         <label
@@ -217,6 +225,14 @@
               (clearFiltersRequest)="clearTableFilters()"
               class="h-full flex flex-col min-h-0"
             ></app-tab-dotacao>
+          }
+          @if ([1, 2, 3, 4, 5].includes(menuItems[activeTab].value)) {
+            <span class="text-gray-600 text-sm mt-2"
+              >* Art. 11, § 1º: Para apuração do percentual descrito no caput
+              [Área Administrativa] serão excluídos da base de cálculo os
+              servidores lotados nas escolas judiciais e da magistratura e nas
+              áreas de tecnologia da informação.</span
+            >
           }
         </div>
       }
