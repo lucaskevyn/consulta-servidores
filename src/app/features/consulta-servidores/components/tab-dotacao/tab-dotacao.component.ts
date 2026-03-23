@@ -35,6 +35,7 @@ interface DotacaoRow {
 
 interface StatsGroup {
   providos: number;
+  origem: number;
   dotacao: number;
   vagas: number;
 }
@@ -106,13 +107,13 @@ export class TabDotacaoComponent implements OnChanges {
 
   // Stats
   stats: DotacaoCardStats = {
-    total: { providos: 0, dotacao: 0, vagas: 0 },
-    servidores: { providos: 0, dotacao: 0, vagas: 0 },
-    colaboradores: { providos: 0, dotacao: 0, vagas: 0 },
-    estagiarios: { providos: 0, dotacao: 0, vagas: 0 },
-    cj: { providos: 0, dotacao: 0, vagas: 0 },
-    fc: { providos: 0, dotacao: 0, vagas: 0 },
-    oficiais_justica: { providos: 0, dotacao: 0, vagas: 0 },
+    total: { providos: 0, origem: 0, dotacao: 0, vagas: 0 },
+    servidores: { providos: 0, origem: 0, dotacao: 0, vagas: 0 },
+    colaboradores: { providos: 0, origem: 0, dotacao: 0, vagas: 0 },
+    estagiarios: { providos: 0, origem: 0, dotacao: 0, vagas: 0 },
+    cj: { providos: 0, origem: 0, dotacao: 0, vagas: 0 },
+    fc: { providos: 0, origem: 0, dotacao: 0, vagas: 0 },
+    oficiais_justica: { providos: 0, origem: 0, dotacao: 0, vagas: 0 },
     cjDetails: {},
     fcDetails: {},
   };
@@ -262,8 +263,20 @@ export class TabDotacaoComponent implements OnChanges {
   }
 
   calculateStats() {
+    // 0. Preparar nomes para match de origem
+    const targetNames = new Set<string>();
+    this.filteredDotacao.forEach((d) => {
+      targetNames.add(this.normalize(d.unidade));
+      targetNames.add(this.normalize(d.setor));
+    });
+
+    const isMatchOrigem = (s: Servidor) => {
+      const orig = this.normalize(s.lotacao_origem);
+      return targetNames.has(orig);
+    };
+
     // Reset Stats
-    const emptyGroup = () => ({ providos: 0, dotacao: 0, vagas: 0 });
+    const emptyGroup = () => ({ providos: 0, origem: 0, dotacao: 0, vagas: 0 });
     const stats: DotacaoCardStats = {
       total: emptyGroup(),
       servidores: emptyGroup(),
@@ -275,6 +288,69 @@ export class TabDotacaoComponent implements OnChanges {
       cjDetails: {},
       fcDetails: {},
     };
+
+    // --- Servidores (Origem) Counting ---
+    // Precisamos contar todos os servidores cujo lotacao_origem bate com os filtros,
+    // indepentende de onde estão lotados agora (mas respeitando as exclusões globais).
+    this.dados.forEach((s) => {
+      // Global Exclusion
+      const vinculo = this.normalize(s.vinculo || '');
+      if (
+        EXCLUDED_VINCULOS.some((excluded) => vinculo.includes(excluded)) ||
+        vinculo.includes('inativo')
+      ) {
+        return;
+      }
+
+      if (!isMatchOrigem(s)) return;
+
+      const func = this.normalize(s.funcao || '');
+      const isOficialOrigem =
+        s.cargo && this.normalize(s.cargo).includes('oficial de justica');
+
+      // 1. TOTAL ORIGEM
+      stats.total.origem++;
+
+      // 2. ESTAGIÁRIOS
+      if (func.includes('estagiario')) {
+        stats.estagiarios.origem++;
+      }
+
+      // 3. COLABORADORES
+      if (vinculo.includes('colaborador')) {
+        stats.colaboradores.origem++;
+      }
+
+      // 4. SERVIDORES
+      if (
+        !func.includes('estagiario') &&
+        !vinculo.includes('colaborador') &&
+        !func.includes('cj') &&
+        !func.includes('fc') &&
+        !isOficialOrigem
+      ) {
+        stats.servidores.origem++;
+      }
+
+      // 5. CJ
+      if (func.includes('cj')) {
+        stats.cj.origem++;
+        if (!stats.cjDetails[func]) stats.cjDetails[func] = emptyGroup();
+        stats.cjDetails[func].origem++;
+      }
+
+      // 6. FC
+      if (func.includes('fc')) {
+        stats.fc.origem++;
+        if (!stats.fcDetails[func]) stats.fcDetails[func] = emptyGroup();
+        stats.fcDetails[func].origem++;
+      }
+
+      // 7. OFICIAL DE JUSTIÇA
+      if (isOficialOrigem) {
+        stats.oficiais_justica.origem++;
+      }
+    });
 
     // --- Servidores (Providos) Counting ---
     this.filteredServidores.forEach((s) => {
