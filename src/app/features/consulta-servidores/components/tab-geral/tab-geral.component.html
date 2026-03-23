@@ -5,7 +5,13 @@
   [rowsPerPageOptions]="[10, 25, 50]"
   [columns]="cols"
   [rows]="rows"
-  [globalFilterFields]="['matricula', 'nome', 'cargo', 'funcao', 'lotacao']"
+  [globalFilterFields]="[
+    'matricula',
+    'nome',
+    'cargo',
+    'funcao',
+    'lotacao_origem',
+  ]"
   class="min-w-full text-xs flex flex-col h-full"
   [exportHeader]="'header'"
   (sortFunction)="onCustomSort($event)"
@@ -129,6 +135,20 @@
               placeholder="Filtrar..."
               class="w-28"
               [pt]="inputPt"
+            />
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter field="lotacao_origem" matchMode="in" showMenu="false">
+          <ng-template pTemplate="filter" let-filterCallback="filterCallback">
+            <p-multiSelect
+              [options]="getOptions('lotacao_origem')"
+              [(ngModel)]="filterValues['lotacao_origem']"
+              (onChange)="filterCallback(filterValues['lotacao_origem'])"
+              appendTo="body"
+              class="w-28"
+              [pt]="multiselectPt"
             />
           </ng-template>
         </p-columnFilter>

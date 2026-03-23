@@ -153,6 +153,7 @@ export class ConsultaServidoresComponent {
     // padrao_funcao: [],
     jurisdicao: [],
     classificacao_tlp: [],
+    lotacao_origem: [],
   };
 
   tlpList: any[] = tlpList;
@@ -212,6 +213,7 @@ export class ConsultaServidoresComponent {
       { field: 'apoio', header: 'Apoio' },
       { field: 'grau', header: 'Grau' },
       { field: 'nome', header: 'Nome' },
+      { field: 'lotacao_origem', header: 'Lotação de Origem' },
       { field: 'secretaria', header: 'Secretaria' },
       { field: 'unidade', header: 'Unidade' },
       { field: 'setor', header: 'Setor' },

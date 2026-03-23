@@ -21,6 +21,7 @@ export interface Servidor {
   jurisdicao: string;
   classificacao_tlp: string;
   situacao: string;
+  lotacao_origem: string;
 }
 
 const CAMPOS: Array<[keyof Servidor, string]> = [
@@ -41,6 +42,7 @@ const CAMPOS: Array<[keyof Servidor, string]> = [
   ['jurisdicao', 'BK'],
   ['classificacao_tlp', 'CH'],
   ['situacao', 'AS'],
+  ['lotacao_origem', 'AH'],
   // ['padrao_funcao', 'AY'],
 ];
 
