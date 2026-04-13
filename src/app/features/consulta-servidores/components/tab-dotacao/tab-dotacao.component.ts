@@ -330,9 +330,6 @@ export class TabDotacaoComponent implements OnChanges {
       });
 
       const names = matchPeople.map((p) => p.nome).join('\n');
-      const functions = Array.from(new Set(matchPeople.map((p) => p.funcao)))
-        .filter((f) => !!f)
-        .join('\n');
 
       // Extrair "ocupante de função de"
       let nomEspecificoFc = '';
@@ -351,7 +348,7 @@ export class TabDotacaoComponent implements OnChanges {
         secretaria: row.secretaria,
         cod_setor: row.cod_setor,
         setor: row.setor,
-        desc_cargo: functions,
+        desc_cargo: row.desc_admrh,
         nom_especifico_fc: nomEspecificoFc,
         quant_cargo: quant_cargo,
         cod_cargo: row.cargo_admrh,
