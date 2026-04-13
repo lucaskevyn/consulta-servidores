@@ -414,13 +414,13 @@
       [rows]="25"
       [rowsPerPageOptions]="[10, 25, 50, 100]"
       [globalFilterFields]="[
-        'unidade',
         'secretaria',
+        'unidade',
         'setor',
         'desc_cargo',
         'nom_especifico_fc',
         'cod_cargo',
-        'nome',
+        'nome'
       ]"
       class="min-w-full text-xs flex flex-col h-full"
       stripedRows
@@ -473,14 +473,17 @@
 
       <ng-template #header>
         <tr>
-          <th pSortableColumn="unidade">
-            Unidade <p-sortIcon field="unidade" />
+          <th pSortableColumn="secretaria">
+            Secretaria <p-sortIcon field="secretaria" />
           </th>
           <th pSortableColumn="cod_secretaria">
             Cód. Sec. <p-sortIcon field="cod_secretaria" />
           </th>
-          <th pSortableColumn="secretaria">
-            Secretaria <p-sortIcon field="secretaria" />
+          <th pSortableColumn="unidade">
+            Unidade <p-sortIcon field="unidade" />
+          </th>
+          <th pSortableColumn="cod_unidade">
+            Cód. Unid. <p-sortIcon field="cod_unidade" />
           </th>
           <th pSortableColumn="cod_setor">
             Cód. Setor <p-sortIcon field="cod_setor" />
@@ -508,9 +511,10 @@
 
       <ng-template #body let-row>
         <tr class="hover:bg-surface-50">
-          <td>{{ row.unidade }}</td>
-          <td>{{ row.cod_secretaria }}</td>
           <td>{{ row.secretaria }}</td>
+          <td>{{ row.cod_secretaria }}</td>
+          <td>{{ row.unidade }}</td>
+          <td>{{ row.cod_unidade }}</td>
           <td>{{ row.cod_setor }}</td>
           <td>{{ row.setor }}</td>
           <td class="whitespace-pre-line">{{ row.desc_cargo }}</td>

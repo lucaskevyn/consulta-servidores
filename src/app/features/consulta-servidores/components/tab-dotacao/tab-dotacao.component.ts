@@ -36,6 +36,7 @@ interface DotacaoRow {
 
 interface DotacaoTableData {
   unidade: string;
+  cod_unidade: string;
   cod_secretaria: string;
   secretaria: string;
   cod_setor: string;
@@ -344,6 +345,7 @@ export class TabDotacaoComponent implements OnChanges {
 
       return {
         unidade: row.unidade,
+        cod_unidade: row.cod_unidade,
         cod_secretaria: row.cod_secretaria,
         secretaria: row.secretaria,
         cod_setor: row.cod_setor,
