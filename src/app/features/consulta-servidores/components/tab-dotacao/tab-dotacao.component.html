@@ -69,7 +69,9 @@
             stats.total.origem
           }}</span>
         </div>
-        <div class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded">
+        <div
+          class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded"
+        >
           <span class="text-xs text-rose-900">Providos</span>
           <span class="text-lg font-bold text-rose-900">{{
             stats.total.providos
@@ -102,7 +104,9 @@
             stats.servidores.origem
           }}</span>
         </div>
-        <div class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded">
+        <div
+          class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded"
+        >
           <span class="text-xs text-rose-900">Providos</span>
           <span class="text-lg font-bold text-rose-900">{{
             stats.servidores.providos
@@ -135,7 +139,9 @@
             stats.colaboradores.origem
           }}</span>
         </div>
-        <div class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded">
+        <div
+          class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded"
+        >
           <span class="text-xs text-rose-900">Providos</span>
           <span class="text-lg font-bold text-rose-900">{{
             stats.colaboradores.providos
@@ -168,7 +174,9 @@
             stats.estagiarios.origem
           }}</span>
         </div>
-        <div class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded">
+        <div
+          class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded"
+        >
           <span class="text-xs text-rose-900">Providos</span>
           <span class="text-lg font-bold text-rose-900">{{
             stats.estagiarios.providos
@@ -201,7 +209,9 @@
             stats.cj.origem
           }}</span>
         </div>
-        <div class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded">
+        <div
+          class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded"
+        >
           <span class="text-xs text-rose-900">Providos</span>
           <span class="text-lg font-bold text-rose-900">{{
             stats.cj.providos
@@ -234,7 +244,9 @@
             stats.fc.origem
           }}</span>
         </div>
-        <div class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded">
+        <div
+          class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded"
+        >
           <span class="text-xs text-rose-900">Providos</span>
           <span class="text-lg font-bold text-rose-900">{{
             stats.fc.providos
@@ -269,7 +281,9 @@
             stats.oficiais_justica.origem
           }}</span>
         </div>
-        <div class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded">
+        <div
+          class="flex justify-between items-center bg-rose-200/40 p-1.5 rounded"
+        >
           <span class="text-xs text-rose-900">Providos</span>
           <span class="text-lg font-bold text-rose-900">{{
             stats.oficiais_justica.providos
@@ -393,20 +407,137 @@
 
   <!-- Table  -->
   <div class="flex-1 min-h-0 overflow-hidden">
-    <app-tab-geral
-      class="h-full flex flex-col"
-      [dados]="filteredServidores"
-      [cols]="cols"
-      [uniqueValues]="uniqueValues"
-      [filterValues]="filterValues"
-      [inputPt]="inputPt"
-      [multiselectPt]="multiselectPt"
-      (sortRequest)="sortRequest.emit($event)"
-      (exportRequest)="exportRequest.emit()"
-      (clearFiltersRequest)="clearFiltersRequest.emit()"
-      (secretariaChange)="filterValues['secretaria'] = $event"
-      (unidadeChange)="filterValues['unidade'] = $event"
-      (setorChange)="filterValues['setor'] = $event"
-    ></app-tab-geral>
+    <p-table
+      #dt
+      [value]="dotacaoTableData"
+      [paginator]="true"
+      [rows]="25"
+      [rowsPerPageOptions]="[10, 25, 50, 100]"
+      [globalFilterFields]="[
+        'unidade',
+        'secretaria',
+        'setor',
+        'desc_cargo',
+        'nom_especifico_fc',
+        'cod_cargo',
+        'nome',
+      ]"
+      class="min-w-full text-xs flex flex-col h-full"
+      stripedRows
+      size="small"
+      [pt]="{
+        root: {
+          class: 'border border-surface-100 rounded-xl shadow-sm/5',
+        },
+        header: {
+          class: 'bg-surface-0 text-surface-700 rounded-t-xl',
+        },
+        pcPaginator: {
+          root: {
+            class:
+              'border-t border-surface-200 text-surface-700 rounded-b-xl rounded-t-none',
+          },
+        },
+      }"
+    >
+      <ng-template #caption>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-search text-surface-500 ml-2"></i>
+            <input
+              pInputText
+              type="text"
+              placeholder="Filtro global..."
+              (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+              class="h-9 px-2 rounded border-0"
+            />
+          </div>
+
+          <div class="flex gap-3">
+            <p-button
+              label="Limpar filtros"
+              icon="pi pi-filter-slash"
+              outlined="true"
+              severity="contrast"
+              (click)="dt.clear()"
+            ></p-button>
+
+            <p-button
+              icon="pi pi-external-link"
+              label="Exportar"
+              (click)="exportRequest.emit()"
+            />
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="unidade">
+            Unidade <p-sortIcon field="unidade" />
+          </th>
+          <th pSortableColumn="cod_secretaria">
+            Cód. Sec. <p-sortIcon field="cod_secretaria" />
+          </th>
+          <th pSortableColumn="secretaria">
+            Secretaria <p-sortIcon field="secretaria" />
+          </th>
+          <th pSortableColumn="cod_setor">
+            Cód. Setor <p-sortIcon field="cod_setor" />
+          </th>
+          <th pSortableColumn="setor">Setor <p-sortIcon field="setor" /></th>
+          <th pSortableColumn="desc_cargo">
+            Desc. cargo (Função) <p-sortIcon field="desc_cargo" />
+          </th>
+          <th pSortableColumn="quant_cargo">
+            Quant. cargo <p-sortIcon field="quant_cargo" />
+          </th>
+          <th pSortableColumn="nom_especifico_fc">
+            Nome Específico FC <p-sortIcon field="nom_especifico_fc" />
+          </th>
+          <th pSortableColumn="cod_cargo">
+            Cód. Cargo <p-sortIcon field="cod_cargo" />
+          </th>
+          <th pSortableColumn="lotacao">
+            Lotação <p-sortIcon field="lotacao" />
+          </th>
+          <th pSortableColumn="nome">Nome <p-sortIcon field="nome" /></th>
+          <th pSortableColumn="vaga">Vaga <p-sortIcon field="vaga" /></th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-row>
+        <tr class="hover:bg-surface-50">
+          <td>{{ row.unidade }}</td>
+          <td>{{ row.cod_secretaria }}</td>
+          <td>{{ row.secretaria }}</td>
+          <td>{{ row.cod_setor }}</td>
+          <td>{{ row.setor }}</td>
+          <td class="whitespace-pre-line">{{ row.desc_cargo }}</td>
+          <td class="text-center font-bold">{{ row.quant_cargo }}</td>
+          <td>{{ row.nom_especifico_fc }}</td>
+          <td>{{ row.cod_cargo }}</td>
+          <td class="text-center">{{ row.lotacao }}</td>
+          <td class="whitespace-pre-line">{{ row.nome }}</td>
+          <td
+            [ngClass]="{
+              'text-green-600 font-bold': row.vaga > 0,
+              'text-red-500': row.vaga < 0,
+            }"
+          >
+            {{ row.vaga }}
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #paginatorleft let-state>
+        <div class="text-sm text-surface-600 flex gap-4 items-center">
+          <span>
+            Exibindo {{ state.first + 1 }} a {{ state.first + state.rows }} de
+            {{ state.totalRecords }} registros
+          </span>
+        </div>
+      </ng-template>
+    </p-table>
   </div>
 </div>

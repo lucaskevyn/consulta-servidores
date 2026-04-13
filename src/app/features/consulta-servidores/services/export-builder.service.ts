@@ -122,7 +122,7 @@ export class ExportBuilderService {
         ['Com CJ', s.cj.providos, s.cj.dotacao, s.cj.vagas],
         ['Com FC', s.fc.providos, s.fc.dotacao, s.fc.vagas],
         [''],
-        ['Lista de Servidores Filtrados'],
+        ['Tabela de Dotação Detalhada'],
       );
     }
 

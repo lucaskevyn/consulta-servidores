@@ -16,6 +16,7 @@ import { Servidor } from '../../../../services/excel.service';
 import { Column } from '../../models/consulta-servidores.models';
 import { TabGeralComponent } from '../tab-geral/tab-geral.component';
 import { CardComponent } from '../../../../shared/components/card/card.component';
+import { ButtonModule } from 'primeng/button';
 
 interface DotacaoRow {
   resolucao: string;
@@ -31,6 +32,21 @@ interface DotacaoRow {
   desc_admrh: string;
   cargo_admrh: string;
   conta_dotacao: string;
+}
+
+interface DotacaoTableData {
+  unidade: string;
+  cod_secretaria: string;
+  secretaria: string;
+  cod_setor: string;
+  setor: string;
+  desc_cargo: string;
+  nom_especifico_fc: string;
+  quant_cargo: number;
+  cod_cargo: string;
+  lotacao: number;
+  nome: string;
+  vaga: number;
 }
 
 interface StatsGroup {
@@ -69,8 +85,8 @@ const EXCLUDED_VINCULOS = [
     FormsModule,
     MultiSelectModule,
     TableModule,
-    TabGeralComponent,
     CardComponent,
+    ButtonModule,
   ],
   templateUrl: './tab-dotacao.component.html',
 })
@@ -104,6 +120,7 @@ export class TabDotacaoComponent implements OnChanges {
   // Filtered Data
   filteredServidores: Servidor[] = [];
   filteredDotacao: DotacaoRow[] = [];
+  dotacaoTableData: DotacaoTableData[] = [];
 
   // Stats
   stats: DotacaoCardStats = {
@@ -258,8 +275,91 @@ export class TabDotacaoComponent implements OnChanges {
       return true;
     });
 
-    // 3. Calculate Stats
+    // 3. Generate Dotacao Table Data
+    this.generateDotacaoTableData();
+
+    // 4. Calculate Stats
     this.calculateStats();
+  }
+
+  generateDotacaoTableData() {
+    this.dotacaoTableData = this.filteredDotacao.map((row) => {
+      const matchPeople = this.dados.filter((s) => {
+        // Global Exclusion Check for people (mirroring updateResults logic)
+        const vinculo = this.normalize(s.vinculo || '');
+        if (
+          EXCLUDED_VINCULOS.some((excluded) => vinculo.includes(excluded)) ||
+          vinculo.includes('inativo')
+        ) {
+          return false;
+        }
+
+        // Must match unit and sector
+        if (String(s.cod_unidade).trim() !== String(row.cod_unidade).trim())
+          return false;
+        if (String(s.cod_setor).trim() !== String(row.cod_setor).trim())
+          return false;
+
+        const sFuncao = this.normalize(s.funcao || '');
+        const sCargo = this.normalize(s.cargo || '');
+        const sVinculo = this.normalize(s.vinculo || '');
+        const cargoAdmrh = this.normalize(row.cargo_admrh || '');
+
+        if (cargoAdmrh.includes('cj') || cargoAdmrh.includes('fc')) {
+          return sFuncao.includes(cargoAdmrh);
+        }
+        if (cargoAdmrh === 'estagiario') {
+          return sFuncao.includes('estagiario');
+        }
+        if (cargoAdmrh === 'oficial de justica') {
+          return sCargo.includes('oficial de justica');
+        }
+        if (cargoAdmrh === 'colaborador') {
+          return sVinculo.includes('colaborador');
+        }
+        if (cargoAdmrh === 'servidor') {
+          const isExclType =
+            sFuncao.includes('cj') ||
+            sFuncao.includes('fc') ||
+            sFuncao.includes('estagiario') ||
+            sCargo.includes('oficial de justica') ||
+            sVinculo.includes('colaborador');
+          return !isExclType;
+        }
+        return false;
+      });
+
+      const names = matchPeople.map((p) => p.nome).join('\n');
+      const functions = Array.from(new Set(matchPeople.map((p) => p.funcao)))
+        .filter((f) => !!f)
+        .join('\n');
+
+      // Extrair "ocupante de função de"
+      let nomEspecificoFc = '';
+      const regex = /ocupante(?:s)? de função de ([^;.]+)/i;
+      const match = row.desc_aldenice.match(regex);
+      if (match) {
+        nomEspecificoFc = match[1].trim();
+      }
+
+      const quant_cargo = parseInt(row.cargos_criados, 10) || 0;
+      const lotacao = matchPeople.length;
+
+      return {
+        unidade: row.unidade,
+        cod_secretaria: row.cod_secretaria,
+        secretaria: row.secretaria,
+        cod_setor: row.cod_setor,
+        setor: row.setor,
+        desc_cargo: functions,
+        nom_especifico_fc: nomEspecificoFc,
+        quant_cargo: quant_cargo,
+        cod_cargo: row.cargo_admrh,
+        lotacao: lotacao,
+        nome: names,
+        vaga: quant_cargo - lotacao,
+      };
+    });
   }
 
   calculateStats() {

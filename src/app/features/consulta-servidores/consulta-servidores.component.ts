@@ -1238,7 +1238,7 @@ export class ConsultaServidoresComponent {
 
       case 'dotacao': {
         if (!this.tabDotacao) return;
-        json = this.tabDotacao.filteredServidores;
+        json = this.tabDotacao.dotacaoTableData;
 
         if (this.tabDotacao.stats) {
           headerRows = this.exportBuilderService.buildDotacaoExport(
