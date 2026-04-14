@@ -420,6 +420,7 @@
         'desc_cargo',
         'nom_especifico_fc',
         'cod_cargo',
+        'lotacao_origem',
         'nome'
       ]"
       class="min-w-full text-xs flex flex-col h-full"
@@ -504,6 +505,9 @@
           <th pSortableColumn="lotacao">
             Lotação <p-sortIcon field="lotacao" />
           </th>
+          <th pSortableColumn="lotacao_origem">
+            Lot. Origem <p-sortIcon field="lotacao_origem" />
+          </th>
           <th pSortableColumn="nome">Nome <p-sortIcon field="nome" /></th>
           <th pSortableColumn="vaga">Vaga <p-sortIcon field="vaga" /></th>
         </tr>
@@ -522,6 +526,7 @@
           <td>{{ row.nom_especifico_fc }}</td>
           <td>{{ row.cod_cargo }}</td>
           <td class="text-center">{{ row.lotacao }}</td>
+          <td class="whitespace-pre-line">{{ row.lotacao_origem }}</td>
           <td class="whitespace-pre-line">{{ row.nome }}</td>
           <td
             [ngClass]="{

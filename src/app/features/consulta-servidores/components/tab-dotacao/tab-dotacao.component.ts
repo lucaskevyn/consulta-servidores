@@ -48,6 +48,7 @@ interface DotacaoTableData {
   lotacao: number;
   nome: string;
   vaga: number;
+  lotacao_origem: string;
 }
 
 interface StatsGroup {
@@ -71,13 +72,15 @@ interface DotacaoCardStats {
 
 const EXCLUDED_VINCULOS = [
   'inativos',
-  'pensão alimento',
+  'pensao alimento',
   'pensionista',
   'policial militar',
   'residente tecnologico',
-  'voluntários',
+  'voluntarios',
   'diversos (requisitados reg prev rgps)',
   'diversos (requisitados reg prev rpps)',
+  'a disposicao fprev',
+  'a disposicao fps',
 ];
 
 @Component({
@@ -297,11 +300,18 @@ export class TabDotacaoComponent implements OnChanges {
           return false;
         }
 
-        // Must match unit and sector
-        if (String(s.cod_unidade).trim() !== String(row.cod_unidade).trim())
-          return false;
-        if (String(s.cod_setor).trim() !== String(row.cod_setor).trim())
-          return false;
+        const sCodOrigem = String(s.cod_lotacao_origem || '').trim();
+        const rowCodSetor = String(row.cod_setor).trim();
+        const rowCodUnidade = String(row.cod_unidade).trim();
+
+        if (sCodOrigem) {
+          // Priority: Match by origin location code
+          if (sCodOrigem !== rowCodSetor) return false;
+        } else {
+          // Fallback: Match by current unit and sector
+          if (String(s.cod_unidade).trim() !== rowCodUnidade) return false;
+          if (String(s.cod_setor).trim() !== rowCodSetor) return false;
+        }
 
         const sFuncao = this.normalize(s.funcao || '');
         const sCargo = this.normalize(s.cargo || '');
@@ -333,6 +343,9 @@ export class TabDotacaoComponent implements OnChanges {
       });
 
       const names = matchPeople.map((p) => p.nome).join('\n');
+      const origins = Array.from(
+        new Set(matchPeople.map((p) => p.lotacao_origem || '')),
+      ).join('\n');
 
       // Extrair "ocupante de função de"
       let nomEspecificoFc = '';
@@ -359,6 +372,7 @@ export class TabDotacaoComponent implements OnChanges {
         lotacao: lotacao,
         nome: names,
         vaga: quant_cargo - lotacao,
+        lotacao_origem: origins,
       };
     });
   }
