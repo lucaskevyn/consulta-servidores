@@ -76,6 +76,8 @@ const EXCLUDED_VINCULOS = [
   'policial militar',
   'residente tecnologico',
   'voluntários',
+  'diversos (requisitados reg prev rgps)',
+  'diversos (requisitados reg prev rpps)',
 ];
 
 @Component({
