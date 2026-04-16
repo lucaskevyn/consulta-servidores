@@ -49,6 +49,12 @@ interface DotacaoTableData {
   nome: string;
   vaga: number;
   lotacao_origem: string;
+  setor_servidor: string;
+  detalhes_ocupantes: Array<{ nome: string; origin: string; sector: string }>;
+  resolucao: string;
+  desc_aldenice: string;
+  apoio: string;
+  conta_dotacao: string;
 }
 
 interface StatsGroup {
@@ -97,6 +103,7 @@ const EXCLUDED_VINCULOS = [
   templateUrl: './tab-dotacao.component.html',
 })
 export class TabDotacaoComponent implements OnChanges {
+  @ViewChild('dt') dt?: any;
   @ViewChild(TabGeralComponent) tabGeral?: TabGeralComponent;
   @Input() dados: Servidor[] = [];
   @Input() dotacaoData: DotacaoRow[] = [];
@@ -221,6 +228,9 @@ export class TabDotacaoComponent implements OnChanges {
   updateResults() {
     // 1. Filter Dotacao
     this.filteredDotacao = this.dotacaoData.filter((row) => {
+      // Ignore completely empty rows from JSON
+      if (!row.unidade && !row.cargo_admrh && !row.cargos_criados) return false;
+
       // Logic for Globla Exclusion on Dotacao
       const cargo_admrh = this.normalize(row.cargo_admrh || '');
       if (
@@ -342,10 +352,15 @@ export class TabDotacaoComponent implements OnChanges {
         return false;
       });
 
-      const names = matchPeople.map((p) => p.nome).join('\n');
-      const origins = Array.from(
-        new Set(matchPeople.map((p) => p.lotacao_origem || '')),
-      ).join('\n');
+      const detalhes_ocupantes = matchPeople.map((p) => ({
+        nome: p.nome,
+        origin: p.lotacao_origem || '',
+        sector: p.setor || '',
+      }));
+
+      const names = detalhes_ocupantes.map((o) => o.nome).join('\n');
+      const origins = detalhes_ocupantes.map((o) => o.origin).join('\n');
+      const setoresServidor = detalhes_ocupantes.map((o) => o.sector).join('\n');
 
       // Extrair "ocupante de função de"
       let nomEspecificoFc = '';
@@ -373,6 +388,12 @@ export class TabDotacaoComponent implements OnChanges {
         nome: names,
         vaga: quant_cargo - lotacao,
         lotacao_origem: origins,
+        setor_servidor: setoresServidor,
+        detalhes_ocupantes: detalhes_ocupantes,
+        resolucao: row.resolucao,
+        desc_aldenice: row.desc_aldenice,
+        apoio: row.apoio,
+        conta_dotacao: row.conta_dotacao,
       };
     });
   }

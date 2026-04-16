@@ -421,10 +421,10 @@
         'nom_especifico_fc',
         'cod_cargo',
         'lotacao_origem',
-        'nome'
+        'setor_servidor',
+        'nome',
       ]"
       class="min-w-full text-xs flex flex-col h-full"
-      stripedRows
       size="small"
       [pt]="{
         root: {
@@ -486,10 +486,10 @@
           <th pSortableColumn="cod_unidade">
             Cód. Unid. <p-sortIcon field="cod_unidade" />
           </th>
+          <th pSortableColumn="setor">Setor <p-sortIcon field="setor" /></th>
           <th pSortableColumn="cod_setor">
             Cód. Setor <p-sortIcon field="cod_setor" />
           </th>
-          <th pSortableColumn="setor">Setor <p-sortIcon field="setor" /></th>
           <th pSortableColumn="desc_cargo">
             Desc. cargo (Função) <p-sortIcon field="desc_cargo" />
           </th>
@@ -508,35 +508,145 @@
           <th pSortableColumn="lotacao_origem">
             Lot. Origem <p-sortIcon field="lotacao_origem" />
           </th>
+          <th pSortableColumn="setor_servidor">
+            Setor (Planilha) <p-sortIcon field="setor_servidor" />
+          </th>
           <th pSortableColumn="nome">Nome <p-sortIcon field="nome" /></th>
           <th pSortableColumn="vaga">Vaga <p-sortIcon field="vaga" /></th>
         </tr>
       </ng-template>
 
-      <ng-template #body let-row>
-        <tr class="hover:bg-surface-50">
-          <td>{{ row.secretaria }}</td>
-          <td>{{ row.cod_secretaria }}</td>
-          <td>{{ row.unidade }}</td>
-          <td>{{ row.cod_unidade }}</td>
-          <td>{{ row.cod_setor }}</td>
-          <td>{{ row.setor }}</td>
-          <td class="whitespace-pre-line">{{ row.desc_cargo }}</td>
-          <td class="text-center font-bold">{{ row.quant_cargo }}</td>
-          <td>{{ row.nom_especifico_fc }}</td>
-          <td>{{ row.cod_cargo }}</td>
-          <td class="text-center">{{ row.lotacao }}</td>
-          <td class="whitespace-pre-line">{{ row.lotacao_origem }}</td>
-          <td class="whitespace-pre-line">{{ row.nome }}</td>
-          <td
-            [ngClass]="{
-              'text-green-600 font-bold': row.vaga > 0,
-              'text-red-500': row.vaga < 0,
-            }"
+      <ng-template #body let-row let-rowIndex="rowIndex">
+        @if (!row.detalhes_ocupantes || row.detalhes_ocupantes.length === 0) {
+          <tr
+            class="hover:bg-surface-100 transition-colors"
+            [ngClass]="{ 'bg-surface-0': rowIndex % 2 !== 0 }"
           >
-            {{ row.vaga }}
-          </td>
-        </tr>
+            <td>{{ row.secretaria }}</td>
+            <td>{{ row.cod_secretaria }}</td>
+            <td>{{ row.unidade }}</td>
+            <td>{{ row.cod_unidade }}</td>
+            <td>{{ row.setor }}</td>
+            <td>{{ row.cod_setor }}</td>
+            <td class="whitespace-pre-line">{{ row.desc_cargo }}</td>
+            <td class="text-center font-bold">{{ row.quant_cargo }}</td>
+            <td>{{ row.nom_especifico_fc }}</td>
+            <td>{{ row.cod_cargo }}</td>
+            <td class="text-center">{{ row.lotacao }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td
+              [ngClass]="{
+                'text-green-600 font-bold': row.vaga > 0,
+                'text-red-500': row.vaga < 0,
+              }"
+            >
+              {{ row.vaga }}
+            </td>
+          </tr>
+        } @else {
+          @for (
+            occ of row.detalhes_ocupantes;
+            track $index;
+            let first = $first;
+            let last = $last
+          ) {
+            <tr
+              class="hover:bg-surface-100 transition-colors"
+              [ngClass]="{
+                'bg-surface-50': rowIndex % 2 !== 0,
+                'border-t border-surface-200': first && rowIndex > 0,
+              }"
+            >
+              @if (first) {
+                <td [attr.rowspan]="row.detalhes_ocupantes.length">
+                  {{ row.secretaria }}
+                </td>
+                <td [attr.rowspan]="row.detalhes_ocupantes.length">
+                  {{ row.cod_secretaria }}
+                </td>
+                <td [attr.rowspan]="row.detalhes_ocupantes.length">
+                  {{ row.unidade }}
+                </td>
+                <td [attr.rowspan]="row.detalhes_ocupantes.length">
+                  {{ row.cod_unidade }}
+                </td>
+                <td [attr.rowspan]="row.detalhes_ocupantes.length">
+                  {{ row.setor }}
+                </td>
+                <td [attr.rowspan]="row.detalhes_ocupantes.length">
+                  {{ row.cod_setor }}
+                </td>
+                <td
+                  [attr.rowspan]="row.detalhes_ocupantes.length"
+                  class="whitespace-pre-line"
+                >
+                  {{ row.desc_cargo }}
+                </td>
+                <td
+                  [attr.rowspan]="row.detalhes_ocupantes.length"
+                  class="text-center font-bold"
+                >
+                  {{ row.quant_cargo }}
+                </td>
+                <td [attr.rowspan]="row.detalhes_ocupantes.length">
+                  {{ row.nom_especifico_fc }}
+                </td>
+                <td [attr.rowspan]="row.detalhes_ocupantes.length">
+                  {{ row.cod_cargo }}
+                </td>
+                <td
+                  [attr.rowspan]="row.detalhes_ocupantes.length"
+                  class="text-center"
+                >
+                  {{ row.lotacao }}
+                </td>
+              }
+
+              <!-- Occupant specfic data -->
+              <td
+                class="border-surface-200 py-2"
+                [class.border-b]="!last"
+                [class.bg-surface-50]="
+                  $index % 2 !== 0 && row.detalhes_ocupantes.length > 1
+                "
+              >
+                {{ occ.origin }}
+              </td>
+              <td
+                class="border-surface-200 py-2"
+                [class.border-b]="!last"
+                [class.bg-surface-50]="
+                  $index % 2 !== 0 && row.detalhes_ocupantes.length > 1
+                "
+              >
+                {{ occ.sector }}
+              </td>
+              <td
+                class="border-surface-200 py-2 font-medium"
+                [class.border-b]="!last"
+                [class.bg-surface-50]="
+                  $index % 2 !== 0 && row.detalhes_ocupantes.length > 1
+                "
+              >
+                {{ occ.nome }}
+              </td>
+
+              @if (first) {
+                <td
+                  [attr.rowspan]="row.detalhes_ocupantes.length"
+                  [ngClass]="{
+                    'text-green-600 font-bold': row.vaga > 0,
+                    'text-red-500': row.vaga < 0,
+                  }"
+                >
+                  {{ row.vaga }}
+                </td>
+              }
+            </tr>
+          }
+        }
       </ng-template>
 
       <ng-template #paginatorleft let-state>

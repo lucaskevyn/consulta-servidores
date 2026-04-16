@@ -119,11 +119,40 @@ export class ExportBuilderService {
           s.estagiarios.dotacao,
           s.estagiarios.vagas,
         ],
+        [
+          'Oficiais de Justiça',
+          s.oficiais_justica.providos,
+          s.oficiais_justica.dotacao,
+          s.oficiais_justica.vagas,
+        ],
         ['Com CJ', s.cj.providos, s.cj.dotacao, s.cj.vagas],
         ['Com FC', s.fc.providos, s.fc.dotacao, s.fc.vagas],
         [''],
-        ['Tabela de Dotação Detalhada'],
+        ['Detalhamento de CJ'],
+        ['Função', 'Providos', 'Dotação', 'Vagas'],
       );
+
+      Object.keys(s.cjDetails || {})
+        .sort()
+        .forEach((key) => {
+          const item = s.cjDetails[key];
+          headerRows.push([key, item.providos, item.dotacao, item.vagas]);
+        });
+
+      headerRows.push(
+        [''],
+        ['Detalhamento de FC'],
+        ['Função', 'Providos', 'Dotação', 'Vagas'],
+      );
+
+      Object.keys(s.fcDetails || {})
+        .sort()
+        .forEach((key) => {
+          const item = s.fcDetails[key];
+          headerRows.push([key, item.providos, item.dotacao, item.vagas]);
+        });
+
+      headerRows.push([''], ['Tabela de Dotação Detalhada']);
     }
 
     return headerRows;

@@ -1238,7 +1238,30 @@ export class ConsultaServidoresComponent {
 
       case 'dotacao': {
         if (!this.tabDotacao) return;
-        json = this.tabDotacao.dotacaoTableData;
+
+        const tableData: any[] =
+          (this.tabDotacao.dt &&
+            (this.tabDotacao.dt.filteredValue ?? this.tabDotacao.dt.value)) ||
+          this.tabDotacao.dotacaoTableData;
+
+        // Map data to EXACTLY the same 15 columns as the UI, preserving \n for grouped sublines
+        json = tableData.map((row) => ({
+          Secretaria: row.secretaria,
+          'Cód. Sec.': row.cod_secretaria,
+          Unidade: row.unidade,
+          'Cód. Unid.': row.cod_unidade,
+          Setor: row.setor,
+          'Cód. Setor': row.cod_setor,
+          'Desc. cargo (Função)': row.desc_cargo,
+          'Quant. cargo': row.quant_cargo,
+          'Nome Específico FC': row.nom_especifico_fc,
+          'Cód. Cargo': row.cod_cargo,
+          Lotação: row.lotacao,
+          'Lot. Origem': row.lotacao_origem,
+          'Setor (Planilha)': row.setor_servidor,
+          Nome: row.nome,
+          Vaga: row.vaga,
+        }));
 
         if (this.tabDotacao.stats) {
           headerRows = this.exportBuilderService.buildDotacaoExport(
