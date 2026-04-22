@@ -340,13 +340,21 @@ export class TabDotacaoComponent implements OnChanges {
         if (cargoAdmrh === 'colaborador') {
           return sVinculo.includes('colaborador');
         }
+
+        const isExclType =
+          sFuncao.includes('cj') ||
+          sFuncao.includes('fc') ||
+          sFuncao.includes('estagiario') ||
+          sCargo.includes('oficial de justica') ||
+          sVinculo.includes('colaborador');
+
+        if (cargoAdmrh.startsWith('servidor - ')) {
+          const specialty = cargoAdmrh.replace('servidor - ', '');
+          const sAreaAtuacao = this.normalize(s.area_atuacao || '');
+          return !isExclType && sAreaAtuacao.includes(specialty);
+        }
+
         if (cargoAdmrh === 'servidor') {
-          const isExclType =
-            sFuncao.includes('cj') ||
-            sFuncao.includes('fc') ||
-            sFuncao.includes('estagiario') ||
-            sCargo.includes('oficial de justica') ||
-            sVinculo.includes('colaborador');
           return !isExclType;
         }
         return false;
@@ -555,6 +563,7 @@ export class TabDotacaoComponent implements OnChanges {
       const isCJ = cargo_admrh.includes('cj');
       const isFC = cargo_admrh.includes('fc');
       const isServidor = cargo_admrh === 'servidor';
+      const isServidorEspecialidade = cargo_admrh.startsWith('servidor - ');
       const isOficial = cargo_admrh === 'oficial de justica';
 
       // 1. ESTAGIÁRIOS
@@ -584,7 +593,7 @@ export class TabDotacaoComponent implements OnChanges {
       }
 
       // 5. SERVIDORES
-      if (isServidor) {
+      if (isServidor || isServidorEspecialidade) {
         stats.servidores.dotacao += qtd;
       }
 
@@ -594,8 +603,15 @@ export class TabDotacaoComponent implements OnChanges {
       }
 
       // 7. TOTAL
-      // Regra: cj + servidor + colaborador + estagiário + oficial + fc (somente se resolução for 108)
-      if (isCJ || isServidor || isColaborador || isEstagiario || isOficial) {
+      // Regra: cj + servidor + servidorEspecialidade + colaborador + estagiário + oficial + fc (somente se resolução for 108)
+      if (
+        isCJ ||
+        isServidor ||
+        isServidorEspecialidade ||
+        isColaborador ||
+        isEstagiario ||
+        isOficial
+      ) {
         stats.total.dotacao += qtd;
       } else if (isFC && resolucao === '108') {
         stats.total.dotacao += qtd;

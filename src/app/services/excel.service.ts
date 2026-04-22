@@ -23,6 +23,7 @@ export interface Servidor {
   situacao: string;
   lotacao_origem: string;
   cod_lotacao_origem: string;
+  area_atuacao: string;
 }
 
 const CAMPOS: Array<[keyof Servidor, string]> = [
@@ -37,6 +38,7 @@ const CAMPOS: Array<[keyof Servidor, string]> = [
   ['cod_setor', 'AK'],
   ['centro', 'AP'],
   ['vinculo', 'M'],
+  ['area_atuacao', 'N'],
   ['cargo', 'AI'],
   // ['padrao', 'AG'],
   ['funcao', 'AJ'],
