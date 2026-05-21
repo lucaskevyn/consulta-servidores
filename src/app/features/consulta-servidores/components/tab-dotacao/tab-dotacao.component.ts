@@ -85,8 +85,8 @@ const EXCLUDED_VINCULOS = [
   'voluntarios',
   'diversos (requisitados reg prev rgps)',
   'diversos (requisitados reg prev rpps)',
-  'a disposicao fprev',
-  'a disposicao fps',
+  // 'a disposicao fprev',
+  // 'a disposicao fps',
 ];
 
 @Component({
