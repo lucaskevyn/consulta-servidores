@@ -41,7 +41,7 @@ const CAMPOS: Array<[keyof Servidor, string]> = [
   ['area_atuacao', 'N'],
   ['cargo', 'AJ'],
   // ['padrao', 'AG'],
-  ['funcao', 'AJ'],
+  ['funcao', 'AL'],
   ['jurisdicao', 'BM'],
   ['classificacao_tlp', 'CJ'],
   ['situacao', 'AU'],
